@@ -49,11 +49,11 @@ public class GridStackLayout implements LayoutManager2
 	
 	
 	
-	public GridStackLayout(int aColumns, int aGap, int aGap2, boolean aFitToWidth, boolean aFitToHeight)
+	public GridStackLayout(int aColumns, int aHGap, int aVGap, boolean aFitToWidth, boolean aFitToHeight)
 	{
 		itsNColumns = aColumns;
-		itsHGap = aGap;
-		itsVGap = aGap2;
+		itsHGap = aHGap;
+		itsVGap = aVGap;
 		itsFitToWidth = aFitToWidth;
 		itsFitToHeight = aFitToHeight;
 	}
