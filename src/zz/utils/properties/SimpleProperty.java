@@ -79,7 +79,6 @@ implements IProperty<T>, Observer
 			
 			changed(theOldValue, aValue);
 			firePropertyChanged(theOldValue, aValue);
-			ObservationCenter.getInstance().requestObservation(getContainer(), this);
 		}
 	}
 	

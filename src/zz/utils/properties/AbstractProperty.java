@@ -77,6 +77,8 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 
 		for (IPropertyListener theListener : theListeners)
 			theListener.propertyChanged(this, aOldValue, aNewValue);
+		
+		ObservationCenter.getInstance().requestObservation(getContainer(), this);
 	}
 	
 	protected void firePropertyValueChanged ()
@@ -86,6 +88,8 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 
 		for (IPropertyListener theListener : theListeners)
 			theListener.propertyValueChanged(this);
+		
+		ObservationCenter.getInstance().requestObservation(getContainer(), this);
 	}
 	
 	protected boolean canChangeProperty (Object aValue)
