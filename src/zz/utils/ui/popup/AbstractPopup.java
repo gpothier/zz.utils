@@ -187,6 +187,9 @@ public abstract class AbstractPopup
 		}
 	}
 
+	/**
+	 * Returns the content displayed by the popup.
+	 */
 	public JComponent getContent ()
 	{
 		return itsContent;

@@ -104,6 +104,9 @@ public class PopupComponent extends TransparentPanel implements PopupListener
 		itsPopup.setContent(aPopup);
 	}
 
+	/**
+	 * Returns the content displayed by the popup.
+	 */
 	public JComponent getPopupComponent ()
 	{
 		return itsPopup.getContent();

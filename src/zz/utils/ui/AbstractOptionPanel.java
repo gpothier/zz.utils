@@ -39,6 +39,11 @@ public abstract class AbstractOptionPanel extends JPanel implements IPublicClone
 		this (false);
 	}
 	
+	/**
+	 * This constructor permits to defer the creation of the UI.
+	 * A subclass that uses this constructor should take care of
+	 * calling {@link #createUI()} itself.
+	 */
 	public AbstractOptionPanel(boolean aDeferCreation)
 	{
 		if (! aDeferCreation) createUI();

@@ -38,24 +38,59 @@ public abstract class AbstractFormatter implements Formatter
 			if (itsHtml) itsBuffer.append("<html>");
 		}
 		
-		public void writeFont(String aColor)
+		public void startFont(String aColor)
 		{
 			if (itsHtml) itsBuffer.append("<font color='"+aColor+"'>");
 		}
 		
-		public void writeFont(int aSize)
+		public void startFont(int aSize)
 		{
 			if (itsHtml) itsBuffer.append("<font size='"+aSize+"'>");
 		}
 		
-		public void writeFont(int aSize, String aColor)
+		public void startFont(int aSize, String aColor)
 		{
 			if (itsHtml) itsBuffer.append("<font size='"+aSize+"' color='"+aColor+"'>");
+		}
+		
+		public void endFont()
+		{
+			if (itsHtml) itsBuffer.append("</font>");
 		}
 		
 		public void write (String aString)
 		{
 			itsBuffer.append(aString);
+		}
+		
+		public void startBold()
+		{
+			if (itsHtml) itsBuffer.append("<b>");
+		}
+		
+		public void endBold()
+		{
+			if (itsHtml) itsBuffer.append("</b>");
+		}
+		
+		public void startItalic()
+		{
+			if (itsHtml) itsBuffer.append("<i>");
+		}
+		
+		public void endItalic()
+		{
+			if (itsHtml) itsBuffer.append("</i>");
+		}
+		
+		public void startUnderlined()
+		{
+			if (itsHtml) itsBuffer.append("<u>");
+		}
+		
+		public void endUnderlined()
+		{
+			if (itsHtml) itsBuffer.append("</u>");
 		}
 		
 		public String toString()
