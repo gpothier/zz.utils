@@ -32,6 +32,11 @@ public interface ICollection<E> extends Iterable<E>
 	public boolean remove (E aElement);
 	
 	/**
+	 * Returns true if the collection contains the specified element.
+	 */
+	public boolean contains (Object aElement);
+	
+	/**
 	 * Removes all the elements of this list.
 	 */
 	public void clear();

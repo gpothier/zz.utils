@@ -101,6 +101,11 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	{
 		return get().indexOf(aElement);
 	}
+	
+	public boolean contains(Object aElement)
+	{
+		return get().contains(aElement);
+	}
 
 	public Iterator<E> iterator()
 	{
