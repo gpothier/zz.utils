@@ -604,14 +604,4 @@ public final class Utils
 		return (aValue>aInf && aValue<aSup);
 	}
 	
-	/**
-	 * Returns a formatted string according to printf conventions.
-	 */
-	public static String sprintf (String aFormat, Object... aArgs)
-	{
-		StringBuilder theBuilder = new StringBuilder();
-		Formatter theFormatter = new Formatter(theBuilder);
-		theFormatter.format(aFormat, aArgs);
-		return theBuilder.toString();
-	}
 }
