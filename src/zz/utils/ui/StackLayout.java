@@ -55,7 +55,7 @@ public class StackLayout implements LayoutManager2
 		for (int i = 0; i < theNChildren; i++)
 		{
 			Component theChild = theChildren[i];
-			theChild.setSize(theSize);
+			theChild.setBounds(0, 0, theSize.width, theSize.height);
 		}
 
 	}
