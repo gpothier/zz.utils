@@ -20,8 +20,7 @@ import zz.utils.references.WeakRef;
 public class ArrayListProperty<E> extends AbstractProperty<List<E>> 
 implements IListProperty<E>
 {
-	private List<IRef<IListPropertyListener<E>>> itsListListeners = 
-		new ArrayList<IRef<IListPropertyListener<E>>>();
+	private List<IRef<IListPropertyListener<E>>> itsListListeners;
 	
 	private List<E> itsList = new MyList ();
 	
@@ -51,17 +50,20 @@ implements IListProperty<E>
 	
 	public void addListener (IListPropertyListener<E> aListener)
 	{
+		if (itsListListeners == null) itsListListeners = new ArrayList<IRef<IListPropertyListener<E>>>(3);
 		itsListListeners.add (new WeakRef<IListPropertyListener<E>>(aListener));
 	}
 
 	public void addHardListener (IListPropertyListener<E> aListener)
 	{
+		if (itsListListeners == null) itsListListeners = new ArrayList<IRef<IListPropertyListener<E>>>(3);
 		itsListListeners.add (new HardRef<IListPropertyListener<E>>(aListener));
 	}
 	
 	public void removeListener (IListPropertyListener<E> aListener)
 	{
 		RefUtils.remove(itsListListeners, aListener);
+		if (itsListListeners.size() == 0) itsListListeners = null;
 	}
 
 
@@ -149,7 +151,8 @@ implements IListProperty<E>
 	protected void fireElementAdded (int aIndex, E aElement)
 	{
 		elementAdded(aIndex, aElement);
-		
+	
+		if (itsListListeners == null) return;
 		List<IListPropertyListener<E>> theListeners = RefUtils.dereference(itsListListeners);
 		
 		for (IListPropertyListener<E> theListener : theListeners)
@@ -160,6 +163,7 @@ implements IListProperty<E>
 	{
 		elementRemoved(aElement);
 
+		if (itsListListeners == null) return;
 		List<IListPropertyListener<E>> theListeners = RefUtils.dereference(itsListListeners);
 		
 		for (IListPropertyListener<E> theListener : theListeners)

@@ -38,11 +38,9 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	 */
 	private PropertyId<T> itsPropertyId;
 	
-	private List<IRef<IPropertyVeto<?>>> itsVetos = 
-		new ArrayList();
+	private List<IRef<IPropertyVeto<?>>> itsVetos; 
 	
-	private List<IRef<IPropertyListener<?>>> itsListeners = 
-		new ArrayList();
+	private List<IRef<IPropertyListener<?>>> itsListeners; 
 	
 	public AbstractProperty(Object aContainer)
 	{
@@ -70,6 +68,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	protected void firePropertyChanged (T aOldValue, T aNewValue)
 	{
+		if (itsListeners == null) return;
 		List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
 
 		for (IPropertyListener theListener : theListeners)
@@ -78,6 +77,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	protected void firePropertyValueChanged ()
 	{
+		if (itsListeners == null) return;
 		List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
 
 		for (IPropertyListener theListener : theListeners)
@@ -86,6 +86,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	protected boolean canChangeProperty (Object aValue)
 	{
+		if (itsVetos == null) return true;
 		List<IPropertyVeto<?>> theVetos = RefUtils.dereference(itsVetos);
 		
 		for (IPropertyVeto theVeto : theVetos)
@@ -96,32 +97,38 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	public void addListener (IPropertyListener<?> aListener)
 	{
+		if (itsListeners == null) itsListeners = new ArrayList(3);
 		itsListeners.add (new WeakRef<IPropertyListener<?>>(aListener));
 	}
 
 	public void addHardListener (IPropertyListener<?> aListener)
 	{
+		if (itsListeners == null) itsListeners = new ArrayList(3);
 		itsListeners.add (new HardRef<IPropertyListener<?>>(aListener));
 	}
 	
 	public void removeListener (IPropertyListener<?> aListener)
 	{
 		RefUtils.remove(itsListeners, aListener);
+		if (itsListeners.size() == 0) itsListeners = null;
 	}
 
 	public void addVeto (IPropertyVeto<?> aVeto)
 	{
+		if (itsVetos == null) itsVetos = new ArrayList(3);
 		itsVetos.add (new WeakRef<IPropertyVeto<?>>(aVeto));
 	}
 
 	public void addHardVeto (IPropertyVeto<?> aVeto)
 	{
+		if (itsVetos == null) itsVetos = new ArrayList(3);
 		itsVetos.add (new HardRef<IPropertyVeto<?>>(aVeto));
 	}
 	
 	public void removeVeto (IPropertyVeto<?> aVeto)
 	{
 		RefUtils.remove(itsVetos, aVeto);
+		if (itsVetos.size() == 0) itsVetos = null;
 	}
 	
 	public IProperty<T> cloneForContainer(Object aContainer)
