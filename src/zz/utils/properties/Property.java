@@ -11,7 +11,6 @@ import java.util.List;
 import zz.utils.FailsafeLinkedList;
 import zz.utils.notification.ObservationCenter;
 import zz.utils.notification.Observer;
-import zz.utils.properties.Property.IRef<zz.utils.properties.IPropertyListener>;
 
 /**
  * Suplement the lack of language support for properties.
