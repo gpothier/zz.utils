@@ -244,6 +244,14 @@ public final class Utils
 		else return o1 == o2 || o1.equals (o2);
 	}
 
+	/**
+	 * Tests if two objects are different.
+	 */ 
+	public static boolean different (Object o1, Object o2)
+	{
+		return ! equalOrBothNull (o1, o2);
+	}
+
 
 	/**
 	 * Appends to the specified StringBuffer:
