@@ -72,22 +72,26 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	protected void firePropertyChanged (T aOldValue, T aNewValue)
 	{
-		if (itsListeners == null) return;
-		List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
-
-		for (IPropertyListener theListener : theListeners)
-			theListener.propertyChanged(this, aOldValue, aNewValue);
+		if (itsListeners != null)
+		{
+			List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
+	
+			for (IPropertyListener theListener : theListeners)
+				theListener.propertyChanged(this, aOldValue, aNewValue);
+		}
 		
 		ObservationCenter.getInstance().requestObservation(getContainer(), this);
 	}
 	
 	protected void firePropertyValueChanged ()
 	{
-		if (itsListeners == null) return;
-		List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
-
-		for (IPropertyListener theListener : theListeners)
-			theListener.propertyValueChanged(this);
+		if (itsListeners != null)
+		{
+			List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
+	
+			for (IPropertyListener theListener : theListeners)
+				theListener.propertyValueChanged(this);
+		}
 		
 		ObservationCenter.getInstance().requestObservation(getContainer(), this);
 	}
