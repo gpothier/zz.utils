@@ -1,7 +1,7 @@
 /*
  * Created on Dec 14, 2004
  */
-package zz.utils.properties;
+package zz.utils.list;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,21 +11,13 @@ import java.util.List;
 import zz.utils.ReverseIteratorWrapper;
 
 /**
+ * Implementation of {@link zz.utils.list.IList} based on an
+ * {@link java.util.ArrayList}
  * @author gpothier
  */
-public class ArrayListProperty<E> extends AbstractListProperty<E> 
+public class ZArrayList<E> extends AbstractList<E> 
 {
 	private List<E> itsList = new MyList ();
-	
-	public ArrayListProperty(Object aContainer)
-	{
-		super(aContainer);
-	}
-	
-	public ArrayListProperty(Object aContainer, PropertyId<List<E>> aPropertyId)
-	{
-		super(aContainer, aPropertyId);
-	}
 	
 	public List<E> get()
 	{
