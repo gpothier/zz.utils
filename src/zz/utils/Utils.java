@@ -397,6 +397,15 @@ public final class Utils
 		return aCollection;
     }
 
+    /**
+     * Adds to the collections all the items returned by the iterable.
+	 * @return The given collection.
+     */
+    public static final Collection fillCollection (Collection aCollection, Iterable aIterable)
+    {
+    	return fillCollection(aCollection, aIterable.iterator());
+    }
+
 	public static final String getObjectName (Object aObject)
 	{
 		if (aObject == null) return "null";
