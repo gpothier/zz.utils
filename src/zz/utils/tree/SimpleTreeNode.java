@@ -18,23 +18,10 @@ public class SimpleTreeNode<V>
 	private SimpleTree<V> itsTree;
 	private SimpleTreeNode<V> itsParent;
 	
-	public final IListProperty<SimpleTreeNode<V>> pChildren = 
-		new ArrayListProperty<SimpleTreeNode<V>>(this)
-		{
-			protected void elementAdded(int aIndex, SimpleTreeNode<V> aElement)
-			{
-				if (aElement.getParent() != null) throw new RuntimeException("node already has a parent: "+aElement);
-				aElement.setParent(SimpleTreeNode.this);
-				getTree().fireChildAdded(SimpleTreeNode.this, aIndex, aElement);
-			}
-			
-			protected void elementRemoved(int aIndex, SimpleTreeNode<V> aElement)
-			{
-				if (aElement.getParent() != SimpleTreeNode.this) throw new RuntimeException("node has awrong parent: "+aElement);
-				aElement.setParent(null);
-				getTree().fireChildRemoved(SimpleTreeNode.this, aIndex, aElement);
-			}
-		};
+	/**
+	 * The children of this node. If this property is null, there are no children.
+	 */
+	public final IListProperty<SimpleTreeNode<V>> pChildren;
 	
 	public final IRWProperty<V> pValue =
 		new SimpleRWProperty<V>(this)
@@ -47,9 +34,30 @@ public class SimpleTreeNode<V>
 		};
 	
 	
-	SimpleTreeNode(SimpleTree<V> aTree)
+	SimpleTreeNode(SimpleTree<V> aTree, boolean aLeaf)
 	{
 		itsTree = aTree;
+		if (! aLeaf)
+		{
+			pChildren = 
+				new ArrayListProperty<SimpleTreeNode<V>>(this)
+				{
+					protected void elementAdded(int aIndex, SimpleTreeNode<V> aElement)
+					{
+						if (aElement.getParent() != null) throw new RuntimeException("node already has a parent: "+aElement);
+						aElement.setParent(SimpleTreeNode.this);
+						getTree().fireChildAdded(SimpleTreeNode.this, aIndex, aElement);
+					}
+					
+					protected void elementRemoved(int aIndex, SimpleTreeNode<V> aElement)
+					{
+						if (aElement.getParent() != SimpleTreeNode.this) throw new RuntimeException("node has awrong parent: "+aElement);
+						aElement.setParent(null);
+						getTree().fireChildRemoved(SimpleTreeNode.this, aIndex, aElement);
+					}
+				};
+		}
+		else pChildren = null;
 	}
 	
 	public SimpleTree<V> getTree()

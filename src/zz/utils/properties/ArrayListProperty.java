@@ -45,7 +45,8 @@ implements IListProperty<E>
 	 */
 	protected void set (List<E> aList)
 	{
-		itsList = aList;
+		if (aList instanceof MyList) itsList = ((MyList) aList);
+		else itsList = aList != null ? new MyList (aList) : null;
 	}
 	
 	public void addListener (IListPropertyListener<E> aListener)
@@ -71,32 +72,26 @@ implements IListProperty<E>
 	public final void add(E aElement)
 	{
 		get().add (aElement);
-		fireElementAdded(size()-1, aElement);
 	}
 
 	public final void add(int aIndex, E aElement)
 	{
 		get().add (aIndex, aElement);
-		fireElementAdded(aIndex, aElement);
 	}
 
 	public void set(int aIndex, E aElement)
 	{
 		E theElement = get().set(aIndex, aElement);
-		fireElementRemoved(aIndex, theElement);
-		fireElementAdded(aIndex, aElement);
 	}
 	
 	public final boolean remove(E aElement)
 	{
-		boolean theResult = get().remove (aElement);
-		return theResult;
+		return get().remove (aElement);
 	}
 
 	public final E remove(int aIndex)
 	{
-		E theResult = get().remove(aIndex);
-		return theResult;
+		return get().remove(aIndex);
 	}
 
 	public void clear()
@@ -107,7 +102,8 @@ implements IListProperty<E>
 	
 	public final int size()
 	{
-		return get().size();
+		List<E> theList = get();
+		return theList != null ? theList.size() : 0;
 	}
 
 	public final E get(int aIndex)
@@ -177,6 +173,15 @@ implements IListProperty<E>
 	 */
 	private class MyList extends ArrayList<E>
 	{
+		public MyList()
+		{
+		}
+		
+		public MyList(Collection<? extends E> aContent)
+		{
+			addAll(aContent);
+		}
+		
 		public boolean remove(Object aO)
 		{
 			int theIndex = indexOf(aO);
@@ -220,6 +225,16 @@ implements IListProperty<E>
 				add (theIndex++, theElement);
 			
 			return aCollection.size() > 0;
+		}
+		
+		public E set(int aIndex, E aElement)
+		{
+			E theElement = super.set(aIndex, aElement);
+
+			fireElementRemoved(aIndex, theElement);
+			fireElementAdded(aIndex, aElement);
+
+			return theElement;
 		}
 	}
 

@@ -13,11 +13,16 @@ import zz.utils.properties.ITree;
  */
 public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 {
-	private SimpleTreeNode<V> itsRootNode;
+	private final SimpleTreeNode<V> itsRootNode;
 
-	public SimpleTree(SimpleTreeNode<V> aRootNode)
+	public SimpleTree()
 	{
-		itsRootNode = aRootNode;
+		this (null);
+	}
+	
+	public SimpleTree(V aRootNodeValue)
+	{
+		itsRootNode = createNode(aRootNodeValue);
 	}
 
 	public SimpleTreeNode<V> getRoot()
@@ -32,7 +37,12 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 
 	public int getChildCount(SimpleTreeNode<V> aParent)
 	{
-		return aParent.pChildren.size();
+		return aParent.pChildren != null ? aParent.pChildren.size() : 0;
+	}
+	
+	public boolean isLeaf(SimpleTreeNode<V> aNode)
+	{
+		return aNode.pChildren == null;
 	}
 
 	public SimpleTreeNode<V> getChild(SimpleTreeNode<V> aParent, int aIndex)
@@ -56,11 +66,23 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 	}
 
 	/**
-	 * Creates a new nod for this tree, without adding it to the tree.
+	 * Creates a new node for this tree, without adding it to the tree.
 	 */
 	public SimpleTreeNode<V> createNode(V aValue)
 	{
-		return new SimpleTreeNode<V>(this);
+		SimpleTreeNode<V> theNode = new SimpleTreeNode<V>(this, false);
+		theNode.pValue.set(aValue);
+		return theNode;
+	}
+	
+	/**
+	 * Creates a new leaf node for this tree, without adding it to the tree.
+	 */
+	public SimpleTreeNode<V> createLeafNode(V aValue)
+	{
+		SimpleTreeNode<V> theNode = new SimpleTreeNode<V>(this, true);
+		theNode.pValue.set(aValue);
+		return theNode;
 	}
 	
 	/**
