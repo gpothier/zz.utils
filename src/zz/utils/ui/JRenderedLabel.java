@@ -87,6 +87,7 @@ public class JRenderedLabel extends JPanel
 					false);
 			
 			theComponent.setOpaque(isOpaque());
+			theComponent.setFont(getFont());
 			theComponent.setBounds(0, 0, getWidth(), getHeight());
 			theComponent.paint(aG);
 		}

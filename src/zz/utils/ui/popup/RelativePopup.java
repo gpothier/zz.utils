@@ -56,7 +56,6 @@ public class RelativePopup extends AbstractPopup implements AWTEventListener
 		Dimension thePreferredSize = getContent().getPreferredSize();
 		int theW = thePreferredSize.width;
 		int theH = thePreferredSize.height;
-		
 		return new Rectangle (theX, theY, theW, theH);
 	}
 
