@@ -62,7 +62,7 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 		itsProcessingOrder = aOrder;
 		
 		Thread theThread = new Thread(this);
-		theThread.setPriority(Thread.NORM_PRIORITY-1);
+		theThread.setPriority(Thread.MIN_PRIORITY);
 		theThread.start();
 	}
 
