@@ -1,7 +1,7 @@
 /*
  * Created on Dec 16, 2004
  */
-package zz.utils.properties;
+package zz.utils.tree;
 
 import java.util.List;
 

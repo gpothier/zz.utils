@@ -3,11 +3,9 @@
  */
 package zz.utils.tree;
 
-import zz.utils.properties.AbstractTree;
-import zz.utils.properties.ITree;
 
 /**
- * Simple implementation of {@link zz.utils.properties.ITree}, based
+ * Simple implementation of {@link zz.utils.tree.ITree}, based
  * on {@link zz.utils.tree.SimpleTreeNode}.
  * @author gpothier
  */

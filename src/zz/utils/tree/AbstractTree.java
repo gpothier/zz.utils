@@ -1,7 +1,7 @@
 /*
  * Created on Dec 16, 2004
  */
-package zz.utils.properties;
+package zz.utils.tree;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -13,7 +13,7 @@ import zz.utils.references.RefUtils;
 import zz.utils.references.WeakRef;
 
 /**
- * Abstract implementation of {@link zz.utils.properties.ITree}, taking
+ * Abstract implementation of {@link zz.utils.tree.ITree}, taking
  * care of listeners and the {@link #getPath} method.
  * It also implements some methods either by throwing an exception, or 
  * by providing a sensible default behaviour.

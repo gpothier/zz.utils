@@ -1,7 +1,7 @@
 /*
  * Created on 10-jun-2004
  */
-package zz.utils.properties;
+package zz.utils.tree;
 
 
 /**
