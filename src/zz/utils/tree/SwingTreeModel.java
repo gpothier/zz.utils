@@ -79,6 +79,16 @@ public class SwingTreeModel<N, V> extends DefaultTreeModel implements ITreeListe
 		List<N> thePath = itsTree.getPath(aNode);
 		return new TreePath(thePath.toArray());
 	}
+	
+	/**
+	 * Tries to find the tree path that corresponds to the node
+	 * that has the specified value
+	 */
+	public TreePath getTreePathForValue (V aValue)
+	{
+		N theNode = TreeUtils.findNode(itsTree, aValue);
+		return theNode != null ? getTreePath(theNode) : null;
+	}
 
 	/**
 	 * Returns the value associated with the given path
