@@ -45,7 +45,7 @@ public abstract class AbstractTree<N, V> implements ITree<N, V>
 	 * @param aIndex The index of the new child
 	 * @param aChild The newly added child
 	 */
-	protected void fireChildAdded (N aNode, int aIndex, N aChild)
+	public void fireChildAdded (N aNode, int aIndex, N aChild)
 	{
 		List<ITreeListener<N, V>> theListeners = RefUtils.dereference(itsListeners);
 		for (ITreeListener<N, V> theListener : theListeners)
@@ -58,7 +58,7 @@ public abstract class AbstractTree<N, V> implements ITree<N, V>
 	 * @param aIndex The index previously occupied by the child
 	 * @param aChild The removed child
 	 */
-	protected void fireChildRemoved (N aNode, int aIndex, N aChild)
+	public void fireChildRemoved (N aNode, int aIndex, N aChild)
 	{
 		List<ITreeListener<N, V>> theListeners = RefUtils.dereference(itsListeners);
 		for (ITreeListener<N, V> theListener : theListeners)
@@ -70,7 +70,7 @@ public abstract class AbstractTree<N, V> implements ITree<N, V>
 	 * @param aNode The node whose value changed
 	 * @param aNewValue The new value of the node.
 	 */
-	protected void fireValueChanged (N aNode, V aNewValue)
+	public void fireValueChanged (N aNode, V aNewValue)
 	{
 		List<ITreeListener<N, V>> theListeners = RefUtils.dereference(itsListeners);
 		for (ITreeListener<N, V> theListener : theListeners)
@@ -91,11 +91,10 @@ public abstract class AbstractTree<N, V> implements ITree<N, V>
     	return thePath;
     }
     
-    
     /**
      * Throws {@link UnsupportedOperationException}
      */
-	public void addChild(N aParent, int aIndex, N aChild)
+	public N createNode(V aValue)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -103,7 +102,7 @@ public abstract class AbstractTree<N, V> implements ITree<N, V>
     /**
      * Throws {@link UnsupportedOperationException}
      */
-	public N createNode(V aValue)
+	public void addChild(N aParent, int aIndex, N aChild)
 	{
 		throw new UnsupportedOperationException();
 	}

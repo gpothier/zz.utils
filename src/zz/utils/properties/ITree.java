@@ -38,6 +38,12 @@ public interface ITree<N, V>
 	 * Whether the specified node is a leaf node.
 	 */
 	public boolean isLeaf(N aNode);
+	
+	/**
+	 * Returns an iterable of the specified node's children.
+	 * @return An iterable. If the node is a leaf node, this method should return null.
+	 */
+	public Iterable<N> getChildren (N aParent);
 
 	/**
 	 * Returns the Nth child of a node.

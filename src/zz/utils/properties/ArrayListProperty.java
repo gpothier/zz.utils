@@ -142,7 +142,7 @@ implements IListProperty<E>
 	 * This method is called whenever an element is removed from this list.
 	 * By default it does nothing, but subclasses can override it to be notified.
 	 */
-	protected void elementRemoved (E aElement)
+	protected void elementRemoved (int aIndex, E aElement)
 	{
 	}
 	
@@ -161,7 +161,7 @@ implements IListProperty<E>
 	
 	protected void fireElementRemoved (int aIndex, E aElement)
 	{
-		elementRemoved(aElement);
+		elementRemoved(aIndex, aElement);
 
 		if (itsListListeners == null) return;
 		List<IListPropertyListener<E>> theListeners = RefUtils.dereference(itsListListeners);

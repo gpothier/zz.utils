@@ -6,18 +6,25 @@
  */
 package zz.utils;
 
+import javax.swing.ImageIcon;
+
 /**
  * Serves to give a textual representation for an object.
  */
-public interface Formatter
+public interface Formatter<T>
 {
 	/**
 	 * Returns a plain text representation of the object.
 	 */
-	public String getPlainText (Object aObject);
+	public String getPlainText (T aObject);
 	
 	/**
-	 * Returns an html representation of this object.
+	 * Returns an html representation of the object.
 	 */
-	public String getHtmlText (Object aObject);
+	public String getHtmlText (T aObject);
+	
+	/**
+	 * Returns an icon that represents the object
+	 */
+	public ImageIcon getIcon (T aObject);
 }

@@ -3,24 +3,31 @@
  */
 package zz.utils;
 
+import javax.swing.ImageIcon;
+
 /**
  * Simplifies the implementation of {@link Formatter}
  * @author gpothier
  */
-public abstract class AbstractFormatter implements Formatter
+public abstract class AbstractFormatter<T> implements Formatter<T>
 {
 	
-	public String getPlainText(Object aObject)
+	public String getPlainText(T aObject)
 	{
 		return getText(aObject, false);
 	}
 
-	public String getHtmlText(Object aObject)
+	public String getHtmlText(T aObject)
 	{
 		return getText(aObject, true);
 	}
+	
+	public ImageIcon getIcon(T aObject)
+	{
+		return null;
+	}
 
-	protected abstract String getText (Object aObject, boolean aHtml);
+	protected abstract String getText (T aObject, boolean aHtml);
 	
 	/**
 	 * Permits to write text in either html or plain mode.
