@@ -49,7 +49,7 @@ public class Fonts
 	public static Dimension getTextSize (String aText, FontMetrics aMetrics)
 	{
 		if (aText == null) return new Dimension();
-		return new Dimension(aMetrics.stringWidth(aText), aMetrics.getHeight());
+		return new Dimension(aMetrics.stringWidth(aText), aMetrics.getAscent () + aMetrics.getDescent());
 	}
 
 	public static Dimension getTextSize (String aText, Font aFont)
