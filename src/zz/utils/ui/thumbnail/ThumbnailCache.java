@@ -13,6 +13,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import zz.utils.ArrayStack;
+import zz.utils.Stack;
 
 /**
  * A cache for thumbnails.
@@ -21,7 +22,7 @@ import zz.utils.ArrayStack;
 public abstract class ThumbnailCache<T>
 {
 	private Map<Key<T>, Reference<BufferedImage>> itsCache = new HashMap<Key<T>, Reference<BufferedImage>>();
-	private Collection<BufferedImage> itsKeptImages;
+	private Stack<BufferedImage> itsKeptImages;
 
 
 	public ThumbnailCache()
@@ -64,7 +65,7 @@ public abstract class ThumbnailCache<T>
 	protected void cache (Key<T> aKey, BufferedImage aImage)
 	{
 		itsCache.put(aKey, new SoftReference<BufferedImage>(aImage));
-		if (itsKeptImages != null) itsKeptImages.add (aImage);
+		if (itsKeptImages != null) itsKeptImages.push (aImage);
 	}
 
 	/**

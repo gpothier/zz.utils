@@ -5,14 +5,10 @@ package zz.utils.ui.thumbnail;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import zz.utils.ArrayStack;
 
 /**
  * A thumbnail cache that always responds immediately to requests. A separate
@@ -37,7 +33,17 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 	/**
 	 * The set of currently pending thumbnail creation requests. 
 	 */
-	private LinkedList<Key<T>> itsQueuedKeys = new LinkedList<Key<T>>();
+	private LinkedList<Key<T>> itsQueuedRequests = new LinkedList<Key<T>>();
+	
+	/**
+	 * The maximum number of requests to keep in the queue.
+	 */
+	private int itsMaxRequests;
+	
+	/**
+	 * The order for processing requests.
+	 */
+	private ProcessingOrder itsProcessingOrder;
 
 	/**
 	 * We keep a set of ignored keys so that we don't try to indefinitely reload
@@ -47,27 +53,17 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 
 	private List<IAsyncThumbnailCacheListener> itsListeners = new ArrayList<IAsyncThumbnailCacheListener>();
 
-	public AsyncThumbnailCache()
-	{
-		this(5);
-	}
 
-	public AsyncThumbnailCache(int aMaxPermanentThumbnails)
+	public AsyncThumbnailCache(int aMaxPermanentThumbnails, int aMaxRequests, ProcessingOrder aOrder)
 	{
-		super (aMaxPermanentThumbnails);
+		super(aMaxPermanentThumbnails);
+		
+		itsMaxRequests = aMaxRequests;
+		itsProcessingOrder = aOrder;
 		
 		Thread theThread = new Thread(this);
 		theThread.setPriority(Thread.NORM_PRIORITY-1);
 		theThread.start();
-	}
-	
-	/**
-	 * Enqueues a request for loading the image described by the given key.
-	 */
-	private synchronized void queueLoading(Key<T> aKey)
-	{
-        if (itsIgnoredKeys.contains(aKey)) return;
-		if (!itsQueuedKeys.contains(aKey)) itsQueuedKeys.add(aKey);
 	}
 
 	/**
@@ -75,16 +71,37 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 	 */
 	public synchronized void clearQueue()
 	{
-		itsQueuedKeys.clear();
+		itsQueuedRequests.clear();
 	}
 	
+	/**
+	 * Enqueues a request for loading the image described by the given key.
+	 */
+	private synchronized void queueRequest(Key<T> aKey)
+	{
+        if (itsIgnoredKeys.contains(aKey)) return;
+		if (!itsQueuedRequests.contains(aKey)) 
+		{
+			itsQueuedRequests.add(aKey);
+			if (itsQueuedRequests.size() > itsMaxRequests) itsQueuedRequests.removeFirst();
+		}
+	}
+
 	/**
 	 * Returns a copy of the current requests. 
 	 */
 	private synchronized Key<T> popRequest()
 	{
-		if (itsQueuedKeys.isEmpty()) return null;
-		else return itsQueuedKeys.removeFirst();
+		if (itsQueuedRequests.isEmpty()) return null;
+		else 
+		{
+			switch (itsProcessingOrder)
+			{
+				case FIFO: return itsQueuedRequests.removeFirst();
+				case LIFO: return itsQueuedRequests.removeLast();
+				default: return null;
+			}
+		}
 	}
 	
 	protected BufferedImage getThumbnail(Key<T> aKey)
@@ -93,7 +110,7 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 
 		if (theImage == null)
 		{
-			queueLoading(aKey);
+			queueRequest(aKey);
 			return getLIPImage(aKey.getSize());
 		}
 		else return theImage;
