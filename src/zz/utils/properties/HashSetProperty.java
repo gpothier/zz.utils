@@ -44,7 +44,11 @@ public class HashSetProperty<E> extends AbstractSetProperty<E>
 	 */
 	protected void set (Set<E> aSet)
 	{
-		if (aSet instanceof MySet) itsSet = ((MySet) aSet);
+		// The below code is a workaround for a strange jdk compile error.
+		if (MySet.class.isAssignableFrom(aSet.getClass()))
+//		if (aSet instanceof MySet) itsSet = (MySet) aSet;
+			itsSet = (MySet) aSet;
+		
 		else itsSet = aSet != null ? new MySet (aSet) : null;
 	}
 	

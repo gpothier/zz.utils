@@ -78,7 +78,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 				RefUtils.dereference(itsListeners); 
 	
 			for (IPropertyListener<? super T> theListener : theListeners)
-				theListener.propertyChanged(this, aOldValue, aNewValue);
+				theListener.propertyChanged((IProperty) this, aOldValue, aNewValue);
 		}
 		
 		ObservationCenter.getInstance().requestObservation(getContainer(), this);
@@ -91,19 +91,19 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 			List<IPropertyListener<? super T>> theListeners = RefUtils.dereference(itsListeners); 
 	
 			for (IPropertyListener<? super T> theListener : theListeners)
-				theListener.propertyValueChanged(this);
+				theListener.propertyValueChanged((IProperty) this);
 		}
 		
 		ObservationCenter.getInstance().requestObservation(getContainer(), this);
 	}
 	
-	protected boolean canChangeProperty (Object aValue)
+	protected boolean canChangeProperty (T aValue)
 	{
 		if (itsVetos == null) return true;
 		List<IPropertyVeto<? super T>> theVetos = RefUtils.dereference(itsVetos);
 		
 		for (IPropertyVeto<? super T> theVeto : theVetos)
-			if (! theVeto.canChangeProperty(this, aValue)) return false;
+			if (! theVeto.canChangeProperty((IProperty) this, aValue)) return false;
 		
 		return true;
 	}
