@@ -143,7 +143,6 @@ public abstract class AbstractOptionPanel extends JPanel implements IPublicClone
 		}
 		catch (CloneNotSupportedException e)	
 		{
-			e.printStackTrace();
 			return null;
 		}
 	}

@@ -8,6 +8,7 @@ package zz.utils;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -33,23 +34,52 @@ public class PublicCloneable implements IPublicCloneable
 	 * Deeply clones a list.
 	 * @param aList A list whose elements must implement {@link IPublicCloneable}
 	 */
-	public static List cloneList (List aList)
+	public static <T extends IPublicCloneable> List<T> cloneList (List<T> aList)
 	{
 		try
 		{
-			List theResult = (List) aList.getClass().newInstance();
-			for (Iterator theIterator = aList.iterator(); theIterator.hasNext();)
+			List<T> theResult = (List<T>) aList.getClass().newInstance();
+			for (IPublicCloneable theElement : aList)
 			{
-				IPublicCloneable theElement = (IPublicCloneable) theIterator.next();
-				theResult.add (theElement.clone());
+				theResult.add ((T) theElement.clone());
 			}
 			
 			return theResult;
 		}
-		catch (Exception e)
+		catch (InstantiationException e)
 		{
-			e.printStackTrace();
-			return null;
+			throw new RuntimeException("Could not instantiate clone", e);
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException("Could not instantiate clone", e);
+		}
+	}
+	
+	/**
+	 * Deeply clones a map. Values a re cloned; keys are not.
+	 */
+	public static <K, V extends IPublicCloneable> Map<K, V> cloneMap (Map<K, V> aMap)
+	{
+		try
+		{
+			Map<K, V> theResult = (Map<K, V>) aMap.getClass().newInstance();
+			for (Map.Entry<K, V> theEntry : aMap.entrySet())
+			{
+				K theKey = theEntry.getKey();
+				V theValue = (V) theEntry.getValue().clone();
+				theResult.put (theKey, theValue);
+			}
+			
+			return theResult;
+		}
+		catch (InstantiationException e)
+		{
+			throw new RuntimeException("Could not instantiate clone", e);
+		}
+		catch (IllegalAccessException e)
+		{
+			throw new RuntimeException("Could not instantiate clone", e);
 		}
 	}
 }
