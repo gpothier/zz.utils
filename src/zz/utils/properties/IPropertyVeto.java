@@ -6,7 +6,7 @@ package zz.utils.properties;
 /**
  * @author gpothier
  */
-public interface IPropertyVeto 
+public interface IPropertyVeto<T>
 {
-	public boolean canChangeProperty (Property<?> aProperty, Object aValue);
+	public boolean canChangeProperty (Property<T> aProperty, Object aValue);
 }

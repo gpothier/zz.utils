@@ -6,16 +6,14 @@ package zz.utils.properties;
 /**
  * @author gpothier
  */
-public class Example implements IPropertyContainer
+public class Example 
 {
-	private PropertyManager itsManager = new PropertyManager(this);
+	private PropertyManager itsManager = new PropertyManager();
 	
-	public static final PropertyId NAME = new PropertyId("name");
-	public RWProperty<String> pName = itsManager.createRWProperty(NAME);
+	public static final PropertyId<String> NAME = new PropertyId<String>("name");
+	public Property<String> pName = itsManager.registerProperty(
+			NAME, 
+			new StdRWProperty<String>(NAME));
 	
 	
-	public IPropertyManager getPropertyManager()
-	{
-		return itsManager;
-	}
 }

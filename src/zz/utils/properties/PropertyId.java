@@ -3,10 +3,12 @@
  */
 package zz.utils.properties;
 
+import zz.utils.PublicCloneable;
+
 /**
  * @author gpothier
  */
-public class PropertyId
+public class PropertyId<T>
 {
 	private String itsName;
 	

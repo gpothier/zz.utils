@@ -6,7 +6,7 @@ package zz.utils.properties;
 /**
  * @author gpothier
  */
-public interface IPropertyListener
+public interface IPropertyListener<T>
 {
-	public void propertyChanged (Property<?> aProperty);
+	public void propertyChanged (Property<T> aProperty);
 }
