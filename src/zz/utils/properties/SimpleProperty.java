@@ -65,12 +65,13 @@ public class SimpleProperty<T> extends AbstractProperty<T> implements IProperty<
 	 */
 	protected final void set0(T aValue)
 	{
-		if (get0() != aValue && canChangeProperty(aValue))
+		T theOldValue = get0();
+		if (theOldValue != aValue && canChangeProperty(aValue))
 		{
 			if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
 			itsValue = aValue;
 			if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
-			firePropertyChanged();
+			firePropertyChanged(theOldValue, aValue);
 			
 			ObservationCenter.getInstance().requestObservation(getContainer(), this);
 		}
@@ -78,7 +79,7 @@ public class SimpleProperty<T> extends AbstractProperty<T> implements IProperty<
 	
 	public void observe(Object aObservable, Object aData)
 	{
-		if (aObservable == itsValue) firePropertyChanged();
+		if (aObservable == itsValue) firePropertyValueChanged();
 	}
 	
 }

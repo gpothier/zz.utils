@@ -64,13 +64,20 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		return itsPropertyId;
 	}
 	
-	
-	protected void firePropertyChanged ()
+	protected void firePropertyChanged (T aOldValue, T aNewValue)
 	{
 		List<IPropertyListener<?>> theListeners = dereference(itsListeners); 
 
 		for (IPropertyListener theListener : theListeners)
-			theListener.propertyChanged(this);
+			theListener.propertyChanged(this, aOldValue, aNewValue);
+	}
+	
+	protected void firePropertyValueChanged ()
+	{
+		List<IPropertyListener<?>> theListeners = dereference(itsListeners); 
+
+		for (IPropertyListener theListener : theListeners)
+			theListener.propertyValueChanged(this);
 	}
 	
 	protected boolean canChangeProperty (Object aValue)
