@@ -12,7 +12,6 @@ import org.jdom.Element;
 import java.lang.reflect.Method;
 import java.util.*;
 
-import com.redcrea.ina.core.code.loader.Tag;
 import zz.utils.ListMap;
 
 /**
@@ -24,6 +23,8 @@ import zz.utils.ListMap;
  */
 public abstract class ElementProcessor
 {
+	private static final String NULL = "null";
+
 	private ListMap itsBindings = new ListMap ();
 
 	private static final Class[] PARAMS = {Element.class};
@@ -71,12 +72,12 @@ public abstract class ElementProcessor
 
 	protected static Element createNullElement ()
 	{
-		return new Element (Tag.NULL);
+		return new Element (NULL);
 	}
 
 	protected static boolean isNullElement (Element aElement)
 	{
-		return Tag.NULL.equals(aElement.getName());
+		return NULL.equals(aElement.getName());
 	}
 
 	protected static class Binding
