@@ -33,6 +33,11 @@ public class TextPainter
 	public static enum HorizontalAlignment {
 		LEFT, CENTER, RIGHT
 	}
+	
+	/**
+	 * A font constant.
+	 */
+	public static final Font SANS_SERIF_PLAIN_10 = new Font("SansSerif", Font.PLAIN, 10);
 
 	public static void paint(
 			Graphics2D aGraphics, 

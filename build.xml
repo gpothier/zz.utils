@@ -41,7 +41,6 @@
 			nowarn="true"
 			destdir="${path.classes}"
 			encoding="${encoding}"
-			source="1.5"
 			debug="true"
 	      	deprecation="on">
 			
@@ -52,7 +51,7 @@
 		
 		<mkdir dir="${path.build}"/>
 		
-		<jar jarfile="${file.jar}">
+		<jar jarfile="${file.jar}" index="true">
 			<fileset dir="${path.classes}" />
 		</jar>
 		

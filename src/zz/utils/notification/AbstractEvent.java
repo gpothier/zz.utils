@@ -10,11 +10,6 @@ import java.util.List;
  * Base implementation of {@link zz.utils.notification.IEvent}
  * @author gpothier
  */
-public abstract class AbstractEvent<T> implements IEvent<T>
+public abstract class AbstractEvent<T> implements IFireableEvent<T>
 {
-	/**
-	 * Notifies all listeners that the event has been fired.
-	 * @param aData An object to pass to the listeners.
-	 */
-	public abstract void fire (T aData);
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jardesc>
-<jar path="zz.utils.jar"/>
+<jar path="Waltz/build/waltz.jar"/>
 <options buildIfNeeded="true" compress="true" descriptionLocation="/zz.utils/config/jar.jardesc" exportErrors="true" exportWarnings="true" overwrite="false" saveDescription="true" useSourceFolders="false"/>
 <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
 <sealing sealJar="false">
@@ -9,8 +9,6 @@
 </sealing>
 </manifest>
 <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-<file path="/zz.utils/.classpath"/>
-<javaElement handleIdentifier="=zz.utils/src"/>
-<file path="/zz.utils/.project"/>
+<javaElement handleIdentifier="=Waltz/src"/>
 </selectedElements>
 </jardesc>
