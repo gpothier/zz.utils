@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.Collection;
+import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -51,8 +52,6 @@ public final class Utils
 	public static final Insets NULL_INSETS = new Insets (0, 0, 0, 0);
 
 	public static final AffineTransform IDENTITY = new AffineTransform();
-
-
 
 	/**
 	 * Do not use this. <p>
@@ -588,5 +587,16 @@ public final class Utils
 	public static boolean isWithin(int aInf,int aSup,int aValue)
 	{
 		return (aValue>aInf && aValue<aSup);
+	}
+	
+	/**
+	 * Returns a formatted string according to printf conventions.
+	 */
+	public static String sprintf (String aFormat, Object... aArgs)
+	{
+		StringBuilder theBuilder = new StringBuilder();
+		Formatter theFormatter = new Formatter(theBuilder);
+		theFormatter.format(aFormat, aArgs);
+		return theBuilder.toString();
 	}
 }
