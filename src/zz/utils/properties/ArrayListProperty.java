@@ -17,15 +17,8 @@ import zz.utils.references.WeakRef;
 /**
  * @author gpothier
  */
-public class ArrayListProperty<E> extends AbstractProperty<List<E>> 
-implements IListProperty<E>
+public class ArrayListProperty<E> extends AbstractListProperty<E> 
 {
-	/**
-	 * We store all the listeners here, be they collection or
-	 * list listeners
-	 */
-	private List<IRef<Object>> itsListListeners;
-	
 	private List<E> itsList = new MyList ();
 	
 	public ArrayListProperty(Object aContainer)
@@ -53,56 +46,12 @@ implements IListProperty<E>
 		else itsList = aList != null ? new MyList (aList) : null;
 	}
 	
-	public void addListener (IListPropertyListener<E> aListener)
-	{
-		if (itsListListeners == null) itsListListeners = new ArrayList(3);
-		itsListListeners.add (new WeakRef<Object>(aListener));
-	}
-
-	public void addHardListener (IListPropertyListener<E> aListener)
-	{
-		if (itsListListeners == null) itsListListeners = new ArrayList(3);
-		itsListListeners.add (new HardRef<Object>(aListener));
-	}
-	
-	public void removeListener (IListPropertyListener<E> aListener)
-	{
-		if (itsListListeners != null) 
-		{
-			RefUtils.remove(itsListListeners, aListener);
-			if (itsListListeners.size() == 0) itsListListeners = null;
-		}
-	}
-
-	public void addListener (ICollectionPropertyListener<E> aListener)
-	{
-		if (itsListListeners == null) itsListListeners = new ArrayList(3);
-		itsListListeners.add (new WeakRef<Object>(aListener));
-	}
-
-	public void addHardListener (ICollectionPropertyListener<E> aListener)
-	{
-		if (itsListListeners == null) itsListListeners = new ArrayList(3);
-		itsListListeners.add (new HardRef<Object>(aListener));
-	}
-	
-	public void removeListener (ICollectionPropertyListener<E> aListener)
-	{
-		if (itsListListeners != null) 
-		{
-			RefUtils.remove(itsListListeners, aListener);
-			if (itsListListeners.size() == 0) itsListListeners = null;
-		}
-	}
-
-
-	
-	public final void add(E aElement)
+	public void add(E aElement)
 	{
 		get().add (aElement);
 	}
 
-	public final void add(int aIndex, E aElement)
+	public void add(int aIndex, E aElement)
 	{
 		get().add (aIndex, aElement);
 	}
@@ -112,12 +61,12 @@ implements IListProperty<E>
 		E theElement = get().set(aIndex, aElement);
 	}
 	
-	public final boolean remove(E aElement)
+	public boolean remove(E aElement)
 	{
 		return get().remove (aElement);
 	}
 
-	public final E remove(int aIndex)
+	public E remove(int aIndex)
 	{
 		return get().remove(aIndex);
 	}
@@ -128,13 +77,13 @@ implements IListProperty<E>
 			remove(i);
 	}
 	
-	public final int size()
+	public int size()
 	{
 		List<E> theList = get();
 		return theList != null ? theList.size() : 0;
 	}
 
-	public final E get(int aIndex)
+	public E get(int aIndex)
 	{
 		return get().get (aIndex);
 	}
@@ -144,7 +93,7 @@ implements IListProperty<E>
 		return get().indexOf(aElement);
 	}
 
-	public final Iterator<E> iterator()
+	public Iterator<E> iterator()
 	{
 		return get().iterator();
 	}
@@ -152,72 +101,6 @@ implements IListProperty<E>
 	public Iterator<E> reverseIterator()
 	{
 		return new ReverseIteratorWrapper (get());
-	}
-	
-	/**
-	 * This method is called whenever an element is added to this list.
-	 * By default it does nothing, but subclasses can override it to be notified.
-	 */
-	protected void elementAdded (int aIndex, E aElement)
-	{
-	}
-	
-	/**
-	 * This method is called whenever an element is removed from this list.
-	 * By default it does nothing, but subclasses can override it to be notified.
-	 */
-	protected void elementRemoved (int aIndex, E aElement)
-	{
-	}
-	
-
-	
-	protected void fireElementAdded (int aIndex, E aElement)
-	{
-		elementAdded(aIndex, aElement);
-	
-		if (itsListListeners == null) return;
-		List<Object> theListeners = RefUtils.dereference(itsListListeners);
-		
-		for (Object theListener : theListeners)
-		{
-			if (theListener instanceof IListPropertyListener)
-			{
-				IListPropertyListener<E> theListPropertyListener = 
-					(IListPropertyListener) theListener;
-				theListPropertyListener.elementAdded(this, aIndex, aElement);
-			}
-			else if (theListener instanceof ICollectionPropertyListener)
-			{
-				ICollectionPropertyListener<E> theCollectionPropertyListener = 
-					(ICollectionPropertyListener) theListener;
-				theCollectionPropertyListener.elementAdded(this, aElement);
-			}
-		}
-	}
-	
-	protected void fireElementRemoved (int aIndex, E aElement)
-	{
-		elementRemoved(aIndex, aElement);
-
-		if (itsListListeners == null) return;
-		List<Object> theListeners = RefUtils.dereference(itsListListeners);
-		
-		for (Object theListener : theListeners)
-		{
-			if (theListener instanceof IListPropertyListener)
-			{
-				IListPropertyListener<E> theListPropertyListener = 
-					(IListPropertyListener) theListener;
-				theListPropertyListener.elementRemoved(this, aIndex, aElement);
-			}
-			else if (theListener instanceof ICollectionPropertyListener)
-			{
-				ICollectionPropertyListener<E> theCollectionPropertyListener = 
-					(ICollectionPropertyListener) theListener;
-				theCollectionPropertyListener.elementRemoved(this, aElement);
-			}
-		}
 	}
 	
 	/**

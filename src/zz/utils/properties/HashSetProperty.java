@@ -19,15 +19,8 @@ import zz.utils.references.WeakRef;
 /**
  * @author gpothier
  */
-public class HashSetProperty<E> extends AbstractProperty<Set<E>> 
-implements ISetProperty<E>
+public class HashSetProperty<E> extends AbstractSetProperty<E> 
 {
-	/**
-	 * We store all the listeners here, be they collection or
-	 * list listeners
-	 */
-	private List<IRef<ICollectionPropertyListener<E>>> itsListListeners;
-	
 	private Set<E> itsSet = new MySet ();
 	
 	public HashSetProperty(Object aContainer)
@@ -55,33 +48,12 @@ implements ISetProperty<E>
 		else itsSet = aSet != null ? new MySet (aSet) : null;
 	}
 	
-	public void addListener (ICollectionPropertyListener<E> aListener)
-	{
-		if (itsListListeners == null) itsListListeners = new ArrayList(3);
-		itsListListeners.add (new WeakRef<ICollectionPropertyListener<E>>(aListener));
-	}
-
-	public void addHardListener (ICollectionPropertyListener<E> aListener)
-	{
-		if (itsListListeners == null) itsListListeners = new ArrayList(3);
-		itsListListeners.add (new HardRef<ICollectionPropertyListener<E>>(aListener));
-	}
-	
-	public void removeListener (ICollectionPropertyListener<E> aListener)
-	{
-		if (itsListListeners != null) 
-		{
-			RefUtils.remove(itsListListeners, aListener);
-			if (itsListListeners.size() == 0) itsListListeners = null;
-		}
-	}
-
-	public final void add(E aElement)
+	public void add(E aElement)
 	{
 		get().add (aElement);
 	}
 
-	public final boolean remove(E aElement)
+	public boolean remove(E aElement)
 	{
 		return get().remove (aElement);
 	}
@@ -95,65 +67,20 @@ implements ISetProperty<E>
 	{
 		for (Iterator<E> theIterator = iterator();theIterator.hasNext();)
 		{
+			theIterator.next();
 			theIterator.remove();
 		}
 	}
 	
-	public final int size()
+	public int size()
 	{
 		Set<E> theSet = get();
 		return theSet != null ? theSet.size() : 0;
 	}
 
-	public final Iterator<E> iterator()
+	public Iterator<E> iterator()
 	{
 		return get().iterator();
-	}
-	
-	/**
-	 * This method is called whenever an element is added to this set.
-	 * By default it does nothing, but subclasses can override it to be notified.
-	 */
-	protected void elementAdded (E aElement)
-	{
-	}
-	
-	/**
-	 * This method is called whenever an element is removed from this set.
-	 * By default it does nothing, but subclasses can override it to be notified.
-	 */
-	protected void elementRemoved (E aElement)
-	{
-	}
-	
-
-	
-	protected void fireElementAdded (E aElement)
-	{
-		elementAdded(aElement);
-	
-		if (itsListListeners == null) return;
-		List<ICollectionPropertyListener<E>> theListeners = 
-			RefUtils.dereference(itsListListeners);
-		
-		for (ICollectionPropertyListener<E> theListener : theListeners)
-		{
-			theListener.elementAdded(this, aElement);
-		}
-	}
-	
-	protected void fireElementRemoved (E aElement)
-	{
-		elementRemoved(aElement);
-
-		if (itsListListeners == null) return;
-		List<ICollectionPropertyListener<E>> theListeners = 
-			RefUtils.dereference(itsListListeners);
-		
-		for (ICollectionPropertyListener<E> theListener : theListeners)
-		{
-			theListener.elementRemoved(this, aElement);
-		}
 	}
 	
 	/**

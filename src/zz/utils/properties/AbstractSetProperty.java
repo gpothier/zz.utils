@@ -1,0 +1,107 @@
+/*
+ * Created on Dec 14, 2004
+ */
+package zz.utils.properties;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import zz.utils.ReverseIteratorWrapper;
+import zz.utils.references.HardRef;
+import zz.utils.references.IRef;
+import zz.utils.references.RefUtils;
+import zz.utils.references.WeakRef;
+
+/**
+ * Can be used as a base for building a {@link zz.utils.properties.ISetProperty}.
+ * Manages listeners.
+ * @author gpothier
+ */
+public abstract class AbstractSetProperty<E> extends AbstractProperty<Set<E>> 
+implements ISetProperty<E>
+{
+	/**
+	 * We store all the listeners here, be they collection or
+	 * list listeners
+	 */
+	private List<IRef<ICollectionPropertyListener<E>>> itsListListeners;
+	
+	public AbstractSetProperty(Object aContainer)
+	{
+		super(aContainer);
+	}
+	
+	public AbstractSetProperty(Object aContainer, PropertyId<Set<E>> aPropertyId)
+	{
+		super(aContainer, aPropertyId);
+	}
+	
+	public void addListener (ICollectionPropertyListener<E> aListener)
+	{
+		if (itsListListeners == null) itsListListeners = new ArrayList(3);
+		itsListListeners.add (new WeakRef<ICollectionPropertyListener<E>>(aListener));
+	}
+
+	public void addHardListener (ICollectionPropertyListener<E> aListener)
+	{
+		if (itsListListeners == null) itsListListeners = new ArrayList(3);
+		itsListListeners.add (new HardRef<ICollectionPropertyListener<E>>(aListener));
+	}
+	
+	public void removeListener (ICollectionPropertyListener<E> aListener)
+	{
+		if (itsListListeners != null) 
+		{
+			RefUtils.remove(itsListListeners, aListener);
+			if (itsListListeners.size() == 0) itsListListeners = null;
+		}
+	}
+
+	/**
+	 * This method is called whenever an element is added to this set.
+	 * By default it does nothing, but subclasses can override it to be notified.
+	 */
+	protected void elementAdded (E aElement)
+	{
+	}
+	
+	/**
+	 * This method is called whenever an element is removed from this set.
+	 * By default it does nothing, but subclasses can override it to be notified.
+	 */
+	protected void elementRemoved (E aElement)
+	{
+	}
+	
+	protected void fireElementAdded (E aElement)
+	{
+		elementAdded(aElement);
+	
+		if (itsListListeners == null) return;
+		List<ICollectionPropertyListener<E>> theListeners = 
+			RefUtils.dereference(itsListListeners);
+		
+		for (ICollectionPropertyListener<E> theListener : theListeners)
+		{
+			theListener.elementAdded(this, aElement);
+		}
+	}
+	
+	protected void fireElementRemoved (E aElement)
+	{
+		elementRemoved(aElement);
+
+		if (itsListListeners == null) return;
+		List<ICollectionPropertyListener<E>> theListeners = 
+			RefUtils.dereference(itsListListeners);
+		
+		for (ICollectionPropertyListener<E> theListener : theListeners)
+		{
+			theListener.elementRemoved(this, aElement);
+		}
+	}
+}
