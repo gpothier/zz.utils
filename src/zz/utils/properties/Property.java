@@ -17,15 +17,13 @@ import zz.utils.notification.Observer;
  * It permits to encapsulate a class's field in an object that
  * let's the programmer overload getter and setter, and that
  * provides a notification mechanism.
- * Concrete subclasses are {@link zz.utils.properties.RWProperty}
- * and {@link zz.utils.properties.ROProperty}.
  * See {@link zz.utils.properties.Example} to learn how to
  * use properties.
  * @author gpothier
  */
-public abstract class Property<T> implements Observer
+public class Property<T> implements Observer
 {
-	private IPropertyContainer itsContainer;
+	private Object itsContainer;
 	private PropertyId itsPropertyId;
 	
 	private List<IRef<IPropertyVeto>> itsVetos = 
@@ -39,6 +37,19 @@ public abstract class Property<T> implements Observer
 	 */
 	private T itsValue;
 	
+	
+	
+	public Property(Object aContainer)
+	{
+		itsContainer = aContainer;
+	}
+	
+	public Property(Object aContainer, T aValue)
+	{
+		itsContainer = aContainer;
+		itsValue = aValue;
+	}
+	
 	public Property(IPropertyContainer aContainer, PropertyId aPropertyId)
 	{
 		itsContainer = aContainer;
@@ -51,6 +62,15 @@ public abstract class Property<T> implements Observer
 		itsPropertyId = aPropertyId;
 		itsValue = aValue;
 	}
+	
+	/**
+	 * Standard getter for this property.
+	 */
+	public T get()
+	{
+		return get0();
+	}
+
 	
 	/**
 	 * Internal getter for the property.

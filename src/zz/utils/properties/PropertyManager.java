@@ -53,9 +53,9 @@ public class PropertyManager implements IPropertyManager
 	 * not for external clients.
 	 * @param aId Id of the new property.
 	 */
-	public <T> ROProperty<T> createROProperty (PropertyId aId)
+	public <T> Property<T> createROProperty (PropertyId aId)
 	{
-		ROProperty<T> theProperty = new ROProperty<T>(itsPropertyContainer, aId);
+		Property<T> theProperty = new Property<T>(itsPropertyContainer, aId);
 		itsProperties.put (aId, theProperty);
 		return theProperty;
 	}

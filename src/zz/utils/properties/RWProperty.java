@@ -11,16 +11,27 @@ public class RWProperty<T> extends Property<T>
 {
 	
 	
+	
 	public RWProperty(IPropertyContainer aContainer, PropertyId aPropertyId)
 	{
 		super(aContainer, aPropertyId);
 	}
-	
+
 	public RWProperty(IPropertyContainer aContainer, PropertyId aPropertyId, T aValue)
 	{
 		super(aContainer, aPropertyId, aValue);
 	}
-	
+
+	public RWProperty(Object aContainer)
+	{
+		super(aContainer);
+	}
+
+	public RWProperty(Object aContainer, T aValue)
+	{
+		super(aContainer, aValue);
+	}
+
 	public T get()
 	{
 		return get0();
