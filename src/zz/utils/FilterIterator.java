@@ -15,24 +15,24 @@ import java.util.NoSuchElementException;
  * Only elements for which {@link Filter#accept} returns true are returned by
  * this iterator's {@link #next} method.
  */
-public class FilterIterator implements Iterator
+public class FilterIterator<T> implements Iterator<T>, Iterable<T>
 {
 
-	private Iterator itsIterator;
-	private Object itsNext;
-	private Filter itsFilter;
+	private Iterator<T> itsIterator;
+	private T itsNext;
+	private Filter<T> itsFilter;
 
 	/**
 	 *
 	 * @param aCollection A collection from which to retrieve the underlying iterator
 	 * @param aFilter The filter.
 	 */
-	public FilterIterator (Collection aCollection, Filter aFilter)
+	public FilterIterator (Collection<T> aCollection, Filter<T> aFilter)
 	{
 		this (aCollection.iterator(), aFilter);
 	}
 
-	public FilterIterator (Iterator aIterator, Filter aFilter)
+	public FilterIterator (Iterator<T> aIterator, Filter<T> aFilter)
 	{
 		itsIterator = aIterator;
 		itsFilter = aFilter;
@@ -44,9 +44,9 @@ public class FilterIterator implements Iterator
 		itsNext = null;
 		while (itsIterator.hasNext())
 		{
-			Object o = itsIterator.next();
-			if (! itsFilter.accept(o)) continue;
-			itsNext = o;
+			T t = itsIterator.next();
+			if (! itsFilter.accept(t)) continue;
+			itsNext = t;
 			break;
 		}
 	}
@@ -56,11 +56,11 @@ public class FilterIterator implements Iterator
 		return itsNext != null;
 	}
 
-	public Object next ()
+	public T next ()
 	{
 		if (hasNext())
 		{
-			Object theResult = itsNext;
+			T theResult = itsNext;
 			findNext();
 			return theResult;
 		}
@@ -82,17 +82,22 @@ public class FilterIterator implements Iterator
 		return theResult;
 	}
 
-	public static int size (Collection aCollection, Filter aFilter)
+	public static <T> int size (Collection<T> aCollection, Filter<T> aFilter)
 	{
-		return new FilterIterator (aCollection, aFilter).getRemainingItems();
+		return new FilterIterator<T> (aCollection, aFilter).getRemainingItems();
 	}
 
-	public interface Filter
+	public Iterator<T> iterator()
 	{
-		public boolean accept (Object aObject);
+		return this;
 	}
 	
-	public static class ClassFilter implements Filter
+	public interface Filter<T>
+	{
+		public boolean accept (T aObject);
+	}
+	
+	public static class ClassFilter implements Filter<Object>
 	{
 		private Class itsClass;
 		
