@@ -9,6 +9,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import zz.utils.ReverseIteratorWrapper;
+import zz.utils.references.HardRef;
+import zz.utils.references.IRef;
+import zz.utils.references.RefUtils;
+import zz.utils.references.WeakRef;
 
 /**
  * @author gpothier
@@ -36,6 +40,15 @@ implements IListProperty<E>
 		return itsList;
 	}
 	
+	/**
+	 * Changes the list that backs the property.
+	 * This should be used with care, as it will not send any notification.
+	 */
+	protected void set (List<E> aList)
+	{
+		itsList = aList;
+	}
+	
 	public void addListener (IListPropertyListener<E> aListener)
 	{
 		itsListListeners.add (new WeakRef<IListPropertyListener<E>>(aListener));
@@ -48,44 +61,39 @@ implements IListProperty<E>
 	
 	public void removeListener (IListPropertyListener<E> aListener)
 	{
-		for (Iterator theIterator = itsListListeners.iterator();theIterator.hasNext();)
-		{
-			IRef<IListPropertyListener> theRef = (IRef<IListPropertyListener>) theIterator.next();
-			IListPropertyListener theListener = theRef.get();
-			if (theListener == null || theListener == aListener) theIterator.remove();
-		}
+		RefUtils.remove(itsListListeners, aListener);
 	}
 
 
 	
 	public final void add(E aElement)
 	{
-		itsList.add (aElement);
+		get().add (aElement);
 		fireElementAdded(size()-1, aElement);
 	}
 
 	public final void add(int aIndex, E aElement)
 	{
-		itsList.add (aIndex, aElement);
+		get().add (aIndex, aElement);
 		fireElementAdded(aIndex, aElement);
 	}
 
 	public void set(int aIndex, E aElement)
 	{
-		E theElement = itsList.set(aIndex, aElement);
+		E theElement = get().set(aIndex, aElement);
 		fireElementRemoved(aIndex, theElement);
 		fireElementAdded(aIndex, aElement);
 	}
 	
 	public final boolean remove(E aElement)
 	{
-		boolean theResult = itsList.remove (aElement);
+		boolean theResult = get().remove (aElement);
 		return theResult;
 	}
 
 	public final E remove(int aIndex)
 	{
-		E theResult = itsList.remove(aIndex);
+		E theResult = get().remove(aIndex);
 		return theResult;
 	}
 
@@ -97,27 +105,27 @@ implements IListProperty<E>
 	
 	public final int size()
 	{
-		return itsList.size();
+		return get().size();
 	}
 
 	public final E get(int aIndex)
 	{
-		return itsList.get (aIndex);
+		return get().get (aIndex);
 	}
 
 	public int indexOf(E aElement)
 	{
-		return itsList.indexOf(aElement);
+		return get().indexOf(aElement);
 	}
 
 	public final Iterator<E> iterator()
 	{
-		return itsList.iterator();
+		return get().iterator();
 	}
 
 	public Iterator<E> reverseIterator()
 	{
-		return new ReverseIteratorWrapper (itsList);
+		return new ReverseIteratorWrapper (get());
 	}
 	
 	/**
@@ -142,7 +150,7 @@ implements IListProperty<E>
 	{
 		elementAdded(aIndex, aElement);
 		
-		List<IListPropertyListener<E>> theListeners = dereference(itsListListeners);
+		List<IListPropertyListener<E>> theListeners = RefUtils.dereference(itsListListeners);
 		
 		for (IListPropertyListener<E> theListener : theListeners)
 			theListener.elementAdded(this, aIndex, aElement);
@@ -152,7 +160,7 @@ implements IListProperty<E>
 	{
 		elementRemoved(aElement);
 
-		List<IListPropertyListener<E>> theListeners = dereference(itsListListeners);
+		List<IListPropertyListener<E>> theListeners = RefUtils.dereference(itsListListeners);
 		
 		for (IListPropertyListener<E> theListener : theListeners)
 			theListener.elementRemoved(this, aIndex, aElement);

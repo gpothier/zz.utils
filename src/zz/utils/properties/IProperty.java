@@ -53,26 +53,26 @@ public interface IProperty<T>
 	/**
 	 * Removes a previously added listener.
 	 */
-	public void removeListener (IPropertyListener aListener);
+	public void removeListener (IPropertyListener<?> aListener);
 
 	/**
 	 * Adds a veto that can reject a new value for this property.
 	 * See the comment on {@link #addListener(IPropertyListener)}
 	 * about the referencing scheme.
 	 */
-	public void addVeto (IPropertyVeto aVeto);
+	public void addVeto (IPropertyVeto<?> aVeto);
 
 	/**
 	 * Adds a veto that can reject a new value for this property.
 	 * See the comment on {@link #addListener(IPropertyListener)}
 	 * about the referencing scheme.
 	 */
-	public void addHardVeto (IPropertyVeto aVeto);
+	public void addHardVeto (IPropertyVeto<?> aVeto);
 	
 	/**
 	 * Removes a previously added veto.
 	 */
-	public void removeVeto (IPropertyVeto aVeto);
+	public void removeVeto (IPropertyVeto<?> aVeto);
 	
 	/**
 	 * Creates a clone of this property, giving the cloned property the specified

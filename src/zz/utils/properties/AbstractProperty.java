@@ -13,6 +13,10 @@ import zz.utils.FailsafeLinkedList;
 import zz.utils.PublicCloneable;
 import zz.utils.notification.ObservationCenter;
 import zz.utils.notification.Observer;
+import zz.utils.references.HardRef;
+import zz.utils.references.IRef;
+import zz.utils.references.RefUtils;
+import zz.utils.references.WeakRef;
 
 /**
  * Can be used as a base to implement properties.
@@ -66,7 +70,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	protected void firePropertyChanged (T aOldValue, T aNewValue)
 	{
-		List<IPropertyListener<?>> theListeners = dereference(itsListeners); 
+		List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
 
 		for (IPropertyListener theListener : theListeners)
 			theListener.propertyChanged(this, aOldValue, aNewValue);
@@ -74,7 +78,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	protected void firePropertyValueChanged ()
 	{
-		List<IPropertyListener<?>> theListeners = dereference(itsListeners); 
+		List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
 
 		for (IPropertyListener theListener : theListeners)
 			theListener.propertyValueChanged(this);
@@ -82,7 +86,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	protected boolean canChangeProperty (Object aValue)
 	{
-		List<IPropertyVeto<?>> theVetos = dereference(itsVetos);
+		List<IPropertyVeto<?>> theVetos = RefUtils.dereference(itsVetos);
 		
 		for (IPropertyVeto theVeto : theVetos)
 			if (! theVeto.canChangeProperty(this, aValue)) return false;
@@ -100,34 +104,24 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		itsListeners.add (new HardRef<IPropertyListener<?>>(aListener));
 	}
 	
-	public void removeListener (IPropertyListener aListener)
+	public void removeListener (IPropertyListener<?> aListener)
 	{
-		for (Iterator theIterator = itsListeners.iterator();theIterator.hasNext();)
-		{
-			IRef<IPropertyListener> theRef = (IRef<IPropertyListener>) theIterator.next();
-			IPropertyListener theListener = theRef.get();
-			if (theListener == null || theListener == aListener) theIterator.remove();
-		}
+		RefUtils.remove(itsListeners, aListener);
 	}
 
-	public void addVeto (IPropertyVeto aVeto)
+	public void addVeto (IPropertyVeto<?> aVeto)
 	{
 		itsVetos.add (new WeakRef<IPropertyVeto<?>>(aVeto));
 	}
 
-	public void addHardVeto (IPropertyVeto aVeto)
+	public void addHardVeto (IPropertyVeto<?> aVeto)
 	{
 		itsVetos.add (new HardRef<IPropertyVeto<?>>(aVeto));
 	}
 	
-	public void removeVeto (IPropertyVeto aVeto)
+	public void removeVeto (IPropertyVeto<?> aVeto)
 	{
-		for (Iterator theIterator = itsVetos.iterator();theIterator.hasNext();)
-		{
-			IRef<IPropertyVeto> theRef = (IRef<IPropertyVeto>) theIterator.next();
-			IPropertyVeto theVeto = theRef.get();
-			if (theVeto == null || theVeto == aVeto) theIterator.remove();
-		}
+		RefUtils.remove(itsVetos, aVeto);
 	}
 	
 	public IProperty<T> cloneForContainer(Object aContainer)
@@ -141,57 +135,5 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		return theClone;
 	}
 
-	/**
-	 * Returns a list containing dereferenced elements from the given
-	 * list. This method also remove GCed elements from the references list
-	 */
-	protected static <E> List<E> dereference (List<IRef<E>> aList)
-	{
-		if (aList.isEmpty()) return Collections.EMPTY_LIST;
-		
-		List<E> theResult = new ArrayList<E>(aList.size());
-		
-		for (Iterator<IRef<E>> theIterator = aList.iterator();theIterator.hasNext();)
-		{
-			IRef<E> theRef = theIterator.next();
-			E theElement = theRef.get();
-			if (theElement == null) theIterator.remove();
-			else theResult.add (theElement);
-		}
-		
-		return theResult;
-	}
 	
-	/**
-	 * Reference to a property listener. Implementations can be weak or hard references.
-	 */
-	protected interface IRef<L>
-	{
-		public L get();
-	}
-	
-	protected static class HardRef<L> implements IRef<L>
-	{
-		private L itsValue;
-		
-		public HardRef(L aValue)
-		{
-			itsValue = aValue;
-		}
-		
-		public L get()
-		{
-			return itsValue;
-		}
-	}
-	
-	protected static class WeakRef<L> extends WeakReference<L> implements IRef<L>
-	{
-
-		public WeakRef(L aValue)
-		{
-			super(aValue);
-		}
-		
-	}
 }
