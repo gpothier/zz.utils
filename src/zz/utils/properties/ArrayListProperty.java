@@ -42,6 +42,15 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 		else itsList = aList != null ? new MyList (aList) : null;
 	}
 	
+	/**
+	 * Resets the list.
+	 * This should be used with care, as it will not send any notification.
+	 */
+	protected void reset()
+	{
+		set(new MyList());
+	}
+	
 	public void add(E aElement)
 	{
 		get().add (aElement);
