@@ -36,6 +36,7 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 
@@ -117,6 +118,20 @@ public final class Utils
 		while (theCurrentContainer != null)
 		{
 			if (theCurrentContainer instanceof Frame) return (Frame) theCurrentContainer;
+			theCurrentContainer = theCurrentContainer.getParent ();
+		}
+		return null;
+	}
+
+	/**
+	 * Returns the swing frame that contains this component
+	 */
+	public static JFrame getJFrame (JComponent aComponent)
+	{
+		Container theCurrentContainer = aComponent.getParent ();
+		while (theCurrentContainer != null)
+		{
+			if (theCurrentContainer instanceof JFrame) return (JFrame) theCurrentContainer;
 			theCurrentContainer = theCurrentContainer.getParent ();
 		}
 		return null;

@@ -42,6 +42,10 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	private List<IRef<IPropertyListener<?>>> itsListeners; 
 	
+	public AbstractProperty()
+	{
+	}
+	
 	public AbstractProperty(Object aContainer)
 	{
 		itsContainer = aContainer;

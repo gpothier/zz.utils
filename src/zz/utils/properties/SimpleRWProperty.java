@@ -9,8 +9,9 @@ package zz.utils.properties;
  */
 public class SimpleRWProperty<T> extends SimpleProperty<T> implements IRWProperty<T>
 {
-	
-	
+	public SimpleRWProperty()
+	{
+	}
 	
 	public SimpleRWProperty(Object aContainer, PropertyId<T> aPropertyId)
 	{

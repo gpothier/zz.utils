@@ -18,11 +18,8 @@ public interface IPropertyListener<T>
 	public void propertyChanged (IProperty<T> aProperty, T aOldValue, T aNewValue);
 	
 	/**
-	 * This method is called when the property's value changes, ie:
-	 * <li>When the property acquires a new value. In this case, this method
-	 * is called immediately after {@link #propertyChanged(IProperty<T>, T, T)}.
-	 * <li>When the value itself changes, ie. the value object is the same 
-	 * but its some of its internal state changes.
+	 * This method is called when the property's value itself changes 
+	 * (ie. some of its internal state changes)
 	 * @param aProperty The property whose value changed.
 	 */
 	public void propertyValueChanged (IProperty<T> aProperty);

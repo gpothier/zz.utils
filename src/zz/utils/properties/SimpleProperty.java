@@ -18,6 +18,10 @@ public class SimpleProperty<T> extends AbstractProperty<T> implements IProperty<
 	 */
 	private T itsValue;
 	
+	public SimpleProperty()
+	{
+	}
+	
 	public SimpleProperty(Object aContainer)
 	{
 		super (aContainer);

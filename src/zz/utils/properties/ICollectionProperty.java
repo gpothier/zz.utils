@@ -3,47 +3,41 @@
  */
 package zz.utils.properties;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 /**
- * A property whose value is a list. Additional features are:
- * <li>List manipulation methods
+ * A property whose value is a collection. Additional features are:
+ * <li>Collection manipulation methods
  * <li>List listeners.
  * <li>Implements the {@link Iterable} interface.
  * 
+ * @param <C> The collection type
+ * @param <E> The element type
  * @author gpothier
  */
-public interface IListProperty<E> extends ICollectionProperty<List<E>, E>
+public interface ICollectionProperty<C extends Collection<E>, E> 
+extends IProperty<C>, Iterable<E>
 {
+	/**
+	 * Returns the number of elements in the collection.
+	 */
+	public int size();
+	
+	public void add (E aElement);
 	
 	/**
-	 * Returns the element at the specified index.
+	 * Removes the specified element
+	 * @return Whether the element was in the list.
 	 */
-	public E get (int aIndex);
-	
-	public void add (int aIndex, E aElement);
-	public void set (int aIndex, E aElement);
+	public boolean remove (E aElement);
 	
 	/**
-	 * Returns the index of the specified element,
-	 * or -1 if it is not present in the list.
+	 * Removes all the elements of this list.
 	 */
-	public int indexOf (E aElement);
+	public void clear();
 	
-	/**
-	 * Removes the element at the specified index.
-	 * @return The removed element. 
-	 */
-	public E remove (int aIndex);
-	
-	/**
-	 * Returns an iterator over all the elements of this  container,
-	 * in reverse order.
-	 */
-	public Iterator<E> reverseIterator ();
-
-
 	/**
 	 * Adds a listener that will be notified each time this
 	 * property changes.
@@ -57,7 +51,7 @@ public interface IListProperty<E> extends ICollectionProperty<List<E>, E>
 	 * In this case, use {@link #addHardListener(IListPropertyListener)}
 	 * instead.
 	 */
-	public void addListener (IListPropertyListener<E> aListener);
+	public void addListener (ICollectionPropertyListener<E> aListener);
 
 	/**
 	 * Adds a listener that will be notified each time this
@@ -65,12 +59,12 @@ public interface IListProperty<E> extends ICollectionProperty<List<E>, E>
 	 * The listener will be referenced through a strong reference.
 	 * @see #addListener(IPropertyListener)
 	 */
-	public void addHardListener (IListPropertyListener<E> aListener);
+	public void addHardListener (ICollectionPropertyListener<E> aListener);
 	
 	/**
 	 * Removes a previously added listener.
 	 */
-	public void removeListener (IListPropertyListener<E> aListener);
+	public void removeListener (ICollectionPropertyListener<E> aListener);
 
 
 }
