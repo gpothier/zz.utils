@@ -19,6 +19,11 @@ implements IProperty<T>, Observer
 	 */
 	private T itsValue;
 	
+	/**
+	 * If  this flag is true, nothing happens when this property is set to its current value
+	 */
+	private boolean itsCoalesceRepeatedValues = true;
+	
 	public SimpleProperty()
 	{
 	}
@@ -44,7 +49,12 @@ implements IProperty<T>, Observer
 		super (aContainer, aPropertyId);
 		itsValue = aValue;
 	}
-	
+
+	public void setCoalesceRepeatedValues(boolean aCoalesceRepeatedValues)
+	{
+		itsCoalesceRepeatedValues = aCoalesceRepeatedValues;
+	}
+
 	/**
 	 * Standard getter for this property.
 	 */
@@ -71,7 +81,7 @@ implements IProperty<T>, Observer
 	protected final void set0(T aValue)
 	{
 		T theOldValue = get0();
-		if (theOldValue != aValue && canChangeProperty(aValue))
+		if ((! itsCoalesceRepeatedValues || theOldValue != aValue) && canChangeProperty(aValue))
 		{
 			if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
 			itsValue = aValue;

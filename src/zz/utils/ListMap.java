@@ -19,15 +19,15 @@ import java.util.List;
  * A Map in which all values are Lists, so that a single key
  * can map to any number of values.
  */
-public class ListMap extends HashMap
+public class ListMap<K, V> extends HashMap<K, List<V>>
 {
 	/**
 	 * Adds aValue the the list of the specified key.
 	 * @return The list into which the value was added.
 	 */
-	public List add (Object aKey, Object aValue)
+	public List<V> add (K aKey, V aValue)
 	{
-		List theList = getList (aKey);
+		List<V> theList = getList (aKey);
 		if (theList == null)
 		{
 			theList = new AwareList (aKey);
@@ -42,9 +42,9 @@ public class ListMap extends HashMap
 	 * Tries to remove aValue from the list of the specified key.
 	 * @return True if aValue was present in the list.
 	 */
-	public boolean remove (Object aKey, Object aValue)
+	public boolean remove (K aKey, Object aValue)
 	{
-		List theList = getList (aKey);
+		List<V> theList = getList (aKey);
 		if (theList == null)
 			return false;
 		else
@@ -58,35 +58,41 @@ public class ListMap extends HashMap
 	public int removeAll (Object aValue)
 	{
 		int theResult = 0;
-		for (Iterator theIterator = values ().iterator (); theIterator.hasNext ();)
+		for (List<V> theList : values ())
 		{
-			List theList = (List) theIterator.next ();
 			while (theList.remove (aValue)) theResult++;
 		}
 		return theResult;
 	}
 
-	public List getList (Object aKey)
+	public List<V> getList (Object aKey)
 	{
-		return (List) get (aKey);
+		return get (aKey);
 	}
 
-	public Iterator iterator (Object aKey)
+	public Iterator<V> iterator (Object aKey)
 	{
-		List theList = getList (aKey);
-		if (theList == null) return EmptyIterator.SINGLETON;
+		List<V> theList = getList (aKey);
+		if (theList == null) return Empty.ITERATOR;
 		else return theList.iterator ();
+	}
+
+	public Iterable<V> iterable (Object aKey)
+	{
+		List<V> theList = getList (aKey);
+		if (theList == null) return Empty.ITERABLE;
+		else return theList;
 	}
 
 	/**
 	 * A list that knows which key references it.
 	 * It removes the corresponding entry when its size reaches 0.
 	 */
-	private class AwareList extends ArrayList
+	private class AwareList extends ArrayList<V>
 	{
-		private Object itsKey;
+		private K itsKey;
 
-		public AwareList (Object aKey)
+		public AwareList (K aKey)
 		{
 			itsKey = aKey;
 		}
@@ -105,9 +111,9 @@ public class ListMap extends HashMap
 			return theResult;
 		}
 
-		public Object remove (int index)
+		public V remove (int index)
 		{
-			Object theResult = super.remove (index);
+			V theResult = super.remove (index);
 			checkEmpty();
 			return theResult;
 		}

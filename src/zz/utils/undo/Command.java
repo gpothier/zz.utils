@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import zz.utils.EmptyIterator;
+import zz.utils.Empty;
 import zz.utils.ReverseIteratorWrapper;
 import zz.utils.notification.NotificationCenter;
 
@@ -284,7 +284,7 @@ public class Command implements AffectedObjectsHolder
 
 	public Iterator getChainedCommandsIterator ()
 	{
-		if (itsChainedCommands == null) return EmptyIterator.SINGLETON;
+		if (itsChainedCommands == null) return Empty.ITERATOR;
 		else return itsChainedCommands.iterator();
 	}
 
