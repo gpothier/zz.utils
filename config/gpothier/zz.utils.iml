@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4" relativePaths="false">
+  <component name="ModuleRootManager" />
+  <component name="NewModuleRootManager">
+    <output url="file://C:/Documents and Settings/g1/IdeaProjects/3dscratch/classes" />
+    <exclude-output />
+    <content url="file://C:/Documents and Settings/g1/IdeaProjects/3dscratch/zz.utils">
+      <sourceFolder url="file://C:/Documents and Settings/g1/IdeaProjects/3dscratch/zz.utils/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="jdom" level="application" />
+  </component>
+</module>
+
