@@ -11,9 +11,9 @@ public class Example
 	private PropertyManager itsManager = new PropertyManager();
 	
 	public static final PropertyId<String> NAME = new PropertyId<String>("name");
-	public Property<String> pName = itsManager.registerProperty(
+	public IProperty<String> pName = itsManager.registerProperty(
 			NAME, 
-			new StdRWProperty<String>(NAME));
+			new SimpleRWProperty<String>(NAME));
 	
 	
 }

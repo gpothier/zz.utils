@@ -7,7 +7,7 @@ package zz.utils.properties;
  * A read-write property.
  * @author gpothier
  */
-public interface RWProperty<T> extends Property<T>
+public interface IRWProperty<T> extends IProperty<T>
 {
 	public void set (T aValue);
 }

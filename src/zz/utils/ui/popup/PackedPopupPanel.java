@@ -3,8 +3,6 @@
  */
 package zz.utils.ui.popup;
 
-import java.util.Iterator;
-
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 
@@ -13,7 +11,7 @@ import zz.utils.ui.popup.PopupUtils;
 
 /**
  * A panel that can be used as popup content that resizes the popup
- * as its contents change. 
+ * as its contents change. It can also be used as a regular panel.
  * <p>
  * This class doesn't create or show the popup; it is the reponsibility of the user
  * to create the popup.
@@ -31,7 +29,12 @@ public class PackedPopupPanel extends JPanel
 	 */
 	protected void close()
 	{
-		PopupUtils.hidePopup(this);
+		setContent(null);
+		if (! PopupUtils.hidePopup(this))
+		{
+			revalidate();
+			repaint();
+		}
 	}
 
 	/**
@@ -40,7 +43,11 @@ public class PackedPopupPanel extends JPanel
 	public void setContent (JComponent aComponent)
 	{
 		removeAll();
-		add (aComponent);
-		PopupUtils.revalidatePopup(this);
+		if (aComponent != null) add (aComponent);
+		if (! PopupUtils.revalidatePopup(this))
+		{
+			revalidate();
+			repaint();
+		}
 	}
 }

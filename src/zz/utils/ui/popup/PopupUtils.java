@@ -173,20 +173,24 @@ public class PopupUtils
 
 	/**
 	 * Closes the popup that contains this component, if any.
+	 * @return Returns true if a popup was found and successfully hidden
 	 */
-	public static void hidePopup (Component aComponent)
+	public static boolean hidePopup (Component aComponent)
 	{
 		AbstractPopup thePopup = findPopup(aComponent);
 		if (thePopup != null) thePopup.hide();
+		return thePopup != null;
 	}
 
 	/**
 	 * Revalidates the popup that contains this component, if any.
+	 * @return Returns true if a popup was found and successfully revalidated
 	 */
-	public static void revalidatePopup (Component aComponent)
+	public static boolean revalidatePopup (Component aComponent)
 	{
 		AbstractPopup thePopup = findPopup(aComponent);
 		if (thePopup != null) thePopup.revalidatePopup();
+		return thePopup != null;
 	}
 
 	

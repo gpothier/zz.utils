@@ -15,7 +15,7 @@ import zz.utils.IPublicCloneable;
  * use properties.
  * @author gpothier
  */
-public interface Property<T> 
+public interface IProperty<T> 
 {
 	/**
 	 * Returns the id of this property, if it exists.
@@ -80,6 +80,6 @@ public interface Property<T>
 	 * The value of the property is not deeply cloned.
 	 * The clone has no listeners or vetoers.
 	 */
-	public Property<T> cloneForContainer (Object aContainer);
+	public IProperty<T> cloneForContainer (Object aContainer);
 
 }

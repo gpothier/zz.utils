@@ -7,10 +7,10 @@ import zz.utils.notification.ObservationCenter;
 import zz.utils.notification.Observer;
 
 /**
- * Default implementation of {@link zz.utils.properties.Property}
+ * Default implementation of {@link zz.utils.properties.IProperty} for simple values.
  * @author gpothier
  */
-public class StdProperty<T> extends AbstractProperty<T> implements Property<T>, Observer
+public class SimpleProperty<T> extends AbstractProperty<T> implements IProperty<T>, Observer
 {
 	
 	/**
@@ -18,23 +18,23 @@ public class StdProperty<T> extends AbstractProperty<T> implements Property<T>, 
 	 */
 	private T itsValue;
 	
-	public StdProperty(Object aContainer)
+	public SimpleProperty(Object aContainer)
 	{
 		super (aContainer);
 	}
 	
-	public StdProperty(Object aContainer, T aValue)
+	public SimpleProperty(Object aContainer, T aValue)
 	{
 		super (aContainer);
 		itsValue = aValue;
 	}
 	
-	public StdProperty(Object aContainer, PropertyId<T> aPropertyId)
+	public SimpleProperty(Object aContainer, PropertyId<T> aPropertyId)
 	{
 		super (aContainer, aPropertyId);
 	}
 	
-	public StdProperty(Object aContainer, PropertyId<T> aPropertyId, T aValue)
+	public SimpleProperty(Object aContainer, PropertyId<T> aPropertyId, T aValue)
 	{
 		super (aContainer, aPropertyId);
 		itsValue = aValue;

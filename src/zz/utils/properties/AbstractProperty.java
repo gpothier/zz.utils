@@ -5,6 +5,7 @@ package zz.utils.properties;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import zz.utils.notification.Observer;
  * the handling of the value to subclasses
  * @author gpothier
  */
-public abstract class AbstractProperty<T> extends PublicCloneable implements Property<T>
+public abstract class AbstractProperty<T> extends PublicCloneable implements IProperty<T>
 {
 	/**
 	 * The object that contains the property.
@@ -34,10 +35,10 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements Pro
 	private PropertyId<T> itsPropertyId;
 	
 	private List<IRef<IPropertyVeto<?>>> itsVetos = 
-		new FailsafeLinkedList();
+		new ArrayList();
 	
 	private List<IRef<IPropertyListener<?>>> itsListeners = 
-		new FailsafeLinkedList();
+		new ArrayList();
 	
 	public AbstractProperty(Object aContainer)
 	{
@@ -66,59 +67,32 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements Pro
 	
 	protected void firePropertyChanged ()
 	{
-		for (Iterator theIterator = itsListeners.iterator();theIterator.hasNext();)
-		{
-			IRef<IPropertyListener> theRef = (IRef<IPropertyListener>) theIterator.next();
-			IPropertyListener<?> theListener = theRef.get();
-			if (theListener == null) theIterator.remove();
-			else theListener.propertyChanged(this);
-		}
+		List<IPropertyListener<?>> theListeners = dereference(itsListeners); 
+
+		for (IPropertyListener theListener : theListeners)
+			theListener.propertyChanged(this);
 	}
 	
 	protected boolean canChangeProperty (Object aValue)
 	{
-		for (Iterator theIterator = itsVetos.iterator();theIterator.hasNext();)
-		{
-			IRef<IPropertyVeto> theRef = (IRef<IPropertyVeto>) theIterator.next();
-			IPropertyVeto<?> theVeto = theRef.get();
-			if (theVeto == null) theIterator.remove();
-			else if (! theVeto.canChangeProperty(this, aValue)) return false;
-		}
+		List<IPropertyVeto<?>> theVetos = dereference(itsVetos);
+		
+		for (IPropertyVeto theVeto : theVetos)
+			if (! theVeto.canChangeProperty(this, aValue)) return false;
+		
 		return true;
 	}
 	
-	/**
-	 * Adds a listener that will be notified each time this
-	 * property changes.
-	 * The property will maintains a weak reference to the listener,
-	 * so the programmer should ensure that the listener is strongly
-	 * referenced somewhere.
-	 * In particular, this kind of construct should not be used:
-	 * <pre>
-	 * prop.addListener (new MyListener());
-	 * </pre>
-	 * In this case, use {@link #addHardListener(IPropertyListener)}
-	 * instead.
-	 */
 	public void addListener (IPropertyListener<?> aListener)
 	{
 		itsListeners.add (new WeakRef<IPropertyListener<?>>(aListener));
 	}
 
-	/**
-	 * Adds a listener that will be notified each time this
-	 * property changes.
-	 * The listener will be referenced through a strong reference.
-	 * @see #addListener(IPropertyListener)
-	 */
 	public void addHardListener (IPropertyListener<?> aListener)
 	{
 		itsListeners.add (new HardRef<IPropertyListener<?>>(aListener));
 	}
 	
-	/**
-	 * Removes a previously added listener.
-	 */
 	public void removeListener (IPropertyListener aListener)
 	{
 		for (Iterator theIterator = itsListeners.iterator();theIterator.hasNext();)
@@ -129,29 +103,16 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements Pro
 		}
 	}
 
-	/**
-	 * Adds a veto that can reject a new value for this property.
-	 * See the comment on {@link #addListener(IPropertyListener)}
-	 * about the referencing scheme.
-	 */
 	public void addVeto (IPropertyVeto aVeto)
 	{
 		itsVetos.add (new WeakRef<IPropertyVeto<?>>(aVeto));
 	}
 
-	/**
-	 * Adds a veto that can reject a new value for this property.
-	 * See the comment on {@link #addListener(IPropertyListener)}
-	 * about the referencing scheme.
-	 */
 	public void addHardVeto (IPropertyVeto aVeto)
 	{
 		itsVetos.add (new HardRef<IPropertyVeto<?>>(aVeto));
 	}
 	
-	/**
-	 * Removes a previously added veto.
-	 */
 	public void removeVeto (IPropertyVeto aVeto)
 	{
 		for (Iterator theIterator = itsVetos.iterator();theIterator.hasNext();)
@@ -162,7 +123,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements Pro
 		}
 	}
 	
-	public Property<T> cloneForContainer(Object aContainer)
+	public IProperty<T> cloneForContainer(Object aContainer)
 	{
 		AbstractProperty<T> theClone = (AbstractProperty) super.clone();
 		
@@ -173,16 +134,36 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements Pro
 		return theClone;
 	}
 
+	/**
+	 * Returns a list containing dereferenced elements from the given
+	 * list. This method also remove GCed elements from the references list
+	 */
+	protected static <E> List<E> dereference (List<IRef<E>> aList)
+	{
+		if (aList.isEmpty()) return Collections.EMPTY_LIST;
+		
+		List<E> theResult = new ArrayList<E>(aList.size());
+		
+		for (Iterator<IRef<E>> theIterator = aList.iterator();theIterator.hasNext();)
+		{
+			IRef<E> theRef = theIterator.next();
+			E theElement = theRef.get();
+			if (theElement == null) theIterator.remove();
+			else theResult.add (theElement);
+		}
+		
+		return theResult;
+	}
 	
 	/**
 	 * Reference to a property listener. Implementations can be weak or hard references.
 	 */
-	private interface IRef<L>
+	protected interface IRef<L>
 	{
 		public L get();
 	}
 	
-	private static class HardRef<L> implements IRef<L>
+	protected static class HardRef<L> implements IRef<L>
 	{
 		private L itsValue;
 		
@@ -197,7 +178,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements Pro
 		}
 	}
 	
-	private static class WeakRef<L> extends WeakReference<L> implements IRef<L>
+	protected static class WeakRef<L> extends WeakReference<L> implements IRef<L>
 	{
 
 		public WeakRef(L aValue)

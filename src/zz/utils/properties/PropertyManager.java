@@ -10,20 +10,20 @@ import zz.utils.PublicCloneable;
 
 /**
  * Maintains a relationship between {@link zz.utils.properties.PropertyId property ids}
- * and {@link zz.utils.properties.Property properties}.
+ * and {@link zz.utils.properties.IProperty properties}.
  * Classes that need reified properties (ie., ability to retrieve a property given a property id)
  * can use this class as shown in {@link zz.utils.properties.Example}.
  * @author gpothier
  */
 public class PropertyManager extends PublicCloneable
 {
-	private Map<PropertyId, Property> itsProperties =
-		new HashMap<PropertyId, Property>();
+	private Map<PropertyId, IProperty> itsProperties =
+		new HashMap<PropertyId, IProperty>();
 	
 	/**
 	 * Retrieve the property that corresponds to the given id.
 	 */ 
-	public <T> Property<T> getProperty(PropertyId<T> aPropertyId)
+	public <T> IProperty<T> getProperty(PropertyId<T> aPropertyId)
 	{
 		return itsProperties.get(aPropertyId);
 	}
@@ -32,7 +32,7 @@ public class PropertyManager extends PublicCloneable
 	 * Registers a property.
 	 * @return The same as the specified property
 	 */
-	public <T> Property<T> registerProperty (PropertyId<T> aId, Property<T> aProperty)
+	public <T> IProperty<T> registerProperty (PropertyId<T> aId, IProperty<T> aProperty)
 	{
 		itsProperties.put(aId, aProperty);
 		return aProperty;
@@ -41,18 +41,18 @@ public class PropertyManager extends PublicCloneable
 	/**
 	 * Clones this property manager for usage in the specified container.
 	 * All properties are cloned for the given container 
-	 * (see {@link Property#cloneForContainer(Object)}.
+	 * (see {@link IProperty#cloneForContainer(Object)}.
 	 * @param aContainer The container for the clone and its properties.
 	 */
 	public PropertyManager cloneForContainer (Object aContainer)
 	{
 		PropertyManager theClone = (PropertyManager) super.clone();
 		
-		theClone.itsProperties = new HashMap<PropertyId, Property>();
-		for (Map.Entry<PropertyId, Property> theEntry : itsProperties.entrySet())
+		theClone.itsProperties = new HashMap<PropertyId, IProperty>();
+		for (Map.Entry<PropertyId, IProperty> theEntry : itsProperties.entrySet())
 		{
 			PropertyId theId = theEntry.getKey();
-			Property theProperty = theEntry.getValue();
+			IProperty theProperty = theEntry.getValue();
 			
 			theClone.itsProperties.put (theId, theProperty.cloneForContainer(aContainer));
 		}
@@ -65,10 +65,10 @@ public class PropertyManager extends PublicCloneable
 		StringBuffer theBuffer = new StringBuffer(super.toString());
 		theBuffer.append("\n");
 		
-		for (Map.Entry<PropertyId, Property> theEntry : itsProperties.entrySet())
+		for (Map.Entry<PropertyId, IProperty> theEntry : itsProperties.entrySet())
 		{
 			PropertyId theId = theEntry.getKey();
-			Property theProperty = theEntry.getValue();
+			IProperty theProperty = theEntry.getValue();
 			
 			theBuffer.append(" - ");
 			theBuffer.append(theId.getName());

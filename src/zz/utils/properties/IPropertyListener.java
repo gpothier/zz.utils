@@ -8,5 +8,5 @@ package zz.utils.properties;
  */
 public interface IPropertyListener<T>
 {
-	public void propertyChanged (Property<T> aProperty);
+	public void propertyChanged (IProperty<T> aProperty);
 }
