@@ -50,6 +50,11 @@ public class SimpleListModel extends AbstractListModel
 		if (itsList != null && getSize()>0) fireIntervalAdded(this,0,getSize()-1)	;
 	}
 
+	public List getList()
+	{
+		return itsList;
+	}
+	
 	public void fireContentsChanged ()
 	{
 		fireContentsChanged (this, 0, getSize());

@@ -21,7 +21,7 @@ public class JRenderedLabel extends JPanel
 	/**
 	 * We need this list for the renderer.
 	 */
-	private static final JList LIST = new JList();
+	public static final JList LIST = new JList();
 	
 	private ListCellRenderer itsRenderer;
 	private Object itsValue;
@@ -70,11 +70,22 @@ public class JRenderedLabel extends JPanel
 		repaint();
 	}
 	
+	public ListCellRenderer getRenderer()
+	{
+		return itsRenderer;
+	}
+	
 	protected void paintComponent(Graphics aG)
 	{
 		if (itsRenderer != null)
 		{
-			JComponent theComponent = (JComponent) itsRenderer.getListCellRendererComponent(LIST, getValue(), 0, false, false);
+			JComponent theComponent = (JComponent) itsRenderer.getListCellRendererComponent(
+					LIST, 
+					getValue(), 
+					0, 
+					false, 
+					false);
+			
 			theComponent.setOpaque(isOpaque());
 			theComponent.setBounds(0, 0, getWidth(), getHeight());
 			theComponent.paint(aG);
@@ -83,6 +94,7 @@ public class JRenderedLabel extends JPanel
 	
 	public Dimension getPreferredSize()
 	{
+		if (isPreferredSizeSet()) return super.getPreferredSize();
 		if (itsRenderer != null)
 		{
 			Component theComponent = itsRenderer.getListCellRendererComponent(LIST, getValue(), 0, false, false);
