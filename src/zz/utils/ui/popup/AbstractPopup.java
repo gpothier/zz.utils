@@ -6,6 +6,7 @@
  */
 package zz.utils.ui.popup;
 
+import java.awt.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
@@ -55,7 +56,7 @@ public abstract class AbstractPopup
 	 */
 	private JComponent itsAutohideComponent;
 
-	private JWindow itsPopupWindow;
+	private PopupWindow itsPopupWindow;
 
 	/**
 	 * Permits to implement the auto-hide feature.
@@ -150,7 +151,7 @@ public abstract class AbstractPopup
 			}
 		});
 
-		itsPopupWindow = new JWindow (theOwner);
+		itsPopupWindow = new PopupWindow (theOwner, this);
 //		itsPopupWindow.setFocusable(false);
 	}
 
@@ -333,6 +334,23 @@ public abstract class AbstractPopup
 		repositionPopup();
 		itsPopupWindow.validate();
 		itsContent.repaint();
+	}
+	
+	public static class PopupWindow extends JWindow
+	{
+		private AbstractPopup itsPopup;
+		
+		
+		public PopupWindow(Frame aOwner, AbstractPopup aPopup)
+		{
+			super(aOwner);
+			itsPopup = aPopup;
+		}
+		
+		public AbstractPopup getPopup()
+		{
+			return itsPopup;
+		}
 	}
 
 }
