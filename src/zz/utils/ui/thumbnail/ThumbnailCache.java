@@ -6,10 +6,13 @@ package zz.utils.ui.thumbnail;
 import java.awt.image.BufferedImage;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+
+import zz.utils.ArrayStack;
 
 /**
  * A cache for thumbnails.
@@ -18,7 +21,25 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class ThumbnailCache<T>
 {
 	private Map<Key<T>, Reference<BufferedImage>> itsCache = new HashMap<Key<T>, Reference<BufferedImage>>();
-	
+	private Collection<BufferedImage> itsKeptImages;
+
+
+	public ThumbnailCache()
+	{
+		this(5);
+	}
+
+	/**
+	 * Creates a new asynchronous thumbnails cache.
+	 * @param aMaxPermanentThumbnails Number of thumbnails that should be kept out of 
+	 * the reach of GC.
+	 */
+	public ThumbnailCache(int aMaxPermanentThumbnails)
+	{
+		if (aMaxPermanentThumbnails > 0) 
+			itsKeptImages = new ArrayStack<BufferedImage>(aMaxPermanentThumbnails);
+	}
+
 	/**
 	 * Retruns a thumbnail that represents the given file
 	 * @param aMaxSize Maximum size of the thumbnail
@@ -43,6 +64,7 @@ public abstract class ThumbnailCache<T>
 	protected void cache (Key<T> aKey, BufferedImage aImage)
 	{
 		itsCache.put(aKey, new SoftReference<BufferedImage>(aImage));
+		if (itsKeptImages != null) itsKeptImages.add (aImage);
 	}
 
 	/**

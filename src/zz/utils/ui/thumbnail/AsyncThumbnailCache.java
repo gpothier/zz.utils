@@ -5,13 +5,14 @@ package zz.utils.ui.thumbnail;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
-import zz.utils.ui.thumbnail.ThumbnailCache.Key;
+import zz.utils.ArrayStack;
 
 /**
  * A thumbnail cache that always responds immediately to requests. A separate
@@ -33,9 +34,10 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 		}
 	};
 
-	private BlockingQueue<Key<T>> itsLoadQueue = new LinkedBlockingQueue<Key<T>>();
-
-	private Set<Key<T>> itsQueuedKeys = new HashSet<Key<T>>();
+	/**
+	 * The set of currently pending thumbnail creation requests. 
+	 */
+	private LinkedList<Key<T>> itsQueuedKeys = new LinkedList<Key<T>>();
 
 	/**
 	 * We keep a set of ignored keys so that we don't try to indefinitely reload
@@ -47,9 +49,44 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 
 	public AsyncThumbnailCache()
 	{
-		new Thread(this).start();
+		this(5);
 	}
 
+	public AsyncThumbnailCache(int aMaxPermanentThumbnails)
+	{
+		super (aMaxPermanentThumbnails);
+		
+		Thread theThread = new Thread(this);
+		theThread.setPriority(Thread.NORM_PRIORITY-1);
+		theThread.start();
+	}
+	
+	/**
+	 * Enqueues a request for loading the image described by the given key.
+	 */
+	private synchronized void queueLoading(Key<T> aKey)
+	{
+        if (itsIgnoredKeys.contains(aKey)) return;
+		if (!itsQueuedKeys.contains(aKey)) itsQueuedKeys.add(aKey);
+	}
+
+	/**
+	 * Clears the requests queue. 
+	 */
+	public synchronized void clearQueue()
+	{
+		itsQueuedKeys.clear();
+	}
+	
+	/**
+	 * Returns a copy of the current requests. 
+	 */
+	private synchronized Key<T> popRequest()
+	{
+		if (itsQueuedKeys.isEmpty()) return null;
+		else return itsQueuedKeys.removeFirst();
+	}
+	
 	protected BufferedImage getThumbnail(Key<T> aKey)
 	{
 		BufferedImage theImage = getCached(aKey);
@@ -62,39 +99,34 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 		else return theImage;
 	}
 
-	/**
-	 * Enqueues q request for loading the image described by the given key.
-	 */
-	private void queueLoading(Key<T> aKey)
-	{
-        if (itsIgnoredKeys.contains(aKey)) return;
-		if (itsQueuedKeys.add(aKey)) itsLoadQueue.add(aKey);
-	}
-
 	public void run()
 	{
 		try
 		{
 			while (true)
 			{
-				Key<T> theKey = itsLoadQueue.take();
-				itsQueuedKeys.remove(theKey);
+				Key<T> theRequest;
 
-				try
+				while ((theRequest = popRequest()) != null)
 				{
-					BufferedImage theImage = createThumbnail(theKey);
-                    if (theImage == null) itsIgnoredKeys.add(theKey);
-                    else
-                    {
-						cache(theKey, theImage);
-						fireThumbnailCreated();
-                    }
+					try
+					{
+						BufferedImage theImage = createThumbnail(theRequest);
+		                if (theImage == null) itsIgnoredKeys.add(theRequest);
+		                else
+		                {
+							cache(theRequest, theImage);
+							fireThumbnailCreated();
+		                }
+					}
+					catch (Exception e)
+					{
+						e.printStackTrace();
+		                itsIgnoredKeys.add(theRequest);
+					}
 				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-                    itsIgnoredKeys.add(theKey);
-				}
+				
+				Thread.sleep(100);
 			}
 		}
 		catch (InterruptedException e)
