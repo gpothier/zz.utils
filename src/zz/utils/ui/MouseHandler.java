@@ -112,7 +112,7 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 		T theElement = getParent(aElement);
 		while (theElement != null)
 		{
-			if (theElement == aAncestor) return true;
+			if (theElement.equals(aAncestor)) return true;
 			theElement = getParent(theElement);
 		}
 		return false;
@@ -142,7 +142,7 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 			{
 				T theCurrentElement = itsPathToCurrentElement.peek();
 				
-				if (itsCurrentElement == theCurrentElement) break;
+				if (itsCurrentElement.equals(theCurrentElement)) break;
 				else if (isAncestor(theCurrentElement, itsCurrentElement))
 				{
 					pushElements(theCurrentElement, itsCurrentElement);
@@ -174,7 +174,7 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 	{
 		List<T> theElements = new ArrayList<T> ();
 		T theElement = aElement;
-		while (theElement != aAncestor)
+		while (theElement != null && theElement != aAncestor)
 		{
 			theElements.add (theElement);
 			if (! itsRecursiveRollover) break;
@@ -229,7 +229,8 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 		IMouseAware theMouseAware = getMouseAware(itsCurrentElement);
 		if (SwingUtilities.isLeftMouseButton(e) && theMouseAware != null)
 		{
-			Point2D theTransformedPoint = pixelToLocal(itsCurrentElement, e.getPoint());
+			Point2D theRootPoint = pixelToRoot(e.getPoint());
+			Point2D theTransformedPoint = rootToLocal(itsCurrentElement, theRootPoint);
 			if (itsDragging)
 			{
 				theMouseAware.commitDrag(theTransformedPoint);
@@ -237,9 +238,9 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 			}
 			else
 			{
-				fireMouseClicked(e, theTransformedPoint, itsCurrentElement);
+				fireMouseClicked(e, theRootPoint, itsCurrentElement);
 			}
-			fireMouseReleased(e, theTransformedPoint, itsCurrentElement);
+			fireMouseReleased(e, theRootPoint, itsCurrentElement);
 		}
 	}
 
@@ -319,7 +320,7 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 			if (theMouseAware != null) 
 			{
 				Point2D thePoint = rootToLocal(aElement, aRootPoint);
-				if (theMouseAware.mouseReleased(aEvent, thePoint)) break;;
+				if (theMouseAware.mouseReleased(aEvent, thePoint)) break;
 			}
 			aElement = getParent(aElement);
 		}
