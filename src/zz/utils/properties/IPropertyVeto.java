@@ -8,5 +8,5 @@ package zz.utils.properties;
  */
 public interface IPropertyVeto<T>
 {
-	public boolean canChangeProperty (IProperty<T> aProperty, Object aValue);
+	public boolean canChangeProperty (IProperty<T> aProperty, T aValue);
 }
