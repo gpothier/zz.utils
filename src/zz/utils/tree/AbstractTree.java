@@ -115,6 +115,14 @@ public abstract class AbstractTree<N, V> implements ITree<N, V>
 		throw new UnsupportedOperationException();
 	}
 	
+	public void removeNode(N aNode)
+	{
+		N theParent = getParent(aNode);
+		if (theParent == null) throw new IllegalArgumentException("Trying to remove root node");
+		int theIndex = getIndexOfChild(theParent, aNode);
+		removeChild(theParent, theIndex);
+	}
+	
 	/**
 	 * Returns true iff the node has no child.
 	 */

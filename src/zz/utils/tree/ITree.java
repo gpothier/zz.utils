@@ -59,6 +59,11 @@ public interface ITree<N, V>
 	 * Removes child from a node.
 	 */
 	public void removeChild (N aParent, int aIndex);
+	
+	/**
+	 * Removes the given node from the tree.
+	 */
+	public void removeNode(N aNode);
 
 	/**
 	 * Returns the index of a child within a node, or -1 if the child
