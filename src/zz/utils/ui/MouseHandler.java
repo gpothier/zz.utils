@@ -305,7 +305,7 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 			if (theMouseAware != null) 
 			{
 				Point2D thePoint = rootToLocal(aElement, aRootPoint);
-				if (theMouseAware.mousePressed(aEvent, thePoint)) break;;
+				if (theMouseAware.mousePressed(aEvent, thePoint)) break;
 			}
 			aElement = getParent(aElement);
 		}

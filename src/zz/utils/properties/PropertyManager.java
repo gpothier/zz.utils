@@ -54,7 +54,8 @@ public class PropertyManager extends PublicCloneable
 			PropertyId theId = theEntry.getKey();
 			IProperty theProperty = theEntry.getValue();
 			
-			theClone.itsProperties.put (theId, theProperty.cloneForContainer(aContainer));
+			IProperty thePropertyClone = theProperty.cloneForContainer(aContainer);
+			theClone.itsProperties.put (theId, thePropertyClone);
 		}
 		
 		return theClone;

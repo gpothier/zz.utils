@@ -182,10 +182,10 @@ public abstract class UniversalRenderer implements ListCellRenderer, TreeCellRen
 		aLabel.setText(theName != null ? theName : "");
 
 		String theToolTipText = getToolTipText(aObject);
-		aLabel.setToolTipText(theToolTipText != null ? theToolTipText : null);
+		aLabel.setToolTipText(theToolTipText);
 
 		Icon theIcon = getIcon(aObject);
-		aLabel.setIcon(theIcon != null ? theIcon : null);
+		aLabel.setIcon(theIcon);
 
 		Color theTextColor = getTextColor (aObject);
 		aLabel.setForeground(theTextColor != null ? theTextColor : Color.BLACK);

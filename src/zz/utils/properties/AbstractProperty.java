@@ -38,9 +38,9 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	 */
 	private PropertyId<T> itsPropertyId;
 	
-	private List<IRef<IPropertyVeto<?>>> itsVetos; 
+	private List<IRef<IPropertyVeto<? super T>>> itsVetos; 
 	
-	private List<IRef<IPropertyListener<?>>> itsListeners; 
+	private List<IRef<IPropertyListener<? super T>>> itsListeners; 
 	
 	public AbstractProperty()
 	{
@@ -74,9 +74,10 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	{
 		if (itsListeners != null)
 		{
-			List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
+			List<IPropertyListener<? super T>> theListeners = 
+				RefUtils.dereference(itsListeners); 
 	
-			for (IPropertyListener theListener : theListeners)
+			for (IPropertyListener<? super T> theListener : theListeners)
 				theListener.propertyChanged(this, aOldValue, aNewValue);
 		}
 		
@@ -87,9 +88,9 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	{
 		if (itsListeners != null)
 		{
-			List<IPropertyListener<?>> theListeners = RefUtils.dereference(itsListeners); 
+			List<IPropertyListener<? super T>> theListeners = RefUtils.dereference(itsListeners); 
 	
-			for (IPropertyListener theListener : theListeners)
+			for (IPropertyListener<? super T> theListener : theListeners)
 				theListener.propertyValueChanged(this);
 		}
 		
@@ -99,27 +100,27 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	protected boolean canChangeProperty (Object aValue)
 	{
 		if (itsVetos == null) return true;
-		List<IPropertyVeto<?>> theVetos = RefUtils.dereference(itsVetos);
+		List<IPropertyVeto<? super T>> theVetos = RefUtils.dereference(itsVetos);
 		
-		for (IPropertyVeto theVeto : theVetos)
+		for (IPropertyVeto<? super T> theVeto : theVetos)
 			if (! theVeto.canChangeProperty(this, aValue)) return false;
 		
 		return true;
 	}
 	
-	public void addListener (IPropertyListener<?> aListener)
+	public void addListener (IPropertyListener<? super T> aListener)
 	{
 		if (itsListeners == null) itsListeners = new ArrayList(3);
-		itsListeners.add (new WeakRef<IPropertyListener<?>>(aListener));
+		itsListeners.add (new WeakRef<IPropertyListener<? super T>>(aListener));
 	}
 
-	public void addHardListener (IPropertyListener<?> aListener)
+	public void addHardListener (IPropertyListener<? super T> aListener)
 	{
 		if (itsListeners == null) itsListeners = new ArrayList(3);
-		itsListeners.add (new HardRef<IPropertyListener<?>>(aListener));
+		itsListeners.add (new HardRef<IPropertyListener<? super T>>(aListener));
 	}
 	
-	public void removeListener (IPropertyListener<?> aListener)
+	public void removeListener (IPropertyListener<? super T> aListener)
 	{
 		if (itsListeners != null) 
 		{
@@ -128,19 +129,19 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		}
 	}
 
-	public void addVeto (IPropertyVeto<?> aVeto)
+	public void addVeto (IPropertyVeto<? super T> aVeto)
 	{
 		if (itsVetos == null) itsVetos = new ArrayList(3);
-		itsVetos.add (new WeakRef<IPropertyVeto<?>>(aVeto));
+		itsVetos.add (new WeakRef<IPropertyVeto<? super T>>(aVeto));
 	}
 
-	public void addHardVeto (IPropertyVeto<?> aVeto)
+	public void addHardVeto (IPropertyVeto<? super T> aVeto)
 	{
 		if (itsVetos == null) itsVetos = new ArrayList(3);
-		itsVetos.add (new HardRef<IPropertyVeto<?>>(aVeto));
+		itsVetos.add (new HardRef<IPropertyVeto<? super T>>(aVeto));
 	}
 	
-	public void removeVeto (IPropertyVeto<?> aVeto)
+	public void removeVeto (IPropertyVeto<? super T> aVeto)
 	{
 		if (itsVetos != null) 
 		{
@@ -151,11 +152,11 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	public IProperty<T> cloneForContainer(Object aContainer)
 	{
-		AbstractProperty<T> theClone = (AbstractProperty) super.clone();
+		AbstractProperty<T> theClone = (AbstractProperty<T>) super.clone();
 		
 		theClone.itsContainer = aContainer;
-		theClone.itsListeners = new FailsafeLinkedList();
-		theClone.itsVetos = new FailsafeLinkedList();
+		theClone.itsListeners = null;
+		theClone.itsVetos = null;
 		
 		return theClone;
 	}

@@ -40,7 +40,7 @@ public interface IProperty<T>
 	 * In this case, use {@link #addHardListener(IPropertyListener)}
 	 * instead.
 	 */
-	public void addListener (IPropertyListener<?> aListener);
+	public void addListener (IPropertyListener<? super T> aListener);
 
 	/**
 	 * Adds a listener that will be notified each time this
@@ -48,31 +48,31 @@ public interface IProperty<T>
 	 * The listener will be referenced through a strong reference.
 	 * @see #addListener(IPropertyListener)
 	 */
-	public void addHardListener (IPropertyListener<?> aListener);
+	public void addHardListener (IPropertyListener<? super T> aListener);
 	
 	/**
 	 * Removes a previously added listener.
 	 */
-	public void removeListener (IPropertyListener<?> aListener);
+	public void removeListener (IPropertyListener<? super T> aListener);
 
 	/**
 	 * Adds a veto that can reject a new value for this property.
 	 * See the comment on {@link #addListener(IPropertyListener)}
 	 * about the referencing scheme.
 	 */
-	public void addVeto (IPropertyVeto<?> aVeto);
+	public void addVeto (IPropertyVeto<? super T> aVeto);
 
 	/**
 	 * Adds a veto that can reject a new value for this property.
 	 * See the comment on {@link #addListener(IPropertyListener)}
 	 * about the referencing scheme.
 	 */
-	public void addHardVeto (IPropertyVeto<?> aVeto);
+	public void addHardVeto (IPropertyVeto<? super T> aVeto);
 	
 	/**
 	 * Removes a previously added veto.
 	 */
-	public void removeVeto (IPropertyVeto<?> aVeto);
+	public void removeVeto (IPropertyVeto<? super T> aVeto);
 	
 	/**
 	 * Creates a clone of this property, giving the cloned property the specified

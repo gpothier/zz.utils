@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import zz.utils.FailsafeLinkedList;
 import zz.utils.ReverseIteratorWrapper;
 import zz.utils.list.ICollectionListener;
 import zz.utils.list.IListListener;
@@ -146,4 +147,16 @@ implements IListProperty<E>
 			}
 		}
 	}
+	
+	public IProperty<List<E>> cloneForContainer(Object aContainer)
+	{
+		AbstractListProperty<E> theClone = 
+			(AbstractListProperty<E>) super.cloneForContainer(aContainer);
+		
+		theClone.itsListListeners = null;
+		
+		return theClone;
+	}
+
+
 }
