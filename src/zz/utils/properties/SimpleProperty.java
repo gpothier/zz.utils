@@ -10,7 +10,8 @@ import zz.utils.notification.Observer;
  * Default implementation of {@link zz.utils.properties.IProperty} for simple values.
  * @author gpothier
  */
-public class SimpleProperty<T> extends AbstractProperty<T> implements IProperty<T>, Observer
+public class SimpleProperty<T> extends AbstractProperty<T> 
+implements IProperty<T>, Observer
 {
 	
 	/**
@@ -75,8 +76,9 @@ public class SimpleProperty<T> extends AbstractProperty<T> implements IProperty<
 			if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
 			itsValue = aValue;
 			if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
-			firePropertyChanged(theOldValue, aValue);
 			
+			changed(theOldValue, aValue);
+			firePropertyChanged(theOldValue, aValue);
 			ObservationCenter.getInstance().requestObservation(getContainer(), this);
 		}
 	}
@@ -85,5 +87,13 @@ public class SimpleProperty<T> extends AbstractProperty<T> implements IProperty<
 	{
 		if (aObservable == itsValue) firePropertyValueChanged();
 	}
+
+	/**
+	 * This method is called whenever the value of this property changes.
+	 */
+	protected void changed (T aOldValue, T aNewValue)
+	{
+	}
+
 	
 }
