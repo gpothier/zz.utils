@@ -94,6 +94,11 @@ public class NotificationManager
 		for (Iterator theIterator = itsNotifiableReferences.iterator(); theIterator.hasNext();)
 		{
 			NotifiableReference theNotifiableReference = (NotifiableReference) theIterator.next();
+			if (theNotifiableReference == null)
+			{
+				System.err.println("NotificationManager.notify(): null notifiable reference - investigate");
+				continue;
+			}
 			Notifiable theNotifiable = theNotifiableReference.getNotifiable();
 
 			if (theNotifiable == null)
