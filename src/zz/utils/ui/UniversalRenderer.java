@@ -29,6 +29,8 @@ public abstract class UniversalRenderer implements ListCellRenderer, TreeCellRen
 	private TableCellRenderer itsTableCellRenderer;
 	
 	private boolean itsOpaque;
+	private int itsHorizontalAlignment;
+	private int itsVerticalAlignment;
 
 	public UniversalRenderer()
 	{
@@ -41,27 +43,47 @@ public abstract class UniversalRenderer implements ListCellRenderer, TreeCellRen
 	 */
 	public UniversalRenderer(boolean aOpaque)
 	{
+		this (true, JLabel.LEADING, JLabel.CENTER);
+	}
+	
+	public UniversalRenderer(
+			boolean aOpaque, 
+			int aHorizontalAlignment, 
+			int aVerticalAlignment)
+	{
 		itsOpaque = aOpaque;
+		itsHorizontalAlignment = aHorizontalAlignment;
+		itsVerticalAlignment = aVerticalAlignment;
+	}
+	
+	/**
+	 * Initial setup of the renderers.
+	 */
+	private void setupRenderer(JLabel aRenderer)
+	{
+		aRenderer.setOpaque(itsOpaque);
+		aRenderer.setHorizontalAlignment(itsHorizontalAlignment);
+		aRenderer.setVerticalAlignment(itsVerticalAlignment);
 	}
 	
 	protected ListCellRenderer createListCellRenderer ()
 	{
 		DefaultListCellRenderer theRenderer = new DefaultListCellRenderer ();
-		theRenderer.setOpaque(itsOpaque);
+		setupRenderer(theRenderer);
 		return theRenderer;
 	}
 
 	protected TreeCellRenderer createTreeCellRenderer ()
 	{
 		DefaultTreeCellRenderer theRenderer = new DefaultTreeCellRenderer ();
-		theRenderer.setOpaque(itsOpaque);
+		setupRenderer(theRenderer);
 		return theRenderer;
 	}
 
 	protected TableCellRenderer createTableCellRenderer ()
 	{
 		DefaultTableCellRenderer theRenderer = new DefaultTableCellRenderer ();
-		theRenderer.setOpaque(itsOpaque);
+		setupRenderer(theRenderer);
 		return theRenderer;
 	}
 

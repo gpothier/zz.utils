@@ -109,8 +109,11 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	public void removeListener (IPropertyListener<?> aListener)
 	{
-		RefUtils.remove(itsListeners, aListener);
-		if (itsListeners.size() == 0) itsListeners = null;
+		if (itsListeners != null) 
+		{
+			RefUtils.remove(itsListeners, aListener);
+			if (itsListeners.size() == 0) itsListeners = null;
+		}
 	}
 
 	public void addVeto (IPropertyVeto<?> aVeto)
@@ -127,8 +130,11 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	public void removeVeto (IPropertyVeto<?> aVeto)
 	{
-		RefUtils.remove(itsVetos, aVeto);
-		if (itsVetos.size() == 0) itsVetos = null;
+		if (itsVetos != null) 
+		{
+			RefUtils.remove(itsVetos, aVeto);
+			if (itsVetos.size() == 0) itsVetos = null;
+		}
 	}
 	
 	public IProperty<T> cloneForContainer(Object aContainer)

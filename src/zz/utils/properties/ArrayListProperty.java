@@ -63,8 +63,11 @@ implements IListProperty<E>
 	
 	public void removeListener (IListPropertyListener<E> aListener)
 	{
-		RefUtils.remove(itsListListeners, aListener);
-		if (itsListListeners.size() == 0) itsListListeners = null;
+		if (itsListListeners != null) 
+		{
+			RefUtils.remove(itsListListeners, aListener);
+			if (itsListListeners.size() == 0) itsListListeners = null;
+		}
 	}
 
 
