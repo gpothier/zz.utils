@@ -1,7 +1,7 @@
 /*
  * Created on Dec 14, 2004
  */
-package zz.utils.properties;
+package zz.utils.list;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,7 +9,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import zz.utils.ReverseIteratorWrapper;
-import zz.utils.list.ICollectionListener;
 import zz.utils.list.IListListener;
 import zz.utils.references.HardRef;
 import zz.utils.references.IRef;
@@ -19,27 +18,16 @@ import zz.utils.references.WeakRef;
 /**
  * Can be used as a base for implementing {@link zz.utils.properties.IListProperty}.
  * Manages listeners.
- * TODO: Use a trait to share with AbstractList
  * @author gpothier
  */
-public abstract class AbstractListProperty<E> extends AbstractProperty<List<E>> 
-implements IListProperty<E>
+public abstract class AbstractList<E>  
+implements IList<E>
 {
 	/**
 	 * We store all the listeners here, be they collection or
 	 * list listeners
 	 */
 	private List<IRef<Object>> itsListListeners;
-	
-	public AbstractListProperty(Object aContainer)
-	{
-		super(aContainer);
-	}
-	
-	public AbstractListProperty(Object aContainer, PropertyId<List<E>> aPropertyId)
-	{
-		super(aContainer, aPropertyId);
-	}
 	
 	public void addListener (IListListener<E> aListener)
 	{

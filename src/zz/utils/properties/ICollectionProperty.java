@@ -4,8 +4,8 @@
 package zz.utils.properties;
 
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+
+import zz.utils.list.ICollection;
 
 /**
  * A property whose value is a collection. Additional features are:
@@ -18,53 +18,6 @@ import java.util.List;
  * @author gpothier
  */
 public interface ICollectionProperty<C extends Collection<E>, E> 
-extends IProperty<C>, Iterable<E>
+extends IProperty<C>, ICollection<E>
 {
-	/**
-	 * Returns the number of elements in the collection.
-	 */
-	public int size();
-	
-	public void add (E aElement);
-	
-	/**
-	 * Removes the specified element
-	 * @return Whether the element was in the list.
-	 */
-	public boolean remove (E aElement);
-	
-	/**
-	 * Removes all the elements of this list.
-	 */
-	public void clear();
-	
-	/**
-	 * Adds a listener that will be notified each time this
-	 * property changes.
-	 * The property will maintains a weak reference to the listener,
-	 * so the programmer should ensure that the listener is strongly
-	 * referenced somewhere.
-	 * In particular, this kind of construct should not be used:
-	 * <pre>
-	 * prop.addListener (new MyListener());
-	 * </pre>
-	 * In this case, use {@link #addHardListener(IListPropertyListener)}
-	 * instead.
-	 */
-	public void addListener (ICollectionPropertyListener<E> aListener);
-
-	/**
-	 * Adds a listener that will be notified each time this
-	 * property changes.
-	 * The listener will be referenced through a strong reference.
-	 * @see #addListener(IPropertyListener)
-	 */
-	public void addHardListener (ICollectionPropertyListener<E> aListener);
-	
-	/**
-	 * Removes a previously added listener.
-	 */
-	public void removeListener (ICollectionPropertyListener<E> aListener);
-
-
 }

@@ -1,7 +1,9 @@
 /*
  * Created on 10-jun-2004
  */
-package zz.utils.properties;
+package zz.utils.list;
+
+import zz.utils.properties.ICollectionProperty;
 
 
 /**
@@ -9,19 +11,19 @@ package zz.utils.properties;
  * {@link zz.utils.properties.ICollectionProperty}
  * @author gpothier
  */
-public interface ICollectionPropertyListener<T>
+public interface ICollectionListener<T>
 {
 	/**
 	 * This method is called whenever an element is added to the collection.
-	 * @param aCollectionProperty The collection property whose content changed.
+	 * @param aCollection The collection whose content changed.
 	 * @param aElement The added element.
 	 */
-	public void elementAdded (ICollectionProperty<?, T> aCollectionProperty, T aElement);
+	public void elementAdded (ICollection<T> aCollection, T aElement);
 	
 	/**
 	 * This method is called whenever an element is removed from the list.
-	 * @param aCollectionProperty The collection property whose content changed.
+	 * @param aCollection The collection whose content changed.
 	 * @param aElement The removed element.
 	 */
-	public void elementRemoved (ICollectionProperty<?, T> aCollectionProperty, T aElement);
+	public void elementRemoved (ICollection<T> aCollection, T aElement);
 }

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import zz.utils.ReverseIteratorWrapper;
+import zz.utils.list.ICollectionListener;
 import zz.utils.references.HardRef;
 import zz.utils.references.IRef;
 import zz.utils.references.RefUtils;
@@ -28,7 +29,7 @@ implements ISetProperty<E>
 	 * We store all the listeners here, be they collection or
 	 * list listeners
 	 */
-	private List<IRef<ICollectionPropertyListener<E>>> itsListListeners;
+	private List<IRef<ICollectionListener<E>>> itsListListeners;
 	
 	public AbstractSetProperty(Object aContainer)
 	{
@@ -40,19 +41,19 @@ implements ISetProperty<E>
 		super(aContainer, aPropertyId);
 	}
 	
-	public void addListener (ICollectionPropertyListener<E> aListener)
+	public void addListener (ICollectionListener<E> aListener)
 	{
 		if (itsListListeners == null) itsListListeners = new ArrayList(3);
-		itsListListeners.add (new WeakRef<ICollectionPropertyListener<E>>(aListener));
+		itsListListeners.add (new WeakRef<ICollectionListener<E>>(aListener));
 	}
 
-	public void addHardListener (ICollectionPropertyListener<E> aListener)
+	public void addHardListener (ICollectionListener<E> aListener)
 	{
 		if (itsListListeners == null) itsListListeners = new ArrayList(3);
-		itsListListeners.add (new HardRef<ICollectionPropertyListener<E>>(aListener));
+		itsListListeners.add (new HardRef<ICollectionListener<E>>(aListener));
 	}
 	
-	public void removeListener (ICollectionPropertyListener<E> aListener)
+	public void removeListener (ICollectionListener<E> aListener)
 	{
 		if (itsListListeners != null) 
 		{
@@ -82,10 +83,10 @@ implements ISetProperty<E>
 		elementAdded(aElement);
 	
 		if (itsListListeners == null) return;
-		List<ICollectionPropertyListener<E>> theListeners = 
+		List<ICollectionListener<E>> theListeners = 
 			RefUtils.dereference(itsListListeners);
 		
-		for (ICollectionPropertyListener<E> theListener : theListeners)
+		for (ICollectionListener<E> theListener : theListeners)
 		{
 			theListener.elementAdded(this, aElement);
 		}
@@ -96,10 +97,10 @@ implements ISetProperty<E>
 		elementRemoved(aElement);
 
 		if (itsListListeners == null) return;
-		List<ICollectionPropertyListener<E>> theListeners = 
+		List<ICollectionListener<E>> theListeners = 
 			RefUtils.dereference(itsListListeners);
 		
-		for (ICollectionPropertyListener<E> theListener : theListeners)
+		for (ICollectionListener<E> theListener : theListeners)
 		{
 			theListener.elementRemoved(this, aElement);
 		}
