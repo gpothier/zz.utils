@@ -33,7 +33,7 @@ public class SimpleEvent<T> extends AbstractEvent<T>
 	 * Notifies all listeners that the event has been fired.
 	 * @param aData An object to pass to the listeners.
 	 */
-	public void fire (T aData)
+	public final void fire (T aData)
 	{
 		if (itsListeners != null) for (IEventListener<? super T> theListener : itsListeners)
 		{
@@ -41,6 +41,14 @@ public class SimpleEvent<T> extends AbstractEvent<T>
 		}
 	}
 
+	/**
+	 * This method is called whenever the event is fired.
+	 * Subclasses can override this with no need to call super.
+	 */
+	protected void fired (T aData)
+	{
+	}
+	
 	/**
 	 * Returns an event object that is fired whenever the specified property changes.
 	 */

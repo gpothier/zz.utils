@@ -10,6 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import zz.utils.notification.IEvent;
+import zz.utils.notification.SimpleEvent;
+
 /**
  * A thumbnail cache that always responds immediately to requests. A separate
  * thread creates the thumbnails in the background. Listeners can regigister
@@ -51,7 +54,13 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 	 */
 	private Set<Key<T>> itsIgnoredKeys = new HashSet<Key<T>>();
 
-	private List<IAsyncThumbnailCacheListener> itsListeners = new ArrayList<IAsyncThumbnailCacheListener>();
+	private SimpleEvent<T> itsThumbnailLoadedEvent = new SimpleEvent<T>();
+	
+	/**
+	 * This event is fired when a loading request is completed, indicating that a new thumbnail is 
+	 * available.
+	 */
+	public IEvent<T> eThumbnailLoaded = itsThumbnailLoadedEvent;
 
 
 	public AsyncThumbnailCache(int aMaxPermanentThumbnails, int aMaxRequests, ProcessingOrder aOrder)
@@ -133,7 +142,7 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 		                else
 		                {
 							cache(theRequest, theImage);
-							fireThumbnailCreated();
+							itsThumbnailLoadedEvent.fire(theRequest.getId());
 		                }
 					}
 					catch (Exception e)
@@ -155,24 +164,6 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 	private BufferedImage getLIPImage(int aSize)
 	{
 		return itsLIPCache.getThumbnail(aSize, aSize);
-	}
-
-	public void addListsner(IAsyncThumbnailCacheListener aListener)
-	{
-		itsListeners.add(aListener);
-	}
-
-	public void removeListsner(IAsyncThumbnailCacheListener aListener)
-	{
-		itsListeners.remove(aListener);
-	}
-
-	protected void fireThumbnailCreated()
-	{
-		for (IAsyncThumbnailCacheListener theListener : itsListeners)
-		{
-			theListener.thumbnailCreated();
-		}
 	}
 
 }
