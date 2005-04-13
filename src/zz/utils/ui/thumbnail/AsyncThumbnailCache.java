@@ -88,6 +88,7 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 	 */
 	private synchronized void queueRequest(Key<T> aKey)
 	{
+		System.out.println("Requesting: "+aKey.getId());
         if (itsIgnoredKeys.contains(aKey)) return;
 		if (!itsQueuedRequests.contains(aKey)) 
 		{
@@ -135,6 +136,7 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 
 				while ((theRequest = popRequest()) != null)
 				{
+					System.out.println("Processing: "+theRequest.getId());
 					try
 					{
 						BufferedImage theImage = createThumbnail(theRequest);
