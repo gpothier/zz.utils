@@ -34,4 +34,24 @@ public class TreeUtils
 		
 		return null;
 	}
+	
+	/**
+	 * Depths first visit of a tree.
+	 */
+	public static <N, V> void visit (ITree<N, V> aTree, ITreeVisitor<N, V> aVisitor)
+	{
+		visit (aTree, aTree.getRoot(), aVisitor);
+	}
+
+	/**
+	 *  Depths-first visit of a tree starting at the specified node.
+	 */
+	public static <N, V> void visit (ITree<N, V> aTree, N aNode, ITreeVisitor<N, V> aVisitor)
+	{
+		aVisitor.visit(aNode, aTree.getValue(aNode));
+		for (N theChild : aTree.getChildren(aNode))
+		{
+			visit(aTree, theChild, aVisitor);
+		}
+	}
 }
