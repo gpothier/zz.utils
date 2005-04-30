@@ -20,4 +20,11 @@ import zz.utils.list.IListListener;
 public interface IListProperty<E> 
 extends ICollectionProperty<List<E>, E>, IList<E>
 {
+	/**
+	 * For a list property, cloning value means cloning each element
+	 * of the list.
+	 * Each element must implement {@link zz.utils.IPublicCloneable} 
+	 * The backing list itself is always cloned.
+	 */
+	public IListProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue);
 }

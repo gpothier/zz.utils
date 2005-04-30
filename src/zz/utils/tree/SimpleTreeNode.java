@@ -34,7 +34,7 @@ public class SimpleTreeNode<V>
 		};
 	
 	
-	SimpleTreeNode(SimpleTree<V> aTree, boolean aLeaf)
+	protected SimpleTreeNode(SimpleTree<V> aTree, boolean aLeaf)
 	{
 		itsTree = aTree;
 		if (! aLeaf)

@@ -130,4 +130,9 @@ public abstract class AbstractTree<N, V> implements ITree<N, V>
 	{
 		return getChildCount(aNode) == 0;
 	}
+	
+	public Iterable<N> getChildren(N aParent)
+	{
+		return new DefaultChildrenIterator<N>(this, aParent);
+	}
 }

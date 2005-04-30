@@ -150,7 +150,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		}
 	}
 	
-	public IProperty<T> cloneForContainer(Object aContainer)
+	public IProperty<T> cloneForContainer(Object aContainer, boolean aCloneValue)
 	{
 		AbstractProperty<T> theClone = (AbstractProperty<T>) super.clone();
 		

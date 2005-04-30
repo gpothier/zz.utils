@@ -149,6 +149,13 @@ public abstract class AbstractPopup
 			{
 				hide();
 			}
+
+			public void windowDeactivated(WindowEvent aE)
+			{
+				hide();
+			}
+			
+			
 		});
 
 		itsPopupWindow = new PopupWindow (theOwner, this);
@@ -224,9 +231,10 @@ public abstract class AbstractPopup
 	private void repositionPopup ()
 	{
 		if (! itsShown) return;
-		if (getContent () == null) return;
 
-		itsPopupWindow.setBounds (getPopupBounds());
+		Rectangle thePopupBounds = getPopupBounds();
+		itsPopupWindow.setBounds (thePopupBounds);
+		
 		if (itsScreen != null)
 		{
 			JLayeredPane lp = getOwnerFrame().getLayeredPane ();

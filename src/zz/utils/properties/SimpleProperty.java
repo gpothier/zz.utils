@@ -3,6 +3,7 @@
  */
 package zz.utils.properties;
 
+import zz.utils.IPublicCloneable;
 import zz.utils.notification.ObservationCenter;
 import zz.utils.notification.Observer;
 
@@ -94,5 +95,17 @@ implements IProperty<T>, Observer
 	{
 	}
 
-	
+	public IProperty<T> cloneForContainer(Object aContainer,boolean aCloneValue)
+	{
+		SimpleProperty<T> theClone = 
+			(SimpleProperty) super.cloneForContainer(aContainer, aCloneValue);
+		
+		if (aCloneValue) 
+		{
+			IPublicCloneable theValue = (IPublicCloneable) itsValue;
+			theClone.itsValue = (T) theValue.clone();
+		}
+		
+		return theClone;
+	}
 }

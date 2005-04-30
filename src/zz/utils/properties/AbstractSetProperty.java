@@ -105,4 +105,17 @@ implements ISetProperty<E>
 			theListener.elementRemoved(this, aElement);
 		}
 	}
+	
+	public ISetProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue)
+	{
+		// Note: we don't tell super to clone value, we handle it ourselves.
+		// As we are an abstract class, we don't do anything special.
+		AbstractSetProperty<E> theClone = 
+			(AbstractSetProperty<E>) super.cloneForContainer(aContainer, false); 
+		
+		theClone.itsListListeners = null;
+		
+		return theClone;
+
+	}
 }

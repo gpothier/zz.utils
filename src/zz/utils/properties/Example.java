@@ -8,9 +8,9 @@ package zz.utils.properties;
  */
 public class Example 
 {
-	private PropertyManager itsManager = new PropertyManager();
+	private PropertyManager itsManager = new PropertyManager(this);
 	
-	public static final PropertyId<String> NAME = new PropertyId<String>("name");
+	public static final PropertyId<String> NAME = new PropertyId<String>("name", false);
 	public IProperty<String> pName = itsManager.registerProperty(
 			NAME, 
 			new SimpleRWProperty<String>(NAME));

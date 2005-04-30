@@ -53,4 +53,10 @@ public class ImageFrame extends JFrame
 			else super.paintComponent(g);
 		}
 	}
+	
+	public static void showImage(Image aImage)
+	{
+		ImageFrame theFrame = new ImageFrame(aImage);
+		theFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
 }

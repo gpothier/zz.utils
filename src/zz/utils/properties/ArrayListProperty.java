@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import zz.utils.IPublicCloneable;
 import zz.utils.ReverseIteratorWrapper;
 
 /**
@@ -65,6 +66,11 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 		get().add (aIndex, aElement);
 	}
 
+	public void addAll(Iterable<? extends E> aCollection)
+	{
+		for (E theElement : aCollection) add (theElement);
+	}
+	
 	public void set(int aIndex, E aElement)
 	{
 		E theElement = get().set(aIndex, aElement);
@@ -115,6 +121,30 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	public Iterator<E> reverseIterator()
 	{
 		return new ReverseIteratorWrapper (get());
+	}
+	
+	public IListProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue)
+	{
+		// Note: we don't tell super to clone value, we handle it ourselves.
+		ArrayListProperty<E> theClone = 
+			(ArrayListProperty) super.cloneForContainer(aContainer, false);
+		
+		if (aCloneValue)
+		{
+			theClone.itsList = new MyList();
+			for (E theElement : itsList)
+			{
+				IPublicCloneable theClonable = (IPublicCloneable) theElement;
+				E theClonedElement = (E) theClonable.clone();
+				theClone.itsList.add (theClonedElement);
+			}
+		}
+		else
+		{
+			theClone.itsList = new MyList(itsList);
+		}
+		
+		return theClone;
 	}
 	
 	/**

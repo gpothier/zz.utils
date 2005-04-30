@@ -49,10 +49,9 @@ public class RelativePopup extends AbstractPopup implements AWTEventListener
 	protected Rectangle getPopupBounds ()
 	{
 		Point theParentPosition = itsParent.getLocationOnScreen();
-		Point theOwnerPosition = getOwnerFrame().getLocationOnScreen();
-		
-		int theX = itsPosition.x + theParentPosition.x - theOwnerPosition.x;
-		int theY = itsPosition.y + theParentPosition.y - theOwnerPosition.y;
+
+		int theX = itsPosition.x + theParentPosition.x;
+		int theY = itsPosition.y + theParentPosition.y;
 		Dimension thePreferredSize = getContent().getPreferredSize();
 		int theW = thePreferredSize.width;
 		int theH = thePreferredSize.height;

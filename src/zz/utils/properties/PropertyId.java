@@ -10,15 +10,27 @@ import zz.utils.PublicCloneable;
  */
 public class PropertyId<T>
 {
-	private String itsName;
+	private final String itsName;
 	
-	public PropertyId(String aName)
+	/**
+	 * Whether values of the property should be cloned when the property is cloned.
+	 */
+	private final boolean itsCloneValues;
+	
+	public PropertyId(String aName, boolean aCloneValues)
 	{
 		itsName = aName;
+		itsCloneValues = aCloneValues;
 	}
 	
 	public String getName()
 	{
 		return itsName;
 	}
+
+	protected boolean getCloneValues()
+	{
+		return itsCloneValues;
+	}
+	
 }

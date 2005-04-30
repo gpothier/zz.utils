@@ -3,18 +3,12 @@
  */
 package zz.utils.properties;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
-import zz.utils.ReverseIteratorWrapper;
-import zz.utils.references.HardRef;
-import zz.utils.references.IRef;
-import zz.utils.references.RefUtils;
-import zz.utils.references.WeakRef;
+import zz.utils.IPublicCloneable;
 
 /**
  * @author gpothier
@@ -86,6 +80,32 @@ public class HashSetProperty<E> extends AbstractSetProperty<E>
 	{
 		return get().iterator();
 	}
+	
+	public ISetProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue)
+	{
+		// Note: we don't tell super to clone value, we handle it ourselves.
+		HashSetProperty<E> theClone = 
+			(HashSetProperty) super.cloneForContainer(aContainer, false);
+		
+		if (aCloneValue)
+		{
+			theClone.itsSet = new MySet();
+			for (E theElement : itsSet)
+			{
+				IPublicCloneable theClonable = (IPublicCloneable) theElement;
+				E theClonedElement = (E) theClonable.clone();
+				theClone.itsSet.add (theClonedElement);
+			}
+		}
+		else
+		{
+			theClone.itsSet = new MySet(itsSet);
+		}
+		
+		return theClone;
+	}
+	
+
 	
 	/**
 	 * This is our implementation of List, which override some methods in

@@ -77,9 +77,9 @@ public interface IProperty<T>
 	/**
 	 * Creates a clone of this property, giving the cloned property the specified
 	 * container.
-	 * The value of the property is not deeply cloned.
 	 * The clone has no listeners or vetoers.
+	 * @param aCloneValue Whether to clone the value of the property.
 	 */
-	public IProperty<T> cloneForContainer (Object aContainer);
+	public IProperty<T> cloneForContainer (Object aContainer, boolean aCloneValue);
 
 }

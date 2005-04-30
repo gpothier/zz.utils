@@ -148,10 +148,12 @@ implements IListProperty<E>
 		}
 	}
 	
-	public IProperty<List<E>> cloneForContainer(Object aContainer)
+	public IListProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue)
 	{
+		// Note: we don't tell super to clone value, we handle it ourselves.
+		// As we are an abstract class, we don't do anything special.
 		AbstractListProperty<E> theClone = 
-			(AbstractListProperty<E>) super.cloneForContainer(aContainer);
+			(AbstractListProperty<E>) super.cloneForContainer(aContainer, false); 
 		
 		theClone.itsListListeners = null;
 		

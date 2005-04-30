@@ -19,7 +19,17 @@ public class PropertyManager extends PublicCloneable
 {
 	private Map<PropertyId, IProperty> itsProperties =
 		new HashMap<PropertyId, IProperty>();
+
+	/**
+	 * The object that contains this manager and managed properties.
+	 */
+	private Object itsContainer;
 	
+	public PropertyManager(Object itsContainer)
+	{
+		this.itsContainer = itsContainer;
+	}
+
 	/**
 	 * Retrieve the property that corresponds to the given id.
 	 */ 
@@ -54,7 +64,10 @@ public class PropertyManager extends PublicCloneable
 			PropertyId theId = theEntry.getKey();
 			IProperty theProperty = theEntry.getValue();
 			
-			IProperty thePropertyClone = theProperty.cloneForContainer(aContainer);
+			IProperty thePropertyClone = theProperty.cloneForContainer(
+					aContainer, 
+					theId.getCloneValues());
+			
 			theClone.itsProperties.put (theId, thePropertyClone);
 		}
 		

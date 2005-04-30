@@ -48,6 +48,11 @@ public class ZArrayList<E> extends AbstractList<E>
 		get().add (aIndex, aElement);
 	}
 
+	public void addAll(Iterable<? extends E> aCollection)
+	{
+		for (E theElement : aCollection) add (theElement);
+	}
+
 	public void set(int aIndex, E aElement)
 	{
 		E theElement = get().set(aIndex, aElement);

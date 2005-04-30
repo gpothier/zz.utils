@@ -17,11 +17,26 @@ public class SwingTreeModel<N, V> extends DefaultTreeModel implements ITreeListe
 {
 	private ITree<N, V> itsTree;
 
+	public SwingTreeModel()
+	{
+		this (null);
+	}
+	
 	public SwingTreeModel(ITree<N, V> aTree)
 	{
 		super(null);
-		itsTree = aTree;
+		setTree(aTree);
+	}
+	
+	public ITree<N, V> getTree()
+	{
+		return itsTree;
+	}
 
+	public void setTree(ITree<N, V> aTree)
+	{
+		if (itsTree != null) itsTree.removeListener(this);
+		itsTree = aTree;
 		if (itsTree != null) itsTree.addListener(this);
 	}
 
