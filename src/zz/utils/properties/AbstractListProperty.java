@@ -12,6 +12,7 @@ import zz.utils.FailsafeLinkedList;
 import zz.utils.ReverseIteratorWrapper;
 import zz.utils.list.ICollectionListener;
 import zz.utils.list.IListListener;
+import zz.utils.notification.ObservationCenter;
 import zz.utils.references.HardRef;
 import zz.utils.references.IRef;
 import zz.utils.references.RefUtils;
@@ -104,6 +105,8 @@ implements IListProperty<E>
 	{
 		elementAdded(aIndex, aElement);
 	
+		ObservationCenter.getInstance().requestObservation(getContainer(), this);
+		
 		if (itsListListeners == null) return;
 		List<Object> theListeners = RefUtils.dereference(itsListListeners);
 		
@@ -128,6 +131,8 @@ implements IListProperty<E>
 	{
 		elementRemoved(aIndex, aElement);
 
+		ObservationCenter.getInstance().requestObservation(getContainer(), this);
+		
 		if (itsListListeners == null) return;
 		List<Object> theListeners = RefUtils.dereference(itsListListeners);
 		
@@ -146,6 +151,7 @@ implements IListProperty<E>
 				theCollectionPropertyListener.elementRemoved(this, aElement);
 			}
 		}
+
 	}
 	
 	public IListProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue)

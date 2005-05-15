@@ -40,7 +40,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	protected void set (List<E> aList)
 	{
 		// The below code is a workaround for a strange jdk compile error.
-		if (MyList.class.isAssignableFrom(aList.getClass()))
+		if (aList != null && MyList.class.isAssignableFrom(aList.getClass()))
 //		if (aList instanceof MyList) This is the original code
 			itsList = ((MyList) aList);
 
@@ -152,7 +152,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	 * order to send notifications. 
 	 * @author gpothier
 	 */
-	private class MyList extends ArrayList<E>
+	protected class MyList extends ArrayList<E>
 	{
 		public MyList()
 		{
