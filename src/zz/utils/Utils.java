@@ -604,4 +604,14 @@ public final class Utils
 		return (aValue>aInf && aValue<aSup);
 	}
 	
+	/**
+	 * Writes a newline and a number of spaces into the specified string builder.
+	 */
+	public static void indent (StringBuilder aBuilder, int aIndent)
+	{
+		aBuilder.append("\r\n");
+		for (int i=0;i<aIndent;i++) aBuilder.append(' ');
+	}
+
+	
 }
