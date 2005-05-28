@@ -161,5 +161,12 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		return theClone;
 	}
 
+	public String toString()
+	{
+		return String.format (
+				"Property (id: %s, value: %s)",
+				itsPropertyId,
+				get());
+	}
 	
 }
