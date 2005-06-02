@@ -49,7 +49,7 @@ public class TextPainter
 			VerticalAlignment aVAlign,
 			HorizontalAlignment aHAlign)
 	{
-		if (aText == null || aText.length() == 0) return;
+		if (aText == null || aText.length() == 0 || aColor == null) return;
 		
 		AttributedString theString = new AttributedString(aText);
 		
