@@ -81,7 +81,7 @@ public abstract class WrapperList<E, E0> extends AbstractList<E>
 
 	public boolean remove(E aElement)
 	{
-		return itsList.remove(unwrap(aElement)); // We don't need to use cache fro remove.
+		return itsList.remove(unwrap(aElement)); // We don't need to use cache for remove.
 	}
 
 	public int size()
