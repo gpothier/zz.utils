@@ -3,6 +3,9 @@
  */
 package zz.utils.tree;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import zz.utils.Utils;
 
 /**
@@ -52,6 +55,31 @@ public class TreeUtils
 		for (N theChild : aTree.getChildren(aNode))
 		{
 			visit(aTree, theChild, aVisitor);
+		}
+	}
+	
+	/**
+	 * Returns a list of all node values of the given tree. 
+	 */
+	public static <N, V> List<V> flatten (ITree<N, V> aTree)
+	{
+		FlattenerVisitor<N, V> theVisitor = new FlattenerVisitor<N, V>();
+		visit(aTree, theVisitor);
+		return theVisitor.getResult();
+	}
+	
+	private static class FlattenerVisitor<N, V> implements ITreeVisitor<N, V>
+	{
+		private List<V> itsResult = new ArrayList<V>();
+
+		public List<V> getResult()
+		{
+			return itsResult;
+		}
+
+		public void visit(N aNode, V aValue)
+		{
+			itsResult.add(aValue);
 		}
 	}
 }
