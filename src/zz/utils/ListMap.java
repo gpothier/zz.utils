@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -21,6 +22,17 @@ import java.util.List;
  */
 public class ListMap<K, V> extends HashMap<K, List<V>>
 {
+	/**
+	 * Returns the element at the specified index of the list
+	 * that corresponds to the given key.
+	 */
+	public V get (K aKey, int aIndex)
+	{
+		List<V> theList = getList(aKey);
+		if (theList == null) throw new NoSuchElementException("No element for key "+aKey);
+		else return theList.get(aIndex);
+	}
+	
 	/**
 	 * Adds aValue the the list of the specified key.
 	 * @return The list into which the value was added.
