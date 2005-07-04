@@ -77,6 +77,12 @@ public interface ITree<N, V>
 	public V getValue (N aNode);
 	
 	/**
+	 * Sets the value of the given node.
+	 * @return The previous value of the node.
+	 */
+	public V setValue (N aNode, V aValue);
+	
+	/**
 	 * Creates a new node for this tree, with the specified value.
 	 */
 	public N createNode (V aValue);

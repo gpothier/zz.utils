@@ -21,9 +21,18 @@ public class SimpleTreeBuilder<V>
 	 */
 	public void root(SimpleTreeNode<V>... aNodes)
 	{
-		for (SimpleTreeNode<V> theNode : aNodes) itsTree.getRoot().pChildren.add (theNode);
+		root(null, aNodes);
 	}
 
+	/**
+	 * Sets the value and the children of the root node.
+	 */
+	public void root(V aValue, SimpleTreeNode<V>... aNodes)
+	{
+		itsTree.setValue(itsTree.getRoot(), aValue);
+		for (SimpleTreeNode<V> theNode : aNodes) itsTree.getRoot().pChildren.add (theNode);
+	}
+	
 	/**
 	 * Creates a leaf node
 	 */

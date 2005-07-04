@@ -78,7 +78,6 @@ implements IProperty<T>, Observer
 			itsValue = aValue;
 			if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
 			
-			changed(theOldValue, aValue);
 			firePropertyChanged(theOldValue, aValue);
 		}
 	}
@@ -88,12 +87,6 @@ implements IProperty<T>, Observer
 		if (aObservable == itsValue) firePropertyValueChanged();
 	}
 
-	/**
-	 * This method is called whenever the value of this property changes.
-	 */
-	protected void changed (T aOldValue, T aNewValue)
-	{
-	}
 
 	public IProperty<T> cloneForContainer(Object aContainer,boolean aCloneValue)
 	{

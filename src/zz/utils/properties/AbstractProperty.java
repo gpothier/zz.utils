@@ -70,8 +70,18 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		return itsPropertyId;
 	}
 	
+	/**
+	 * This method is called whenever the value of this property changes.
+	 * It does nothing by default, but subclasses can override it.
+	 */
+	protected void changed (T aOldValue, T aNewValue)
+	{
+	}
+
+	
 	protected void firePropertyChanged (T aOldValue, T aNewValue)
 	{
+		changed(aOldValue, aNewValue);
 		if (itsListeners != null)
 		{
 			List<IPropertyListener<? super T>> theListeners = 
@@ -86,6 +96,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	protected void firePropertyValueChanged ()
 	{
+		changed(get(), get());
 		if (itsListeners != null)
 		{
 			List<IPropertyListener<? super T>> theListeners = RefUtils.dereference(itsListeners); 

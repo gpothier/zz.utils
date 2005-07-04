@@ -62,6 +62,13 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 	{
 		return aNode.pValue.get();
 	}
+	
+	public V setValue(SimpleTreeNode<V> aNode, V aValue)
+	{
+		V thePreviousValue = aNode.pValue.get();
+		aNode.pValue.set(aValue);
+		return thePreviousValue;
+	}
 
 	/**
 	 * Creates a new node for this tree, without adding it to the tree.
