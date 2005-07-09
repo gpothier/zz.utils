@@ -135,4 +135,12 @@ public abstract class AbstractTree<N, V> implements ITree<N, V>
 	{
 		return new DefaultChildrenIterator<N>(this, aParent);
 	}
+	
+    /**
+     * Throws {@link UnsupportedOperationException}
+     */
+	public V setValue(N aNode, V aValue)
+	{
+		throw new UnsupportedOperationException();
+	}
 }
