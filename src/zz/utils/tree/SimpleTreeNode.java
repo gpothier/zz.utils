@@ -23,7 +23,7 @@ public class SimpleTreeNode<V>
 	 */
 	public final IListProperty<SimpleTreeNode<V>> pChildren;
 	
-	public final IRWProperty<V> pValue =
+	private final IRWProperty<V> pValue =
 		new SimpleRWProperty<V>(this)
 		{
 			public void set(V aValue)
@@ -73,5 +73,10 @@ public class SimpleTreeNode<V>
 	public void setParent(SimpleTreeNode<V> aParent)
 	{
 		itsParent = aParent;
+	}
+	
+	public IRWProperty<V> pValue()
+	{
+		return pValue;
 	}
 }

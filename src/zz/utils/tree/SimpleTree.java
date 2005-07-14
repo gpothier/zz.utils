@@ -60,13 +60,13 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 
 	public V getValue(SimpleTreeNode<V> aNode)
 	{
-		return aNode.pValue.get();
+		return aNode.pValue().get();
 	}
 	
 	public V setValue(SimpleTreeNode<V> aNode, V aValue)
 	{
-		V thePreviousValue = aNode.pValue.get();
-		aNode.pValue.set(aValue);
+		V thePreviousValue = aNode.pValue().get();
+		aNode.pValue().set(aValue);
 		return thePreviousValue;
 	}
 
@@ -76,7 +76,7 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 	public SimpleTreeNode<V> createNode(V aValue)
 	{
 		SimpleTreeNode<V> theNode = new SimpleTreeNode<V>(this, false);
-		theNode.pValue.set(aValue);
+		theNode.pValue().set(aValue);
 		return theNode;
 	}
 	
@@ -86,7 +86,7 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 	public SimpleTreeNode<V> createLeafNode(V aValue)
 	{
 		SimpleTreeNode<V> theNode = new SimpleTreeNode<V>(this, true);
-		theNode.pValue.set(aValue);
+		theNode.pValue().set(aValue);
 		return theNode;
 	}
 	
