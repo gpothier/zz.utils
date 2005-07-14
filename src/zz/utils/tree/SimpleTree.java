@@ -35,27 +35,27 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 
 	public int getChildCount(SimpleTreeNode<V> aParent)
 	{
-		return aParent.pChildren != null ? aParent.pChildren.size() : 0;
+		return aParent.pChildren() != null ? aParent.pChildren().size() : 0;
 	}
 	
 	public boolean isLeaf(SimpleTreeNode<V> aNode)
 	{
-		return aNode.pChildren == null;
+		return aNode.pChildren() == null;
 	}
 
 	public SimpleTreeNode<V> getChild(SimpleTreeNode<V> aParent, int aIndex)
 	{
-		return aParent.pChildren.get(aIndex);
+		return aParent.pChildren().get(aIndex);
 	}
 	
 	public Iterable<SimpleTreeNode<V>> getChildren(SimpleTreeNode<V> aParent)
 	{
-		return aParent.pChildren;
+		return aParent.pChildren();
 	}
 
 	public int getIndexOfChild(SimpleTreeNode<V> aParent, SimpleTreeNode<V> aChild)
 	{
-		return aParent.pChildren.indexOf(aChild);
+		return aParent.pChildren().indexOf(aChild);
 	}
 
 	public V getValue(SimpleTreeNode<V> aNode)
@@ -95,7 +95,7 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 	 */
 	public void addChild(SimpleTreeNode<V> aParent, int aIndex, SimpleTreeNode<V> aChild)
 	{
-		aParent.pChildren.add(aIndex, aChild);
+		aParent.pChildren().add(aIndex, aChild);
 	}
 
 	/**
@@ -103,7 +103,7 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 	 */
 	public void removeChild(SimpleTreeNode<V> aParent, int aIndex)
 	{
-		aParent.pChildren.remove(aIndex);
+		aParent.pChildren().remove(aIndex);
 	}
 	
 }

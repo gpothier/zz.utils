@@ -30,7 +30,7 @@ public class SimpleTreeBuilder<V>
 	public void root(V aValue, SimpleTreeNode<V>... aNodes)
 	{
 		itsTree.setValue(itsTree.getRoot(), aValue);
-		for (SimpleTreeNode<V> theNode : aNodes) itsTree.getRoot().pChildren.add (theNode);
+		for (SimpleTreeNode<V> theNode : aNodes) itsTree.getRoot().pChildren().add (theNode);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class SimpleTreeBuilder<V>
 	public SimpleTreeNode<V> node(V aValue, SimpleTreeNode<V>... aChildren)
 	{
 		SimpleTreeNode<V> theNode = itsTree.createNode(aValue);
-		for (SimpleTreeNode<V> theChild : aChildren) theNode.pChildren.add (theChild);
+		for (SimpleTreeNode<V> theChild : aChildren) theNode.pChildren().add (theChild);
 		return theNode;
 	}
 }

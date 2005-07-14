@@ -21,7 +21,7 @@ public class SimpleTreeNode<V>
 	/**
 	 * The children of this node. If this property is null, there are no children.
 	 */
-	public final IListProperty<SimpleTreeNode<V>> pChildren;
+	private final IListProperty<SimpleTreeNode<V>> pChildren;
 	
 	private final IRWProperty<V> pValue =
 		new SimpleRWProperty<V>(this)
@@ -78,5 +78,10 @@ public class SimpleTreeNode<V>
 	public IRWProperty<V> pValue()
 	{
 		return pValue;
+	}
+	
+	public IListProperty<SimpleTreeNode<V>> pChildren()
+	{
+		return pChildren;
 	}
 }
