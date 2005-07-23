@@ -23,6 +23,12 @@ public interface IProperty<T>
 	public PropertyId<T> getId();
 	
 	/**
+	 * Returns the object that owns this property, if any.
+	 */
+	public Object getContainer();
+
+	
+	/**
 	 * Standard getter for this property.
 	 */
 	public T get();

@@ -6,6 +6,8 @@ package zz.utils.ui.text;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
@@ -13,7 +15,9 @@ import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
@@ -38,7 +42,46 @@ public class TextPainter
 	 * A font constant.
 	 */
 	public static final Font SANS_SERIF_PLAIN_10 = new Font("SansSerif", Font.PLAIN, 10);
+	
+	/**
+	 * A default graphics that can be used for font metrics calculations
+	 */
+	private static Graphics2D DEFAULT_GRAPHICS;
+	
+	/**
+	 * Returns a graphics that can be used for font metrics computations.
+	 */
+	public static Graphics2D getDefaultGraphics()
+	{
+		if (DEFAULT_GRAPHICS == null)
+		{
+			GraphicsConfiguration theConfiguration = 
+				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration();
+			
+			BufferedImage theImage = theConfiguration.createCompatibleImage(1, 1);
+			DEFAULT_GRAPHICS = theImage.createGraphics();
+		}
+		return DEFAULT_GRAPHICS;
+	}
 
+
+
+	public static AttributedString createAttributedString(Font aFont,
+			boolean aUnderline,
+			Paint aColor,
+			String aText)
+	{
+		AttributedString theString = new AttributedString(aText);
+		
+		if (aColor != null) theString.addAttribute(TextAttribute.FOREGROUND, aColor);
+		if (aFont != null) theString.addAttribute(TextAttribute.FONT, aFont);
+		theString.addAttribute(
+				TextAttribute.UNDERLINE, 
+				aUnderline ? TextAttribute.UNDERLINE_ON : null);
+		
+		return theString;
+	}
+	
 	public static void paint(
 			Graphics2D aGraphics, 
 			Font aFont,
@@ -51,13 +94,7 @@ public class TextPainter
 	{
 		if (aText == null || aText.length() == 0 || aColor == null) return;
 		
-		AttributedString theString = new AttributedString(aText);
-		
-		theString.addAttribute(TextAttribute.FOREGROUND, aColor);
-		theString.addAttribute(TextAttribute.FONT, aFont);
-		theString.addAttribute(
-				TextAttribute.UNDERLINE, 
-				aUnderline ? TextAttribute.UNDERLINE_ON : null);
+		AttributedString theString = createAttributedString(aFont, aUnderline, aColor, aText);
 		
 		paint (aGraphics, theString, aShape, aVAlign, aHAlign);
 	}
@@ -162,5 +199,39 @@ public class TextPainter
 		
 		// restore previous clip
 		aGraphics.setClip(thePreviousClip);
+	}
+
+	/**
+	 * Computes the size of the given text.
+	 * @param aGraphics A graphics used to perform computations. If no graphics
+	 * is available use {@link #getDefaultGraphics()}.
+	 */
+	public static Point2D computeSize(
+			Graphics2D aGraphics, 
+			Font aFont,
+			boolean aUnderline,
+			String aText)
+	{
+		AttributedString theString = createAttributedString(aFont, aUnderline, null, aText);
+		return computeSize(aGraphics, theString);
+	}
+	
+	/**
+	 * Computes the size of the given text.
+	 * @param aGraphics A graphics used to perform computations. If no graphics
+	 * is available use {@link #getDefaultGraphics()}.
+	 */
+	public static Point2D computeSize(
+			Graphics2D aGraphics, 
+			AttributedString aText)
+	{
+		FontRenderContext theContext = aGraphics.getFontRenderContext();
+		AttributedCharacterIterator theIterator = aText.getIterator();
+
+		TextLayout theLayout = new TextLayout(theIterator, theContext);
+		
+		Rectangle2D theBounds = theLayout.getBounds();
+		
+		return new Point2D.Double(theBounds.getWidth() + 2, theBounds.getHeight() + 2);
 	}
 }

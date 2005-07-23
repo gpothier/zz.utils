@@ -22,7 +22,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
-public abstract class UniversalRenderer implements ListCellRenderer, TreeCellRenderer, TableCellRenderer
+public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCellRenderer, TableCellRenderer
 {
 	private ListCellRenderer itsListCellRenderer;
 	private TreeCellRenderer itsTreeCellRenderer;
@@ -142,13 +142,13 @@ public abstract class UniversalRenderer implements ListCellRenderer, TreeCellRen
 	 * Returns the text to display in the control.
 	 * @param aObject The object that is being rendered
 	 */
-	protected abstract String getName (Object aObject);
+	protected abstract String getName (V aObject);
 
 	/**
 	 * Returns an optional tooltip text
 	 * @param aObject The object that is being rendered
 	 */
-	protected String getToolTipText (Object aObject)
+	protected String getToolTipText (V aObject)
 	{
 		return null;
 	}
@@ -157,7 +157,7 @@ public abstract class UniversalRenderer implements ListCellRenderer, TreeCellRen
 	 * Returns an optional icon
 	 * @param aObject The object that is being rendered
 	 */
-	protected Icon getIcon (Object aObject)
+	protected Icon getIcon (V aObject)
 	{
 		return null;
 	}
@@ -166,7 +166,7 @@ public abstract class UniversalRenderer implements ListCellRenderer, TreeCellRen
 	 * Returns an optional color for the text.
 	 * @param aObject The object that is being rendered
 	 */
-	protected Color getTextColor (Object aObject)
+	protected Color getTextColor (V aObject)
 	{
 		return null;
 	}
@@ -178,16 +178,18 @@ public abstract class UniversalRenderer implements ListCellRenderer, TreeCellRen
 	 */
 	protected void setupLabel (JLabel aLabel, Object aObject)
 	{
-		String theName = getName(aObject);
+		V theObject = (V) aObject;
+		
+		String theName = getName(theObject);
 		aLabel.setText(theName != null ? theName : "");
 
-		String theToolTipText = getToolTipText(aObject);
+		String theToolTipText = getToolTipText(theObject);
 		aLabel.setToolTipText(theToolTipText);
 
-		Icon theIcon = getIcon(aObject);
+		Icon theIcon = getIcon(theObject);
 		aLabel.setIcon(theIcon);
 
-		Color theTextColor = getTextColor (aObject);
+		Color theTextColor = getTextColor (theObject);
 		aLabel.setForeground(theTextColor != null ? theTextColor : Color.BLACK);
 	}
 }
