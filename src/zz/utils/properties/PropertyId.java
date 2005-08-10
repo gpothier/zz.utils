@@ -33,4 +33,9 @@ public class PropertyId<T>
 		return itsCloneValues;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return itsName;
+	}
 }
