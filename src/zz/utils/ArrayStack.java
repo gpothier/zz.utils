@@ -52,6 +52,11 @@ public class ArrayStack<T> extends ArrayList<T> implements LimitableStack<T>
 		else
 			return null;
 	}
+	
+	public T peek(int aIndex)
+	{
+		return get(aIndex);
+	}
 
 	public T pop()
 	{
