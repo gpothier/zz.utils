@@ -28,13 +28,16 @@ public class TreeUtils
 	public static <N, V> N findNode(ITree<N, V> aTree, N aNode, V aValue)
 	{
 		if (Utils.equalOrBothNull(aTree.getValue(aNode), aValue)) return aNode;
-		
-		for (N theChild : aTree.getChildren(aNode))
+		Iterable<N> theChildren = aTree.getChildren(aNode);
+		if (theChildren != null) for (N theChild : theChildren)
 		{
 			N theResult = findNode(aTree, theChild, aValue);
-			if (theResult != null) return theResult;
+			if (theResult != null)
+			{
+				return theResult;
+				
+			}
 		}
-		
 		return null;
 	}
 	
