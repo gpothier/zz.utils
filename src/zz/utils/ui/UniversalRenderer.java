@@ -10,12 +10,6 @@ import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.*;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JTree;
-import javax.swing.ListCellRenderer;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -170,6 +164,15 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 	{
 		return null;
 	}
+	
+	/**
+	 * Returns an optional background color.
+	 * @param aObject The object that is being rendered.
+	 */
+	protected Color getBackgroundColor (V aObject)
+	{
+		return null;
+	}
 
 
 	/**
@@ -191,5 +194,8 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 
 		Color theTextColor = getTextColor (theObject);
 		aLabel.setForeground(theTextColor != null ? theTextColor : Color.BLACK);
+		
+		Color theBackgroundColor = getBackgroundColor(theObject);
+		if (theBackgroundColor != null) aLabel.setBackground(theBackgroundColor);
 	}
 }

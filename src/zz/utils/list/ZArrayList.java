@@ -175,6 +175,12 @@ public class ZArrayList<E> extends AbstractList<E>
 
 			return theElement;
 		}
+		
+		@Override
+		public void clear()
+		{
+			while (! isEmpty()) remove(size()-1);
+		}
 	}
 
 }
