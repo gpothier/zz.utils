@@ -13,24 +13,24 @@ public class SimpleRWProperty<T> extends SimpleProperty<T> implements IRWPropert
 	{
 	}
 	
-	public SimpleRWProperty(Object aContainer, PropertyId<T> aPropertyId)
+	public SimpleRWProperty(Object aOwner, PropertyId<T> aPropertyId)
 	{
-		super(aContainer, aPropertyId);
+		super(aOwner, aPropertyId);
 	}
 
-	public SimpleRWProperty(Object aContainer, PropertyId<T> aPropertyId, T aValue)
+	public SimpleRWProperty(Object aOwner, PropertyId<T> aPropertyId, T aValue)
 	{
-		super(aContainer, aPropertyId, aValue);
+		super(aOwner, aPropertyId, aValue);
 	}
 
-	public SimpleRWProperty(Object aContainer)
+	public SimpleRWProperty(Object aOwner)
 	{
-		super(aContainer);
+		super(aOwner);
 	}
 
-	public SimpleRWProperty(Object aContainer, T aValue)
+	public SimpleRWProperty(Object aOwner, T aValue)
 	{
-		super(aContainer, aValue);
+		super(aOwner, aValue);
 	}
 
 	public void set (T aValue)

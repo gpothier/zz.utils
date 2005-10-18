@@ -12,6 +12,12 @@ import java.awt.Font;
  */
 public class XFont
 {
+	public static final Font DEFAULT_PLAIN = new Font("SansSerif", Font.PLAIN, 8);
+	public static final XFont DEFAULT_XPLAIN = new XFont(DEFAULT_PLAIN, false);
+	public static final Font DEFAULT_BOLD = new Font("SansSerif", Font.BOLD, 12);
+	public static final Font DEFAULT_ITALIC = new Font("SansSerif", Font.ITALIC, 12);
+
+	
 	private Font itsAWTFont;
 	private boolean itsUnderline;
 
@@ -46,4 +52,11 @@ public class XFont
 		itsUnderline = aUnderline;
 	}
 	
+	/**
+	 * Creates a default font of the given size.
+	 */
+	public static XFont getDefaultFont (float aSize)
+	{
+		return new XFont (DEFAULT_PLAIN.deriveFont(aSize), false);
+	}
 }

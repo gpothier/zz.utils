@@ -26,5 +26,5 @@ extends ICollectionProperty<List<E>, E>, IList<E>
 	 * Each element must implement {@link zz.utils.IPublicCloneable} 
 	 * The backing list itself is always cloned.
 	 */
-	public IListProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue);
+	public IListProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue);
 }

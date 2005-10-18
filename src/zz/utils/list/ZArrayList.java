@@ -38,9 +38,9 @@ public class ZArrayList<E> extends AbstractList<E>
 		else itsList = aList != null ? new MyList (aList) : null;
 	}
 	
-	public void add(E aElement)
+	public boolean add(E aElement)
 	{
-		get().add (aElement);
+		return get().add (aElement);
 	}
 
 	public void add(int aIndex, E aElement)
@@ -48,17 +48,12 @@ public class ZArrayList<E> extends AbstractList<E>
 		get().add (aIndex, aElement);
 	}
 
-	public void addAll(Iterable<? extends E> aCollection)
-	{
-		for (E theElement : aCollection) add (theElement);
-	}
-
 	public void set(int aIndex, E aElement)
 	{
 		E theElement = get().set(aIndex, aElement);
 	}
 	
-	public boolean remove(E aElement)
+	public boolean remove(Object aElement)
 	{
 		return get().remove (aElement);
 	}
@@ -98,6 +93,16 @@ public class ZArrayList<E> extends AbstractList<E>
 	public Iterator<E> iterator()
 	{
 		return get().iterator();
+	}
+	
+	public Object[] toArray()
+	{
+		return get().toArray();
+	}
+
+	public <T> T[] toArray(T[] a)
+	{
+		return get().toArray(a);
 	}
 
 	public Iterator<E> reverseIterator()

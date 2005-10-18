@@ -16,31 +16,8 @@ import java.util.List;
  * @param <E> The element type
  * @author gpothier
  */
-public interface ICollection<E> extends Iterable<E>
+public interface ICollection<E> extends Collection<E>
 {
-	/**
-	 * Returns the number of elements in the collection.
-	 */
-	public int size();
-	
-	public void add (E aElement);
-	
-	/**
-	 * Removes the specified element
-	 * @return Whether the element was in the list.
-	 */
-	public boolean remove (E aElement);
-	
-	/**
-	 * Returns true if the collection contains the specified element.
-	 */
-	public boolean contains (Object aElement);
-	
-	/**
-	 * Removes all the elements of this list.
-	 */
-	public void clear();
-	
 	/**
 	 * Adds a listener that will be notified each time this
 	 * property changes.

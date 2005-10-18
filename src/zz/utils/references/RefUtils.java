@@ -35,16 +35,21 @@ public class RefUtils
 	
 	/**
 	 * Removes an element from a reference list.
+	 * @return Whether the element was found
 	 */
-	public static <E> void remove (List<IRef<E>> aList, E aElement)
+	public static <E> boolean remove (List<IRef<E>> aList, E aElement)
 	{
 		for (Iterator<IRef<E>> theIterator = aList.iterator();theIterator.hasNext();)
 		{
 			IRef<E> theRef = theIterator.next();
 			E theListener = theRef.get();
-			if (theListener == null || theListener == aElement) theIterator.remove();
+			if (theListener == null || theListener == aElement) 
+			{
+				theIterator.remove();
+				return true;
+			}
 		}
-
+		return false;
 	}
 	
 

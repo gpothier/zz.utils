@@ -25,5 +25,5 @@ public interface ISetProperty<E> extends ICollectionProperty<Set<E>, E>
 	 * is cloned. Each element must implement {@link zz.utils.IPublicCloneable}.
 	 * The backing set is always cloned. 
 	 */
-	public ISetProperty<E> cloneForContainer(Object aContainer,boolean aCloneValue);
+	public ISetProperty<E> cloneForOwner(Object aOwner,boolean aCloneValue);
 }

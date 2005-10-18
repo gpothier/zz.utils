@@ -24,7 +24,7 @@ public interface IList<E> extends ICollection<E>
 	/**
 	 * Adds all the elements from the specified iterable into this list.
 	 */
-	public void addAll (Iterable<? extends E> aCollection);
+	public boolean addAll (Iterable<? extends E> aCollection);
 	
 	/**
 	 * Returns the index of the specified element,

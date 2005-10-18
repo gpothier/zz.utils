@@ -70,7 +70,6 @@ public class StickyPopup extends AbstractPopup
 				itsPreferredDirection, getContent().getPreferredSize());
 	}
 
-
 	protected JFrame getOwnerFrame()
 	{
 		return (JFrame) Utils.getFrame(itsTriggerComponent);

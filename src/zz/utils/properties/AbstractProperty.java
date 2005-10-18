@@ -20,8 +20,8 @@ import zz.utils.references.WeakRef;
 
 /**
  * Can be used as a base to implement properties.
- * Takes care of listeners and container, only leaves
- * the handling of the value to subclasses
+ * Takes care of listeners and owner, only leaves
+ * the handling of the value to subclasses.
  * @author gpothier
  */
 public abstract class AbstractProperty<T> extends PublicCloneable implements IProperty<T>
@@ -31,14 +31,18 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	 * If present, this object will be the source of an
 	 * observation through the {@link ObservationCenter}
 	 */
-	private Object itsContainer;
+	private Object itsOwner;
 	
 	/**
 	 * The id of this property.
 	 */
 	private PropertyId<T> itsPropertyId;
 	
-	private List<IRef<IPropertyVeto<? super T>>> itsVetos; 
+	/**
+	 * We maintain the number of veto listeners for optimization purposes.
+	 * This is an approximation, as weakly referenced veto listsners can be garbage collected.
+	 */
+	private int itsVetoCount = 0;
 	
 	private List<IRef<IPropertyListener<? super T>>> itsListeners; 
 	
@@ -46,20 +50,20 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	{
 	}
 	
-	public AbstractProperty(Object aContainer)
+	public AbstractProperty(Object aOwner)
 	{
-		itsContainer = aContainer;
+		itsOwner = aOwner;
 	}
 	
-	public AbstractProperty(Object aContainer, PropertyId<T> aPropertyId)
+	public AbstractProperty(Object aOwner, PropertyId<T> aPropertyId)
 	{
-		itsContainer = aContainer;
+		itsOwner = aOwner;
 		itsPropertyId = aPropertyId;
 	}
 	
-	public Object getContainer()
+	public Object getOwner()
 	{
-		return itsContainer;
+		return itsOwner;
 	}
 	
 	/**
@@ -99,7 +103,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 				theListener.propertyChanged((IProperty) this, aOldValue, aNewValue);
 		}
 		
-		ObservationCenter.getInstance().requestObservation(getContainer(), this);
+		ObservationCenter.getInstance().requestObservation(getOwner(), this);
 	}
 	
 	protected void firePropertyValueChanged ()
@@ -113,16 +117,35 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 				theListener.propertyValueChanged((IProperty) this);
 		}
 		
-//		ObservationCenter.getInstance().requestObservation(getContainer(), this);
+//		ObservationCenter.getInstance().requestObservation(getOwner(), this);
 	}
 	
-	protected boolean canChangeProperty (T aValue)
+	/**
+	 * This method is called before the property is changed.
+	 * If it returns false, the change is rejected.
+	 */
+	protected boolean beforeChange (T aOldValue, T aNewValue)
 	{
-		if (itsVetos == null) return true;
-		List<IPropertyVeto<? super T>> theVetos = RefUtils.dereference(itsVetos);
+		return true;
+	}
+	
+	protected boolean canChangeProperty (T aOldValue, T aNewValue)
+	{
+		if (! beforeChange(aOldValue, aNewValue)) return false;
 		
-		for (IPropertyVeto<? super T> theVeto : theVetos)
-			if (! theVeto.canChangeProperty((IProperty) this, aValue)) return false;
+		if (itsVetoCount <= 0) return true;
+		List<IPropertyListener<? super T>> theListeners = RefUtils.dereference(itsListeners);
+
+		boolean theFoundVeto = false;
+		for (IPropertyListener<? super T> theListener : theListeners)
+		{
+			if (theListener instanceof IPropertyVeto)
+			{
+				theFoundVeto = true;
+				IPropertyVeto<? super T> theVeto = (IPropertyVeto<? super T>) theListener;
+				if (! theVeto.canChangeProperty((IProperty) this, aOldValue, aNewValue)) return false;
+			}
+		}
 		
 		return true;
 	}
@@ -130,52 +153,42 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	public void addListener (IPropertyListener<? super T> aListener)
 	{
 		if (itsListeners == null) itsListeners = new ArrayList(3);
+		if (aListener instanceof IPropertyVeto) itsVetoCount++;
 		itsListeners.add (new WeakRef<IPropertyListener<? super T>>(aListener));
 	}
 
 	public void addHardListener (IPropertyListener<? super T> aListener)
 	{
 		if (itsListeners == null) itsListeners = new ArrayList(3);
+		if (aListener instanceof IPropertyVeto) itsVetoCount++;
 		itsListeners.add (new HardRef<IPropertyListener<? super T>>(aListener));
 	}
 	
+	public void addListener(IPropertyListener< ? super T> aListener, boolean aHard)
+	{
+		if (aHard) addHardListener(aListener);
+		else addListener(aListener);
+	}
+
 	public void removeListener (IPropertyListener<? super T> aListener)
 	{
 		if (itsListeners != null) 
 		{
-			RefUtils.remove(itsListeners, aListener);
-			if (itsListeners.size() == 0) itsListeners = null;
+			if (RefUtils.remove(itsListeners, aListener))
+			{
+				if (itsListeners.size() == 0) itsListeners = null;
+				if (aListener instanceof IPropertyVeto) itsVetoCount--;				
+			}
 		}
 	}
 
-	public void addVeto (IPropertyVeto<? super T> aVeto)
-	{
-		if (itsVetos == null) itsVetos = new ArrayList(3);
-		itsVetos.add (new WeakRef<IPropertyVeto<? super T>>(aVeto));
-	}
-
-	public void addHardVeto (IPropertyVeto<? super T> aVeto)
-	{
-		if (itsVetos == null) itsVetos = new ArrayList(3);
-		itsVetos.add (new HardRef<IPropertyVeto<? super T>>(aVeto));
-	}
-	
-	public void removeVeto (IPropertyVeto<? super T> aVeto)
-	{
-		if (itsVetos != null) 
-		{
-			RefUtils.remove(itsVetos, aVeto);
-			if (itsVetos.size() == 0) itsVetos = null;
-		}
-	}
-	
-	public IProperty<T> cloneForContainer(Object aContainer, boolean aCloneValue)
+	public IProperty<T> cloneForOwner(Object aOwner, boolean aCloneValue)
 	{
 		AbstractProperty<T> theClone = (AbstractProperty<T>) super.clone();
 		
-		theClone.itsContainer = aContainer;
+		theClone.itsOwner = aOwner;
 		theClone.itsListeners = null;
-		theClone.itsVetos = null;
+		theClone.itsVetoCount = 0;
 		
 		return theClone;
 	}
@@ -186,7 +199,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 				"Property (id: %s, value: %s, owner: %s)",
 				itsPropertyId,
 				get(),
-				getContainer());
+				getOwner());
 	}
 	
 }

@@ -29,6 +29,65 @@ implements IList<E>
 	 */
 	private List<IRef<Object>> itsListListeners;
 	
+	public boolean addAll(Iterable<? extends E> aCollection)
+	{
+		boolean theResult = false;
+		
+		for (E theElement : aCollection) 
+		{
+			if (add (theElement)) theResult = true;
+		}
+
+		return theResult;
+	}
+	
+	public boolean addAll(Collection< ? extends E> aCollection)
+	{
+		return addAll ((Iterable<? extends E>) aCollection);
+	}
+	
+	public boolean containsAll(Collection< ? > aC)
+	{
+		for (Object theObject : aC) if (! contains(theObject)) return false;
+		return true;
+	}
+	
+	public boolean isEmpty()
+	{
+		return size() == 0;
+	}
+	
+	public boolean removeAll(Collection< ? > aC)
+	{
+		boolean theResult = false;
+		
+		for (Object theObject : aC)
+		{
+			if (remove(theObject)) theResult = true;
+		}
+		
+		return theResult;
+	}
+
+	public boolean retainAll(Collection< ? > aC)
+	{
+		boolean theResult = false;
+
+		for (Iterator<E> theIterator = iterator(); theIterator.hasNext();)
+		{
+			E theElement = theIterator.next();
+			if (aC.contains(theElement))
+			{
+				theIterator.remove();
+				theResult = true;
+			}
+		}
+		
+		return theResult;
+	}
+
+
+	
 	public void addListener (IListListener<E> aListener)
 	{
 		if (itsListListeners == null) itsListListeners = new ArrayList(3);

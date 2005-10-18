@@ -25,7 +25,7 @@ public interface IProperty<T>
 	/**
 	 * Returns the object that owns this property, if any.
 	 */
-	public Object getContainer();
+	public Object getOwner();
 
 	
 	/**
@@ -36,6 +36,8 @@ public interface IProperty<T>
 	/**
 	 * Adds a listener that will be notified each time this
 	 * property changes.
+	 * If the listener is a {@link IPropertyVeto}, the listener is also
+	 * given an opportunity to reject changes.
 	 * The property will maintains a weak reference to the listener,
 	 * so the programmer should ensure that the listener is strongly
 	 * referenced somewhere.
@@ -51,10 +53,24 @@ public interface IProperty<T>
 	/**
 	 * Adds a listener that will be notified each time this
 	 * property changes.
+	 * If the listener is a {@link IPropertyVeto}, the listener is also
+	 * given an opportunity to reject changes.
 	 * The listener will be referenced through a strong reference.
 	 * @see #addListener(IPropertyListener)
 	 */
 	public void addHardListener (IPropertyListener<? super T> aListener);
+	
+	/**
+	 * Adds a listener that will be notified each time this
+	 * property changes.
+	 * If the listener is a {@link IPropertyVeto}, the listener is also
+	 * given an opportunity to reject changes.
+	 * @param aHard The listener will be referenced through a strong or weak reference
+	 * according to the value of this parameter
+	 * @see #addListener(IPropertyListener)
+	 * @see #addHardListener(IPropertyListener)
+	 */
+	public void addListener (IPropertyListener<? super T> aListener, boolean aHard);
 	
 	/**
 	 * Removes a previously added listener.
@@ -62,30 +78,11 @@ public interface IProperty<T>
 	public void removeListener (IPropertyListener<? super T> aListener);
 
 	/**
-	 * Adds a veto that can reject a new value for this property.
-	 * See the comment on {@link #addListener(IPropertyListener)}
-	 * about the referencing scheme.
-	 */
-	public void addVeto (IPropertyVeto<? super T> aVeto);
-
-	/**
-	 * Adds a veto that can reject a new value for this property.
-	 * See the comment on {@link #addListener(IPropertyListener)}
-	 * about the referencing scheme.
-	 */
-	public void addHardVeto (IPropertyVeto<? super T> aVeto);
-	
-	/**
-	 * Removes a previously added veto.
-	 */
-	public void removeVeto (IPropertyVeto<? super T> aVeto);
-	
-	/**
 	 * Creates a clone of this property, giving the cloned property the specified
 	 * container.
 	 * The clone has no listeners or vetoers.
 	 * @param aCloneValue Whether to clone the value of the property.
 	 */
-	public IProperty<T> cloneForContainer (Object aContainer, boolean aCloneValue);
+	public IProperty<T> cloneForOwner (Object aOwner, boolean aCloneValue);
 
 }

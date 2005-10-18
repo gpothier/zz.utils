@@ -31,15 +31,10 @@ public abstract class WrapperList<E, E0> extends AbstractList<E>
 		itsList.add (aIndex, cachedUnwrap(aElement));
 	}
 
-	public void add(E aElement)
+	public boolean add(E aElement)
 	{
 		add (size(), aElement);
-	}
-
-
-	public void addAll(Iterable< ? extends E> aCollection)
-	{
-		for (E theElement : aCollection) add (theElement);
+		return true;
 	}
 
 	public E get(int aIndex)
@@ -79,9 +74,9 @@ public abstract class WrapperList<E, E0> extends AbstractList<E>
 		return itsList.contains(cachedUnwrap((E) aElement));
 	}
 
-	public boolean remove(E aElement)
+	public boolean remove(Object aElement)
 	{
-		return itsList.remove(unwrap(aElement)); // We don't need to use cache for remove.
+		return itsList.remove(unwrap((E) aElement)); // We don't need to use cache for remove.
 	}
 
 	public int size()
@@ -92,6 +87,16 @@ public abstract class WrapperList<E, E0> extends AbstractList<E>
 	public Iterator<E> iterator()
 	{
 		return new WrappedIterator(itsList.iterator());
+	}
+
+	public Object[] toArray()
+	{
+		return itsList.toArray();
+	}
+
+	public <T> T[] toArray(T[] a)
+	{
+		return itsList.toArray(a);
 	}
 
 

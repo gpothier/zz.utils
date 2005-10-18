@@ -23,11 +23,11 @@ public class PropertyManager extends PublicCloneable
 	/**
 	 * The object that contains this manager and managed properties.
 	 */
-	private Object itsContainer;
+	private Object itsOwner;
 	
-	public PropertyManager(Object itsContainer)
+	public PropertyManager(Object aOwner)
 	{
-		this.itsContainer = itsContainer;
+		itsOwner = aOwner;
 	}
 
 	/**
@@ -51,10 +51,10 @@ public class PropertyManager extends PublicCloneable
 	/**
 	 * Clones this property manager for usage in the specified container.
 	 * All properties are cloned for the given container 
-	 * (see {@link IProperty#cloneForContainer(Object)}.
-	 * @param aContainer The container for the clone and its properties.
+	 * (see {@link IProperty#cloneForOwner(Object)}.
+	 * @param aOwner The container for the clone and its properties.
 	 */
-	public PropertyManager cloneForContainer (Object aContainer)
+	public PropertyManager cloneForOwner (Object aOwner)
 	{
 		PropertyManager theClone = (PropertyManager) super.clone();
 		
@@ -64,8 +64,8 @@ public class PropertyManager extends PublicCloneable
 			PropertyId theId = theEntry.getKey();
 			IProperty theProperty = theEntry.getValue();
 			
-			IProperty thePropertyClone = theProperty.cloneForContainer(
-					aContainer, 
+			IProperty thePropertyClone = theProperty.cloneForOwner(
+					aOwner, 
 					theId.getCloneValues());
 			
 			theClone.itsProperties.put (theId, thePropertyClone);

@@ -33,15 +33,133 @@ implements IListProperty<E>
 	 */
 	private List<IRef<Object>> itsListListeners;
 	
-	public AbstractListProperty(Object aContainer)
+	public AbstractListProperty(Object aOwner)
 	{
-		super(aContainer);
+		super(aOwner);
 	}
 	
-	public AbstractListProperty(Object aContainer, PropertyId<List<E>> aPropertyId)
+	public AbstractListProperty(Object aOwner, PropertyId<List<E>> aPropertyId)
 	{
-		super(aContainer, aPropertyId);
+		super(aOwner, aPropertyId);
 	}
+	
+	public boolean add(E aElement)
+	{
+		return get().add (aElement);
+	}
+
+	public void add(int aIndex, E aElement)
+	{
+		get().add (aIndex, aElement);
+	}
+
+	public boolean addAll(Iterable<? extends E> aCollection)
+	{
+		boolean theResult = false;
+		
+		for (E theElement : aCollection) 
+		{
+			if (add (theElement)) theResult = true;
+		}
+
+		return theResult;
+	}
+	
+	public boolean addAll(Collection< ? extends E> aCollection)
+	{
+		return addAll ((Iterable<? extends E>) aCollection);
+	}
+	
+	public void set(int aIndex, E aElement)
+	{
+		E theElement = get().set(aIndex, aElement);
+	}
+	
+	public boolean remove(Object aElement)
+	{
+		return get().remove (aElement);
+	}
+
+	public E remove(int aIndex)
+	{
+		return get().remove(aIndex);
+	}
+
+	public boolean removeAll(Collection< ? > aC)
+	{
+		boolean theResult = false;
+		
+		for (Object theObject : aC)
+		{
+			if (remove(theObject)) theResult = true;
+		}
+		
+		return theResult;
+	}
+
+	public boolean retainAll(Collection< ? > aC)
+	{
+		boolean theResult = false;
+
+		for (Iterator<E> theIterator = get().iterator(); theIterator.hasNext();)
+		{
+			E theElement = theIterator.next();
+			if (aC.contains(theElement))
+			{
+				theIterator.remove();
+				theResult = true;
+			}
+		}
+		
+		return theResult;
+	}
+
+	public int size()
+	{
+		List<E> theList = get();
+		return theList != null ? theList.size() : 0;
+	}
+
+	public E get(int aIndex)
+	{
+		return get().get (aIndex);
+	}
+
+	public int indexOf(E aElement)
+	{
+		return get().indexOf(aElement);
+	}
+	
+	public boolean contains(Object aElement)
+	{
+		return get().contains(aElement);
+	}
+
+	public boolean containsAll(Collection< ? > aC)
+	{
+		return get().containsAll(aC);
+	}
+
+	public boolean isEmpty()
+	{
+		return get().isEmpty();
+	}
+
+	public Iterator<E> iterator()
+	{
+		return get().iterator();
+	}
+
+	public Object[] toArray()
+	{
+		return get().toArray();
+	}
+
+	public <T> T[] toArray(T[] a)
+	{
+		return get().toArray(a);
+	}
+
 	
 	public void addListener (IListListener<E> aListener)
 	{
@@ -100,12 +218,22 @@ implements IListProperty<E>
 	protected void elementRemoved (int aIndex, E aElement)
 	{
 	}
+
+	/**
+	 * Called whenever an element is added or removed from this list.
+	 * By default it does nothing, but subclasses can override it to be notified.
+	 */
+	protected void contentChanged ()
+	{
+	}
+	
 	
 	protected void fireElementAdded (int aIndex, E aElement)
 	{
 		elementAdded(aIndex, aElement);
+		contentChanged();
 	
-		ObservationCenter.getInstance().requestObservation(getContainer(), this);
+		ObservationCenter.getInstance().requestObservation(getOwner(), this);
 		
 		if (itsListListeners == null) return;
 		List<Object> theListeners = RefUtils.dereference(itsListListeners);
@@ -130,8 +258,9 @@ implements IListProperty<E>
 	protected void fireElementRemoved (int aIndex, E aElement)
 	{
 		elementRemoved(aIndex, aElement);
+		contentChanged();
 
-		ObservationCenter.getInstance().requestObservation(getContainer(), this);
+		ObservationCenter.getInstance().requestObservation(getOwner(), this);
 		
 		if (itsListListeners == null) return;
 		List<Object> theListeners = RefUtils.dereference(itsListListeners);
@@ -154,12 +283,12 @@ implements IListProperty<E>
 
 	}
 	
-	public IListProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue)
+	public IListProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue)
 	{
 		// Note: we don't tell super to clone value, we handle it ourselves.
 		// As we are an abstract class, we don't do anything special.
 		AbstractListProperty<E> theClone = 
-			(AbstractListProperty<E>) super.cloneForContainer(aContainer, false); 
+			(AbstractListProperty<E>) super.cloneForOwner(aOwner, false); 
 		
 		theClone.itsListListeners = null;
 		

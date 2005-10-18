@@ -17,14 +17,14 @@ public class HashSetProperty<E> extends AbstractSetProperty<E>
 {
 	private Set<E> itsSet = new MySet ();
 	
-	public HashSetProperty(Object aContainer)
+	public HashSetProperty(Object aOwner)
 	{
-		super(aContainer);
+		super(aOwner);
 	}
 	
-	public HashSetProperty(Object aContainer, PropertyId<Set<E>> aPropertyId)
+	public HashSetProperty(Object aOwner, PropertyId<Set<E>> aPropertyId)
 	{
-		super(aContainer, aPropertyId);
+		super(aOwner, aPropertyId);
 	}
 	
 	public Set<E> get()
@@ -46,12 +46,12 @@ public class HashSetProperty<E> extends AbstractSetProperty<E>
 		else itsSet = aSet != null ? new MySet (aSet) : null;
 	}
 	
-	public void add(E aElement)
+	public boolean add(E aElement)
 	{
-		get().add (aElement);
+		return get().add (aElement);
 	}
 
-	public boolean remove(E aElement)
+	public boolean remove(Object aElement)
 	{
 		return get().remove (aElement);
 	}
@@ -81,11 +81,11 @@ public class HashSetProperty<E> extends AbstractSetProperty<E>
 		return get().iterator();
 	}
 	
-	public ISetProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue)
+	public ISetProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue)
 	{
 		// Note: we don't tell super to clone value, we handle it ourselves.
 		HashSetProperty<E> theClone = 
-			(HashSetProperty) super.cloneForContainer(aContainer, false);
+			(HashSetProperty) super.cloneForOwner(aOwner, false);
 		
 		if (aCloneValue)
 		{

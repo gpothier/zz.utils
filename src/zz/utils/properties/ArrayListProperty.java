@@ -18,14 +18,14 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 {
 	private List<E> itsList = new MyList ();
 	
-	public ArrayListProperty(Object aContainer)
+	public ArrayListProperty(Object aOwner)
 	{
-		super(aContainer);
+		super(aOwner);
 	}
 	
-	public ArrayListProperty(Object aContainer, PropertyId<List<E>> aPropertyId)
+	public ArrayListProperty(Object aOwner, PropertyId<List<E>> aPropertyId)
 	{
-		super(aContainer, aPropertyId);
+		super(aOwner, aPropertyId);
 	}
 	
 	public List<E> get()
@@ -56,66 +56,10 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 		set(new MyList());
 	}
 	
-	public void add(E aElement)
-	{
-		get().add (aElement);
-	}
-
-	public void add(int aIndex, E aElement)
-	{
-		get().add (aIndex, aElement);
-	}
-
-	public void addAll(Iterable<? extends E> aCollection)
-	{
-		for (E theElement : aCollection) add (theElement);
-	}
-	
-	public void set(int aIndex, E aElement)
-	{
-		E theElement = get().set(aIndex, aElement);
-	}
-	
-	public boolean remove(E aElement)
-	{
-		return get().remove (aElement);
-	}
-
-	public E remove(int aIndex)
-	{
-		return get().remove(aIndex);
-	}
-
 	public void clear()
 	{
 		for (int i = size()-1;i>=0;i--)
 			remove(i);
-	}
-	
-	public int size()
-	{
-		List<E> theList = get();
-		return theList != null ? theList.size() : 0;
-	}
-
-	public E get(int aIndex)
-	{
-		return get().get (aIndex);
-	}
-
-	public int indexOf(E aElement)
-	{
-		return get().indexOf(aElement);
-	}
-	
-	public boolean contains(Object aElement)
-	{
-		return get().contains(aElement);
-	}
-
-	public Iterator<E> iterator()
-	{
-		return get().iterator();
 	}
 
 	public Iterator<E> reverseIterator()
@@ -123,11 +67,12 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 		return new ReverseIteratorWrapper (get());
 	}
 	
-	public IListProperty<E> cloneForContainer(Object aContainer, boolean aCloneValue)
+	
+	public IListProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue)
 	{
 		// Note: we don't tell super to clone value, we handle it ourselves.
 		ArrayListProperty<E> theClone = 
-			(ArrayListProperty) super.cloneForContainer(aContainer, false);
+			(ArrayListProperty) super.cloneForOwner(aOwner, false);
 		
 		if (aCloneValue)
 		{
@@ -146,6 +91,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 		
 		return theClone;
 	}
+	
 	
 	/**
 	 * This is our implementation of List, which override some methods in

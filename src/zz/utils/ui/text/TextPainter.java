@@ -5,15 +5,18 @@ package zz.utils.ui.text;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Paint;
+import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -22,6 +25,9 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 /**
  * Provides utilities to paint text.
@@ -60,6 +66,7 @@ public class TextPainter
 			
 			BufferedImage theImage = theConfiguration.createCompatibleImage(1, 1);
 			DEFAULT_GRAPHICS = theImage.createGraphics();
+			DEFAULT_GRAPHICS.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		}
 		return DEFAULT_GRAPHICS;
 	}
@@ -169,7 +176,6 @@ public class TextPainter
 			theListLayout.add(theLayout);
 		}
 		
-		
 		float theYMargin = 0;
 		
 		switch (aVAlign)
@@ -230,8 +236,64 @@ public class TextPainter
 
 		TextLayout theLayout = new TextLayout(theIterator, theContext);
 		
-		Rectangle2D theBounds = theLayout.getBounds();
+		return new Point2D.Double(theLayout.getAdvance() + 1, theLayout.getAscent() + theLayout.getDescent() + 1);
+	}
+	
+	public static void main(String[] args)
+	{
+		JFrame theFrame = new JFrame("TextPainter test");
+		theFrame.setContentPane(new SizeTestPanel());
+		theFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		theFrame.setVisible(true);
+	}
+	
+	private static class SizeTestPanel extends JPanel
+	{
+		public static final Font[] FONTS = {
+			new Font("SansSerif", Font.PLAIN, 8),
+			new Font("SansSerif", Font.PLAIN, 10),
+			new Font("SansSerif", Font.PLAIN, 12),
+			new Font("SansSerif", Font.PLAIN, 16),
+			new Font("SansSerif", Font.PLAIN, 20),
+		};
 		
-		return new Point2D.Double(theBounds.getWidth() + 2, theBounds.getHeight() + 2);
+		public static final String[] TEXTS = {"a", "A", "10", "-10", "-3", "-2"};
+
+		@Override
+		protected void paintComponent(Graphics aG)
+		{
+			super.paintComponent(aG);
+			Graphics2D theGraphics = (Graphics2D) aG;
+			theGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+			double theY = 10;
+			for (String theText : TEXTS)
+			{
+				paintText(theGraphics, theText, theY);
+				theY += 80;
+			}
+		}
+		
+		private void paintText (Graphics2D aGraphics, String aText, double aY)
+		{
+			double theX = 10;
+			
+			for (Font theFont : FONTS)
+			{
+				paintText(aGraphics, aText, theFont, theX, aY);
+				theX += 80;
+			}
+		}
+		
+		private void paintText (Graphics2D aGraphics, String aText, Font aFont, double aX, double aY)
+		{
+			Point2D theSize = TextPainter.computeSize(TextPainter.getDefaultGraphics(), aFont, false, aText);
+			Rectangle2D theBounds = new Rectangle2D.Double(aX, aY, theSize.getX(), theSize.getY());
+			
+			TextPainter.paint(aGraphics, aFont, false, Color.BLACK, aText, theBounds, VerticalAlignment.CENTER, HorizontalAlignment.CENTER);
+			
+			aGraphics.setColor(Color.RED);
+			aGraphics.draw(theBounds);
+		}
 	}
 }

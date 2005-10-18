@@ -3,6 +3,8 @@
  */
 package zz.utils.properties;
 
+import java.awt.geom.Rectangle2D;
+
 import zz.utils.IPublicCloneable;
 import zz.utils.notification.ObservationCenter;
 import zz.utils.notification.Observer;
@@ -24,25 +26,25 @@ implements IProperty<T>, Observer
 	{
 	}
 	
-	public SimpleProperty(Object aContainer)
+	public SimpleProperty(Object aOwner)
 	{
-		super (aContainer);
+		super (aOwner);
 	}
 	
-	public SimpleProperty(Object aContainer, T aValue)
+	public SimpleProperty(Object aOwner, T aValue)
 	{
-		super (aContainer);
+		super (aOwner);
 		itsValue = aValue;
 	}
 	
-	public SimpleProperty(Object aContainer, PropertyId<T> aPropertyId)
+	public SimpleProperty(Object aOwner, PropertyId<T> aPropertyId)
 	{
-		super (aContainer, aPropertyId);
+		super (aOwner, aPropertyId);
 	}
 	
-	public SimpleProperty(Object aContainer, PropertyId<T> aPropertyId, T aValue)
+	public SimpleProperty(Object aOwner, PropertyId<T> aPropertyId, T aValue)
 	{
-		super (aContainer, aPropertyId);
+		super (aOwner, aPropertyId);
 		itsValue = aValue;
 	}
 
@@ -72,7 +74,7 @@ implements IProperty<T>, Observer
 	protected final void set0(T aValue)
 	{
 		T theOldValue = get0();
-		if (theOldValue != aValue && canChangeProperty(aValue))
+		if (theOldValue != aValue && canChangeProperty(theOldValue, aValue))
 		{
 			if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
 			itsValue = aValue;
@@ -88,10 +90,10 @@ implements IProperty<T>, Observer
 	}
 
 
-	public IProperty<T> cloneForContainer(Object aContainer,boolean aCloneValue)
+	public IProperty<T> cloneForOwner(Object aOwner,boolean aCloneValue)
 	{
 		SimpleProperty<T> theClone = 
-			(SimpleProperty) super.cloneForContainer(aContainer, aCloneValue);
+			(SimpleProperty) super.cloneForOwner(aOwner, aCloneValue);
 		
 		if (aCloneValue) 
 		{
