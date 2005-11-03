@@ -29,6 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Formatter;
 import java.util.Iterator;
@@ -613,5 +614,20 @@ public final class Utils
 		for (int i=0;i<aIndent;i++) aBuilder.append(' ');
 	}
 
-	
+	/**
+	 * Merges two arrays in one. 
+	 */
+	public static <T> T[] merge (T[] aArray1, T... aArray2)
+	{
+		Class< ? extends Object> theComponentType;
+		if (aArray1.length > 0) theComponentType = aArray1[0].getClass();
+		else if (aArray2.length > 0) theComponentType = aArray2[0].getClass();
+		else return aArray1;
+		
+		T[] theResult = (T[]) Array.newInstance(theComponentType, aArray1.length + aArray2.length);
+        System.arraycopy(aArray1, 0, theResult, 0, aArray1.length);
+        System.arraycopy(aArray2, 0, theResult, aArray1.length, aArray2.length);
+        return theResult;
+
+	}
 }

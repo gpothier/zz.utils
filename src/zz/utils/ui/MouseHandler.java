@@ -5,8 +5,6 @@ package zz.utils.ui;
 
 import java.awt.Point;
 import java.awt.event.*;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 import java.util.*;
 
@@ -14,7 +12,6 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 
 import zz.utils.*;
-import zz.utils.ArrayStack;
 import zz.utils.Stack;
 
 /**
@@ -130,28 +127,34 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 	{
 		Point2D thePoint = pixelToRoot(e.getPoint());
 		itsCurrentElement = getElementAt(thePoint);
-		if (itsCurrentElement == null) popElements ();
-		else do
+		if (itsCurrentElement == null) popElements (e);
+		else 
 		{
-			if (itsPathToCurrentElement.size() == 0)
+			do
 			{
-				pushElements(null, itsCurrentElement);
-				break;
-			}
-			else
-			{
-				T theCurrentElement = itsPathToCurrentElement.peek();
-				
-				if (itsCurrentElement.equals(theCurrentElement)) break;
-				else if (isAncestor(theCurrentElement, itsCurrentElement))
+				if (itsPathToCurrentElement.size() == 0)
 				{
-					pushElements(theCurrentElement, itsCurrentElement);
+					pushElements(null, itsCurrentElement, e);
 					break;
 				}
-				else popElement();
-				
-			}
-		} while (itsPathToCurrentElement.size() > 0);
+				else
+				{
+					T theCurrentElement = itsPathToCurrentElement.peek();
+					
+					if (itsCurrentElement.equals(theCurrentElement)) break;
+					else if (isAncestor(theCurrentElement, itsCurrentElement))
+					{
+						pushElements(theCurrentElement, itsCurrentElement, e);
+						break;
+					}
+					else popElement(e);
+					
+				}
+			} while (itsPathToCurrentElement.size() > 0);
+			
+			IMouseAware theMouseAware = getMouseAware(itsCurrentElement);
+			if (theMouseAware != null) theMouseAware.mouseMoved(thePoint, e);
+		}
 		
 		e.consume();
 	}
@@ -159,18 +162,18 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 	/**
 	 * Pushes and sends mouse entered events to the given element.
 	 */
-	private void pushElement (T aElement)
+	private void pushElement (T aElement, MouseEvent aEvent)
 	{
 		itsPathToCurrentElement.push(aElement);
 		IMouseAware theMouseAware = getMouseAware(aElement);
-		if (theMouseAware != null) theMouseAware.mouseEntered();
+		if (theMouseAware != null) theMouseAware.mouseEntered(aEvent);
 	}
 
 	/**
 	 * Pushes and sends mouse entered events to the element given as second argument
 	 * and its ancestors, up to but not including the given encestor.
 	 */
-	private void pushElements (T aAncestor, T aElement)
+	private void pushElements (T aAncestor, T aElement, MouseEvent aEvent)
 	{
 		List<T> theElements = new ArrayList<T> ();
 		T theElement = aElement;
@@ -184,26 +187,26 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 		for (Iterator<T> theIterator = new ReverseIteratorWrapper<T>(theElements); theIterator.hasNext();)
 		{
 			theElement = theIterator.next();
-			pushElement(theElement);
+			pushElement(theElement, aEvent);
 		}
 	}
 
 	/**
 	 * Pops an element and sends it a mouse exited message.
 	 */
-	private void popElement ()
+	private void popElement (MouseEvent aEvent)
 	{
 		T theElement = itsPathToCurrentElement.pop();
 		IMouseAware theMouseAware = getMouseAware(theElement);
-		if (theMouseAware != null) theMouseAware.mouseExited();
+		if (theMouseAware != null) theMouseAware.mouseExited(aEvent);
 	}
 
 	/**
 	 * Pops all elements (and sends them mouse exited.
 	 */
-	private void popElements ()
+	private void popElements (MouseEvent aEvent)
 	{
-		while (itsPathToCurrentElement.size() > 0) popElement();
+		while (itsPathToCurrentElement.size() > 0) popElement(aEvent);
 	}
 
 	public void mouseClicked (MouseEvent e)
@@ -277,7 +280,7 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 
 	public void mouseExited (MouseEvent e)
 	{
-		popElements();
+		popElements(e);
 	}
 
 	public void keyTyped (KeyEvent e)

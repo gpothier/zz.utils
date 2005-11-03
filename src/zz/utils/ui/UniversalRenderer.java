@@ -37,7 +37,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 	 */
 	public UniversalRenderer(boolean aOpaque)
 	{
-		this (true, JLabel.LEADING, JLabel.CENTER);
+		this (aOpaque, JLabel.LEADING, JLabel.CENTER);
 	}
 	
 	public UniversalRenderer(
@@ -55,7 +55,6 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 	 */
 	private void setupRenderer(JLabel aRenderer)
 	{
-		aRenderer.setOpaque(itsOpaque);
 		aRenderer.setHorizontalAlignment(itsHorizontalAlignment);
 		aRenderer.setVerticalAlignment(itsVerticalAlignment);
 	}
@@ -64,6 +63,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 	{
 		DefaultListCellRenderer theRenderer = new DefaultListCellRenderer ();
 		setupRenderer(theRenderer);
+		theRenderer.setOpaque(itsOpaque);
 		return theRenderer;
 	}
 
@@ -71,6 +71,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 	{
 		DefaultTreeCellRenderer theRenderer = new DefaultTreeCellRenderer ();
 		setupRenderer(theRenderer);
+		// Setting the opacity on tree renderers causes probles with selection.
 		return theRenderer;
 	}
 
@@ -78,6 +79,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 	{
 		DefaultTableCellRenderer theRenderer = new DefaultTableCellRenderer ();
 		setupRenderer(theRenderer);
+		theRenderer.setOpaque(itsOpaque);
 		return theRenderer;
 	}
 
@@ -193,7 +195,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 		aLabel.setIcon(theIcon);
 
 		Color theTextColor = getTextColor (theObject);
-		aLabel.setForeground(theTextColor != null ? theTextColor : Color.BLACK);
+		if (theTextColor != null) aLabel.setForeground(theTextColor);
 		
 		Color theBackgroundColor = getBackgroundColor(theObject);
 		if (theBackgroundColor != null) aLabel.setBackground(theBackgroundColor);

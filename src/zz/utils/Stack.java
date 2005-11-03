@@ -23,11 +23,13 @@ public interface Stack<T>
 	
 	/**
 	 * Retrieves the element at the top of the stack and removes it.
+	 * If the stack is empty throws an exception.
 	 */
 	public T pop ();
 	
 	/**
-	 * Retrieves the element at the top of the stack without removing it
+	 * Retrieves the element at the top of the stack without removing it.
+	 * If the stack is empty returns null.
 	 */
 	public T peek ();
 	

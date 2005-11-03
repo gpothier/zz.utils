@@ -49,23 +49,26 @@ public interface IMouseAware
 	
 	/**
 	 * Called when the mouse enters the bounds of this object.
+	 * @param aEvent TODO
 	 * @param aPoint The mouse coordinate in this object's coordinate system
 	 */
-	public void mouseEntered ();
+	public void mouseEntered (MouseEvent aEvent);
 
 	/**
 	 * Called when the mouse exits the bounds of this object.
+	 * @param aEvent TODO
 	 * @param aPoint The mouse coordinate in this object's coordinate system
 	 */
-	public void mouseExited ();
+	public void mouseExited (MouseEvent aEvent);
 	
 	/**
 	 * Called when the mouse moves within the bounds of this object.
 	 * @param aPoint The mouse coordinate in this object's coordinate system
+	 * @param aEvent TODO
 	 * @return Whether to consume the event or not; if the event
 	 * is not consumed it will be passed to another mouse aware object.
 	 */
-	public boolean mouseMoved (Point2D aPoint);
+	public boolean mouseMoved (Point2D aPoint, MouseEvent aEvent);
 
 	/**
 	 * Called when a drag gesture begins.

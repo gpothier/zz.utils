@@ -98,7 +98,7 @@ implements IProperty<T>, Observer
 		if (aCloneValue) 
 		{
 			IPublicCloneable theValue = (IPublicCloneable) itsValue;
-			theClone.itsValue = (T) theValue.clone();
+			theClone.itsValue = theValue != null ? (T) theValue.clone() : null;
 		}
 		
 		return theClone;

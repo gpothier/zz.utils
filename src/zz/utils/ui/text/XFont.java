@@ -14,6 +14,7 @@ public class XFont
 {
 	public static final Font DEFAULT_PLAIN = new Font("SansSerif", Font.PLAIN, 8);
 	public static final XFont DEFAULT_XPLAIN = new XFont(DEFAULT_PLAIN, false);
+	public static final XFont DEFAULT_XUNDERLINED = new XFont(DEFAULT_PLAIN, true);
 	public static final Font DEFAULT_BOLD = new Font("SansSerif", Font.BOLD, 12);
 	public static final Font DEFAULT_ITALIC = new Font("SansSerif", Font.ITALIC, 12);
 
@@ -55,8 +56,8 @@ public class XFont
 	/**
 	 * Creates a default font of the given size.
 	 */
-	public static XFont getDefaultFont (float aSize)
+	public XFont deriveFont (float aSize)
 	{
-		return new XFont (DEFAULT_PLAIN.deriveFont(aSize), false);
+		return new XFont (getAWTFont().deriveFont(aSize), isUnderline());
 	}
 }
