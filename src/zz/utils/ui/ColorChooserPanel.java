@@ -22,6 +22,8 @@ import javax.swing.JComponent;
  */
 public class ColorChooserPanel extends AbstractOptionPanel
 {
+	public static final Color TRANSPARENT = new Color(0, 0, 0, 0);
+
 	private JColorChooser itsColorChooser;
 	private boolean itsTransparent = false;
 
@@ -67,7 +69,6 @@ public class ColorChooserPanel extends AbstractOptionPanel
 		}
 	}
 
-	private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
 
 	public Color getSelectedColor ()
 	{
