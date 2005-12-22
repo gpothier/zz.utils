@@ -86,7 +86,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 		}
 		else
 		{
-			theClone.itsList = new MyList(itsList);
+			theClone.itsList = itsList != null ? new MyList(itsList) : null;
 		}
 		
 		return theClone;
