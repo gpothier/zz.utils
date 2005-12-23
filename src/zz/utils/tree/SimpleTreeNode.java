@@ -28,8 +28,9 @@ public class SimpleTreeNode<V>
 		{
 			public void set(V aValue)
 			{
-				super.set(aValue);
-				getTree().fireValueChanged(SimpleTreeNode.this, aValue);
+				super.set(aValue); 
+				//TODO: cast for compilation problem 
+				getTree().fireValueChanged((SimpleTreeNode<V>) SimpleTreeNode.this, aValue);
 			}
 		};
 	
@@ -45,15 +46,18 @@ public class SimpleTreeNode<V>
 					protected void elementAdded(int aIndex, SimpleTreeNode<V> aElement)
 					{
 						if (aElement.getParent() != null) throw new RuntimeException("node already has a parent: "+aElement);
-						aElement.setParent(SimpleTreeNode.this);
-						getTree().fireChildAdded(SimpleTreeNode.this, aIndex, aElement);
+						//TODO: cast for compilation problem 
+						aElement.setParent((SimpleTreeNode<V>) SimpleTreeNode.this);
+						//TODO: cast for compilation problem 
+						getTree().fireChildAdded((SimpleTreeNode<V>) SimpleTreeNode.this, aIndex, aElement);
 					}
 					
 					protected void elementRemoved(int aIndex, SimpleTreeNode<V> aElement)
 					{
 						if (aElement.getParent() != SimpleTreeNode.this) throw new RuntimeException("node has awrong parent: "+aElement);
 						aElement.setParent(null);
-						getTree().fireChildRemoved(SimpleTreeNode.this, aIndex, aElement);
+						//TODO: cast for compilation problem 
+						getTree().fireChildRemoved((SimpleTreeNode<V>) SimpleTreeNode.this, aIndex, aElement);
 					}
 				};
 		}

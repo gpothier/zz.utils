@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import zz.utils.FailsafeLinkedList;
+import zz.utils.IPublicCloneable;
 import zz.utils.ReverseIteratorWrapper;
 import zz.utils.list.ICollectionListener;
 import zz.utils.list.IListListener;
@@ -281,6 +282,25 @@ implements IListProperty<E>
 			}
 		}
 
+	}
+	
+	/**
+	 * Internal method used to clone individual values of this list property.
+	 * By default it handles {@link IPublicCloneable} objects and fails in
+	 * other cases.
+	 * <p>
+	 * Normally the provided value pertains to another property and is cloned
+	 * so as to become a value of this property.
+	 * @see #cloneForOwner(Object, boolean)
+	 */
+	protected E cloneValue(E aValue)
+	{
+		if (aValue instanceof IPublicCloneable)
+		{
+			IPublicCloneable theCloneable = (IPublicCloneable) aValue;
+			return (E) theCloneable.clone();
+		}
+		else throw new UnsupportedOperationException();
 	}
 	
 	public IListProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue)

@@ -76,17 +76,16 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 		
 		if (aCloneValue)
 		{
-			theClone.itsList = new MyList();
+			theClone.itsList = theClone.new MyList();
 			for (E theElement : itsList)
 			{
-				IPublicCloneable theClonable = (IPublicCloneable) theElement;
-				E theClonedElement = (E) theClonable.clone();
+				E theClonedElement = theClone.cloneValue(theElement);
 				theClone.itsList.add (theClonedElement);
 			}
 		}
 		else
 		{
-			theClone.itsList = itsList != null ? new MyList(itsList) : null;
+			theClone.itsList = itsList != null ? theClone.new MyList(itsList) : null;
 		}
 		
 		return theClone;
