@@ -14,21 +14,21 @@ import java.util.NoSuchElementException;
 /**
  * This iterator iterates over all the objects of a set of iterators.
  */
-public class IteratorsIterator implements Iterator
+public class IteratorsIterator<T> implements Iterator<T>, Iterable<T>
 {
 	/**
 	 * An iterator over iterators
 	 */
-	private Iterator itsIteratorsIterator;
+	private Iterator<Iterator<T>> itsIteratorsIterator;
 
-	private Iterator itsCurrentIterator = null;
+	private Iterator<T> itsCurrentIterator = null;
 
 	private boolean itsDone = false;
 
 	/**
 	 * @param aIteratorsIterator An iterator over iterators.
 	 */
-	public IteratorsIterator (Iterator aIteratorsIterator)
+	public IteratorsIterator (Iterator<Iterator<T>> aIteratorsIterator)
 	{
 		itsIteratorsIterator = aIteratorsIterator;
 	}
@@ -36,12 +36,12 @@ public class IteratorsIterator implements Iterator
 	/**
 	 * @param aIteratorsList A list of iterators.
 	 */
-	public IteratorsIterator (List aIteratorsList)
+	public IteratorsIterator (List<Iterator<T>> aIteratorsList)
 	{
 		this (aIteratorsList.iterator());
 	}
 	
-	public IteratorsIterator (Iterator[] aIteratorsArray)
+	public IteratorsIterator (Iterator<T>... aIteratorsArray)
 	{
 		this (Arrays.asList(aIteratorsArray).iterator());
 	}
@@ -52,7 +52,7 @@ public class IteratorsIterator implements Iterator
 		{
 			while (itsIteratorsIterator.hasNext())
 			{
-				itsCurrentIterator = (Iterator) itsIteratorsIterator.next();
+				itsCurrentIterator = itsIteratorsIterator.next();
 				if (itsCurrentIterator.hasNext()) return;
 			}
 			itsDone = true;
@@ -65,7 +65,7 @@ public class IteratorsIterator implements Iterator
 		return ! itsDone;
 	}
 
-	public Object next ()
+	public T next ()
 	{
 		seek ();
 		if (itsDone) throw new NoSuchElementException();
@@ -76,5 +76,10 @@ public class IteratorsIterator implements Iterator
 	{
 		if (itsCurrentIterator != null) itsCurrentIterator.remove ();
 		else throw new IllegalStateException();
+	}
+
+	public Iterator<T> iterator()
+	{
+		return this;
 	}
 }

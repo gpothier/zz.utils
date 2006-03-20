@@ -101,7 +101,7 @@ public class SwingTreeModel<N, V> extends DefaultTreeModel implements ITreeListe
 	 */
 	public TreePath getTreePathForValue (V aValue)
 	{
-		N theNode = TreeUtils.findNode(itsTree, aValue);
+		N theNode = TreeUtils.findNodeByValue(itsTree, aValue);
 		return theNode != null ? getTreePath(theNode) : null;
 	}
 

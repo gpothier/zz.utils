@@ -6,6 +6,7 @@ package zz.utils.tree;
 import java.util.ArrayList;
 import java.util.List;
 
+import zz.utils.IFilter;
 import zz.utils.Utils;
 
 /**
@@ -17,25 +18,46 @@ public class TreeUtils
 	/**
 	 * Searches the tree for a node that has the specified value.
 	 */
-	public static <N, V> N findNode(ITree<N, V> aTree, V aValue)
+	public static <N, V> N findNodeByValue(ITree<N, V> aTree, V aValue)
 	{
-		return findNode(aTree, aTree.getRoot(), aValue);
+		return findNodeByValue(aTree, aTree.getRoot(), aValue);
+	}
+	
+	/**
+	 * Searches the tree for a node that is accepted by the specified filter 
+	 */
+	public static <N, V> N findNode(ITree<N, V> aTree, IFilter<N> aFilter)
+	{
+		return findNode(aTree, aTree.getRoot(), aFilter);
 	}
 	
 	/**
 	 * Searches a tree node for a children (or itself) with the specified value.
 	 */
-	public static <N, V> N findNode(ITree<N, V> aTree, N aNode, V aValue)
+	public static <N, V> N findNodeByValue(final ITree<N, V> aTree, final N aNode, V aValue)
 	{
-		if (Utils.equalOrBothNull(aTree.getValue(aNode), aValue)) return aNode;
+		return findNode(aTree, aNode, new IFilter<N>()
+				{
+					public boolean accept(N aValue)
+					{
+						return Utils.equalOrBothNull(aTree.getValue(aNode), aValue);
+					}
+				});
+	}
+	
+	/**
+	 * Searches a tree node that is accepted by the specified filter.
+	 */
+	public static <N, V> N findNode(ITree<N, V> aTree, N aNode, IFilter<N> aFilter)
+	{
+		if (aFilter.accept(aNode)) return aNode;
 		Iterable<N> theChildren = aTree.getChildren(aNode);
 		if (theChildren != null) for (N theChild : theChildren)
 		{
-			N theResult = findNode(aTree, theChild, aValue);
+			N theResult = findNode(aTree, theChild, aFilter);
 			if (theResult != null)
 			{
 				return theResult;
-				
 			}
 		}
 		return null;
