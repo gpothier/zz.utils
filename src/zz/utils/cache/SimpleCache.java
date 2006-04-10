@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import sun.security.krb5.internal.ccache.aq;
+
 import zz.utils.AbstractFilteredIterator;
 
 /**
@@ -16,7 +18,7 @@ import zz.utils.AbstractFilteredIterator;
  * fetching behavior (see {@link #fetch(Object) }).
  * @author gpothier
  */
-public abstract class SimpleCache<K, V>
+public abstract class SimpleCache<K, V> implements ICache<K, V>
 {
 	private Map<K, CacheEntry<K, V>> itsEntries = 
 		new HashMap<K, CacheEntry<K, V>>();
@@ -26,12 +28,15 @@ public abstract class SimpleCache<K, V>
 	
 	private ReferenceQueue<V> itsReferenceQueue = 
 		new ReferenceQueue<V>();
-	
+
 	/**
-	 * Gets the value that corresponds to the specified key from this cache.
-	 * If the value is not in the cache, the {@link #fetch(Object) } method
-	 * is called and the fetched object is cached.
+	 * A hook called whenever an already cached entry is accessed.
+	 * Does nothing by default.
 	 */
+	protected void getHook(CacheEntry<K, V> aEntry)
+	{
+	}
+	
 	public V get(K aKey)
 	{
 		if (itsNullValues.contains(aKey)) return null;
@@ -48,34 +53,35 @@ public abstract class SimpleCache<K, V>
 		return theValue;
 	}
 	
-	/**
-	 * Retrieves the value that corresponds to the specified key from this
-	 * cache. If the value is not present in the cache, this method returns
-	 * null (and doesn't call {@link #fetch(Object) }).
-	 */
 	public V getCached(K aKey)
+	{
+		CacheEntry<K, V> theEntry = getCachedEntry(aKey);
+		if (theEntry != null) 
+		{
+			getHook(theEntry);
+			return theEntry.get();
+		}
+		else return null;
+	}
+	
+	/**
+	 * Returns the cached entry corresponding to the given key. As with
+	 * {@link #getCached(Object)}, the associated value is not fetched.
+	 */
+	protected CacheEntry<K, V> getCachedEntry(K aKey)
 	{
 		checkQueue();
 		
 		if (itsNullValues.contains(aKey)) return null;
 		
-		CacheEntry<K, V> theEntry = itsEntries.get(aKey);
-		return theEntry != null ? theEntry.get() : null;
+		return itsEntries.get(aKey);
 	}
 	
-	/**
-	 * Returns an iterable over all currently cached values
-	 */
 	public Iterable<V> getCachedValues()
 	{
 		return new CachedValuesIterator<K, V>(itsEntries.values().iterator());
 	}
 	
-	/**
-	 * Forces a value into the cache.
-	 * @return The value previously associated with the given key, or null
-	 * if there was none.
-	 */
 	public V put (K aKey, V aValue)
 	{
 		checkQueue();
@@ -84,7 +90,7 @@ public abstract class SimpleCache<K, V>
 		{
 			itsNullValues.remove(aKey);
 			
-			CacheEntry<K, V> theEntry = new CacheEntry<K, V>(
+			CacheEntry<K, V> theEntry = createEntry(
 					itsReferenceQueue, 
 					aKey, 
 					aValue,
@@ -110,10 +116,6 @@ public abstract class SimpleCache<K, V>
 		return false;
 	}
 
-	/**
-	 * Invalidates (removes from the cache) the entry corresponding to
-	 * the given key.
-	 */
 	public void invalidate(K aKey) 
 	{
 		checkQueue();
@@ -122,9 +124,6 @@ public abstract class SimpleCache<K, V>
 		itsNullValues.remove(aKey);
 	}
 	
-	/**
-	 * Removes all the entries from this cache. 
-	 */
 	public void clear()
 	{
 		checkQueue();
@@ -172,7 +171,12 @@ public abstract class SimpleCache<K, V>
 	{
 	}
 	
-	private static class CacheEntry<K, V> extends SoftReference<V>
+	protected CacheEntry<K, V> createEntry(ReferenceQueue<V> aQueue, K aKey, V aReferent, boolean aStrongRef)
+	{
+		return new CacheEntry<K, V>(aQueue, aKey, aReferent, aStrongRef);
+	}
+	
+	protected static class CacheEntry<K, V> extends SoftReference<V>
 	{
 		private K itsKey;
 		private V itsStrongRef;

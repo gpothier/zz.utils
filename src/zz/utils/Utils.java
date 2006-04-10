@@ -27,11 +27,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.util.Collection;
-import java.util.Formatter;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -629,5 +629,22 @@ public final class Utils
         System.arraycopy(aArray2, 0, theResult, aArray1.length, aArray2.length);
         return theResult;
 
+	}
+	
+	/**
+	 * Writes all the bytes obtained from the specified input stream into
+	 * the specified output stream.
+	 */
+	public static void pipe(InputStream aInputStream, OutputStream aOutputStream) throws IOException
+	{
+		byte[] theBuffer = new byte[1024];
+		int theCount;
+		
+		while ((theCount = aInputStream.read(theBuffer)) >= 0)
+		{
+			aOutputStream.write(theBuffer, 0, theCount);
+		}
+		
+		aOutputStream.flush();
 	}
 }
