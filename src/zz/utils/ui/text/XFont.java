@@ -54,10 +54,20 @@ public class XFont
 	}
 	
 	/**
-	 * Creates a default font of the given size.
+	 * Creates a derived font of the given size.
+	 * @see Font#deriveFont(float)
 	 */
 	public XFont deriveFont (float aSize)
 	{
 		return new XFont (getAWTFont().deriveFont(aSize), isUnderline());
+	}
+	
+	/**
+	 * Creates a derived font of the given size and style.
+	 * @see Font#deriveFont(int, float)
+	 */
+	public XFont deriveFont (int aStyle, float aSize)
+	{
+		return new XFont (getAWTFont().deriveFont(aStyle, aSize), isUnderline());
 	}
 }

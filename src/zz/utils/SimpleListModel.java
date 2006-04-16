@@ -45,9 +45,9 @@ public class SimpleListModel extends AbstractListModel
 	}
 
 	public void setList(List aList){
-		if (itsList != null && getSize()>0) fireIntervalRemoved(this,0,getSize()-1)	;
+		if (itsList != null && getSize()>0) fireIntervalRemoved(this, 0, getSize()-1);
 		itsList = aList;
-		if (itsList != null && getSize()>0) fireIntervalAdded(this,0,getSize()-1)	;
+		if (itsList != null && getSize()>0) fireIntervalAdded(this, 0, getSize()-1);
 	}
 
 	public List getList()

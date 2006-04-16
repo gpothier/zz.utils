@@ -39,7 +39,7 @@ public class ViewportLayoutManager implements LayoutManager2, ChangeListener
 
 	private void setupListener (Container aContainer)
 	{
-		JViewport theViewport = Utils.getViewport (aContainer);
+		JViewport theViewport = UIUtils.getViewport (aContainer);
 		if (itsViewport != theViewport)
 		{
 			if (itsViewport != null) itsViewport.removeChangeListener(this);
@@ -113,7 +113,7 @@ public class ViewportLayoutManager implements LayoutManager2, ChangeListener
 
 	private Rectangle computeBounds (Container aContainer)
 	{
-		if (itsViewport == null) itsViewport = Utils.getViewport (aContainer);
+		if (itsViewport == null) itsViewport = UIUtils.getViewport (aContainer);
 		
 		Rectangle theViewRect = itsViewport.getViewRect();
 		Component[] theComponents = aContainer.getComponents ();

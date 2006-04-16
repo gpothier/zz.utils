@@ -77,9 +77,9 @@ public class JRenderedLabel extends JPanel
 	
 	protected void paintComponent(Graphics aG)
 	{
-		if (itsRenderer != null)
+		if (getRenderer() != null)
 		{
-			JComponent theComponent = (JComponent) itsRenderer.getListCellRendererComponent(
+			JComponent theComponent = (JComponent) getRenderer().getListCellRendererComponent(
 					LIST, 
 					getValue(), 
 					0, 
@@ -96,9 +96,9 @@ public class JRenderedLabel extends JPanel
 	public Dimension getPreferredSize()
 	{
 		if (isPreferredSizeSet()) return super.getPreferredSize();
-		if (itsRenderer != null)
+		if (getRenderer() != null)
 		{
-			Component theComponent = itsRenderer.getListCellRendererComponent(LIST, getValue(), 0, false, false);
+			Component theComponent = getRenderer().getListCellRendererComponent(LIST, getValue(), 0, false, false);
 			return theComponent.getPreferredSize();
 		}
 		else return EMPTY;

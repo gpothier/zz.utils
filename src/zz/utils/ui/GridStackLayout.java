@@ -96,7 +96,7 @@ public class GridStackLayout implements LayoutManager2
 
 	public void layoutContainer (Container aTarget)
 	{
-		computeCellsSizes(aTarget, Utils.PREFERRED_SIZE);
+		computeCellsSizes(aTarget, UIUtils.PREFERRED_SIZE);
 
 		Dimension thePreferredSize = preferredLayoutSize(aTarget);
 		double theScaleX = itsFitToWidth ? 1.0*aTarget.getWidth() / thePreferredSize.width : 1.0;
@@ -141,10 +141,10 @@ public class GridStackLayout implements LayoutManager2
 		int theNRows = (int)Math.ceil (theNChildren/itsNColumns);
 
 		itsColumnsWidths = new int[itsNColumns];
-		for (int i = 0; i < itsNColumns; i++) itsColumnsWidths[i] = aType != Utils.MAXIMUM_SIZE ? 0 : Integer.MAX_VALUE;
+		for (int i = 0; i < itsNColumns; i++) itsColumnsWidths[i] = aType != UIUtils.MAXIMUM_SIZE ? 0 : Integer.MAX_VALUE;
 
 		itsRowHeights = new int[theNRows];
-		for (int i=0; i < theNRows; i++) itsRowHeights[i] = aType != Utils.MAXIMUM_SIZE ? 0 : Integer.MAX_VALUE;
+		for (int i=0; i < theNRows; i++) itsRowHeights[i] = aType != UIUtils.MAXIMUM_SIZE ? 0 : Integer.MAX_VALUE;
 
 		int theCurrentColumn = 0;
 		int theCurrentRow = 0;
@@ -152,9 +152,9 @@ public class GridStackLayout implements LayoutManager2
 		for (int i = 0; i < theNChildren; i++)
 		{
 			Component theChild = theChildren[i];
-			Dimension theChildSize = Utils.getASize (theChild, aType);
+			Dimension theChildSize = UIUtils.getASize (theChild, aType);
 
-			if (aType != Utils.MAXIMUM_SIZE)
+			if (aType != UIUtils.MAXIMUM_SIZE)
 			{
 				itsColumnsWidths[theCurrentColumn] = Math.max (itsColumnsWidths[theCurrentColumn], theChildSize.width);
 				itsRowHeights[theCurrentRow] = Math.max (itsRowHeights[theCurrentRow], theChildSize.height);
@@ -191,16 +191,16 @@ public class GridStackLayout implements LayoutManager2
 
 	public Dimension maximumLayoutSize (Container aTarget)
 	{
-		return layoutSize(aTarget, Utils.MAXIMUM_SIZE);
+		return layoutSize(aTarget, UIUtils.MAXIMUM_SIZE);
 	}
 
 	public Dimension minimumLayoutSize (Container aTarget)
 	{
-		return layoutSize(aTarget, Utils.MINIMUM_SIZE);
+		return layoutSize(aTarget, UIUtils.MINIMUM_SIZE);
 	}
 
 	public Dimension preferredLayoutSize (Container aTarget)
 	{
-		return layoutSize(aTarget, Utils.PREFERRED_SIZE);
+		return layoutSize(aTarget, UIUtils.PREFERRED_SIZE);
 	}
 }

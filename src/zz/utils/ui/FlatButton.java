@@ -184,7 +184,7 @@ public class FlatButton extends JLabel
 	public void setRollOverColor (Color aRollOverColor)
 	{
 		itsRollOverColor = aRollOverColor;
-		itsRollOverBackgroundColor = Utils.getLighterColor(aRollOverColor, 0.6f);
+		itsRollOverBackgroundColor = UIUtils.getLighterColor(aRollOverColor, 0.6f);
 		itsRollOverBorder = makeBorder(aRollOverColor);
 		if (itsShowingRollOver) showRollOver();
 	}
@@ -197,7 +197,7 @@ public class FlatButton extends JLabel
 	public void setNormalColor (Color aNormalColor)
 	{
 		itsNormalColor = aNormalColor;
-		itsNormalBackgroundColor = Utils.getLighterColor(aNormalColor, 0.6f);
+		itsNormalBackgroundColor = UIUtils.getLighterColor(aNormalColor, 0.6f);
 		itsNormalBorder = makeBorder(aNormalColor);
 		if (! itsShowingRollOver) showNormal();
 	}

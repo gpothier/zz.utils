@@ -15,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import zz.utils.Utils;
+import zz.utils.ui.UIUtils;
 
 
 /**
@@ -72,7 +73,7 @@ public class StickyPopup extends AbstractPopup
 
 	protected JFrame getOwnerFrame()
 	{
-		return (JFrame) Utils.getFrame(itsTriggerComponent);
+		return (JFrame) UIUtils.getFrame(itsTriggerComponent);
 	}
 
 }

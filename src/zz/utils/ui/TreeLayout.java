@@ -119,12 +119,12 @@ public class TreeLayout implements LayoutManager2
 
 	public Dimension minimumLayoutSize (Container aTarget)
 	{
-		return layoutSize(aTarget, Utils.MINIMUM_SIZE);
+		return layoutSize(aTarget, UIUtils.MINIMUM_SIZE);
 	}
 
 	public Dimension preferredLayoutSize (Container aTarget)
 	{
-		return layoutSize(aTarget, Utils.PREFERRED_SIZE);
+		return layoutSize(aTarget, UIUtils.PREFERRED_SIZE);
 	}
 
 	protected Dimension layoutSize (Container aTarget, int aType)

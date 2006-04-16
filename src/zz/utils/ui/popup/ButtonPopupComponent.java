@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import zz.utils.Utils;
+import zz.utils.ui.UIUtils;
 
 
 /**
@@ -34,7 +35,7 @@ public class ButtonPopupComponent extends PopupComponent implements ActionListen
 	public ButtonPopupComponent (JComponent popup, JButton aButton)
 	{
 		super (popup, aButton);
-		aButton.setMargin(Utils.NULL_INSETS);
+		aButton.setMargin(UIUtils.NULL_INSETS);
 		aButton.addActionListener(this);
 	}
 

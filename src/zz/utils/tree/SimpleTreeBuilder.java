@@ -50,4 +50,9 @@ public class SimpleTreeBuilder<V>
 		for (SimpleTreeNode<V> theChild : aChildren) theNode.pChildren().add (theChild);
 		return theNode;
 	}
+	
+	public void add(SimpleTreeNode<V> aParent, SimpleTreeNode<V>... aChildren)
+	{
+		for (SimpleTreeNode<V> theChild : aChildren) aParent.pChildren().add (theChild);
+	}
 }

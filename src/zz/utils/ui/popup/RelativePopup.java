@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import zz.utils.Utils;
+import zz.utils.ui.UIUtils;
 
 
 /**
@@ -60,7 +61,7 @@ public class RelativePopup extends AbstractPopup implements AWTEventListener
 
 	protected JFrame getOwnerFrame()
 	{
-		return (JFrame) Utils.getFrame(itsParent);
+		return (JFrame) UIUtils.getFrame(itsParent);
 	}
 
 	public void eventDispatched(AWTEvent arg0)

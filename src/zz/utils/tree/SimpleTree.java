@@ -15,9 +15,14 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 
 	public SimpleTree()
 	{
-		this (null);
+		itsRootNode = createNode(null);
 	}
 	
+	public SimpleTree(SimpleTreeNode<V> aRootNode)
+	{
+		itsRootNode = aRootNode;
+	}
+
 	public SimpleTree(V aRootNodeValue)
 	{
 		itsRootNode = createNode(aRootNodeValue);

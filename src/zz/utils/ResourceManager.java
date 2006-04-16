@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 
 import javax.swing.ImageIcon;
 
+import zz.utils.ui.UIUtils;
+
 public class ResourceManager
 {
 	/**
@@ -265,7 +267,7 @@ public class ResourceManager
 	public ImageIcon getIcon (String aKey, int aWidth, int anHeight)
 	{
 		ImageIcon theIcon = getIcon(aKey);
-		return Utils.resizeIcon(theIcon, aWidth, anHeight);
+		return UIUtils.resizeIcon(theIcon, aWidth, anHeight);
 	}
 
 	/**
@@ -276,7 +278,7 @@ public class ResourceManager
 	public ImageIcon getIcon (Class aRequestingClass, String aKey, int aWidth, int anHeight)
 	{
 		ImageIcon theIcon = getIcon (aRequestingClass, aKey);
-		return Utils.resizeIcon(theIcon, aWidth, anHeight);
+		return UIUtils.resizeIcon(theIcon, aWidth, anHeight);
 	}
 
 	/**
@@ -478,7 +480,7 @@ public class ResourceManager
 	public ImageIcon getArrow (int aSide, int aSize)
 	{
 		ImageIcon theArrow = itsArrowIcons[aSide-1];
-		return Utils.resizeIcon(theArrow, aSize, aSize);
+		return UIUtils.resizeIcon(theArrow, aSize, aSize);
 	}
 
 

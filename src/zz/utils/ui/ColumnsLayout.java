@@ -101,7 +101,7 @@ public class ColumnsLayout implements LayoutManager2
 
 	public void layoutContainer (Container aTarget)
 	{
-		computeColumnsSizes(Utils.PREFERRED_SIZE);
+		computeColumnsSizes(UIUtils.PREFERRED_SIZE);
 
 		Insets theInsets = aTarget.getInsets();
 
@@ -142,7 +142,7 @@ public class ColumnsLayout implements LayoutManager2
 			for (int i = 0; i < theCildren.length; i++)
 			{
 				Component theChild = theCildren[i];
-				Dimension theSize = Utils.getASize (theChild, aType);
+				Dimension theSize = UIUtils.getASize (theChild, aType);
 				itsColumnsWidths[i] = Math.max (itsColumnsWidths[i], theSize.width);
 			}
 		}
@@ -168,7 +168,7 @@ public class ColumnsLayout implements LayoutManager2
 		for (int i = 0; i < theChildren.length; i++)
 		{
 			Component theChild = theChildren[i];
-			Dimension theSize = Utils.getASize(theChild, aType);
+			Dimension theSize = UIUtils.getASize(theChild, aType);
 			theHeight = Math.max (theHeight, theSize.height);
 		}
 
@@ -192,16 +192,16 @@ public class ColumnsLayout implements LayoutManager2
 
 	public Dimension maximumLayoutSize (Container aTarget)
 	{
-		return layoutSize(aTarget, Utils.MAXIMUM_SIZE);
+		return layoutSize(aTarget, UIUtils.MAXIMUM_SIZE);
 	}
 
 	public Dimension minimumLayoutSize (Container aTarget)
 	{
-		return layoutSize(aTarget, Utils.MINIMUM_SIZE);
+		return layoutSize(aTarget, UIUtils.MINIMUM_SIZE);
 	}
 
 	public Dimension preferredLayoutSize (Container aTarget)
 	{
-		return layoutSize(aTarget, Utils.PREFERRED_SIZE);
+		return layoutSize(aTarget, UIUtils.PREFERRED_SIZE);
 	}
 }

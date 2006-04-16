@@ -24,8 +24,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import zz.utils.ItemAction;
-import zz.utils.Utils;
 import zz.utils.ui.GridStackLayout;
+import zz.utils.ui.UIUtils;
 
 /**
  * Displays a list with a set of buttons that allow to create, remove or move elements.
@@ -108,10 +108,10 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 		itsRemoveButton = new JButton (itsRemoveAction);
 		itsMoveDownButton = new JButton (itsMoveDownAction);
 		itsMoveUpButton = new JButton (itsMoveUpAction);
-		itsCreateButton.setMargin(Utils.NULL_INSETS);
-		itsRemoveButton.setMargin(Utils.NULL_INSETS);
-		itsMoveDownButton.setMargin(Utils.NULL_INSETS);
-		itsMoveUpButton.setMargin(Utils.NULL_INSETS);
+		itsCreateButton.setMargin(UIUtils.NULL_INSETS);
+		itsRemoveButton.setMargin(UIUtils.NULL_INSETS);
+		itsMoveDownButton.setMargin(UIUtils.NULL_INSETS);
+		itsMoveUpButton.setMargin(UIUtils.NULL_INSETS);
 
 		theButtonsPanel.add (itsCreateButton);
 		theButtonsPanel.add (itsRemoveButton);

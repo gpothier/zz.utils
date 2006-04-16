@@ -7,9 +7,6 @@
 package zz.utils.ui.popup;
 
 import java.awt.*;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -19,6 +16,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 
 import zz.utils.Utils;
+import zz.utils.ui.UIUtils;
 
 /**
  * Provides utilities for the popup classes.
@@ -57,7 +55,7 @@ public class PopupUtils
 		Point ls = aPopupTriggerComponent.getLocationOnScreen();
 		int myW = aPopupTriggerComponent.getWidth ();
 		int myH = aPopupTriggerComponent.getHeight ();
-		Rectangle theScreenBounds = Utils.getMaximumWindowBounds();
+		Rectangle theScreenBounds = UIUtils.getMaximumWindowBounds();
 		int availableWidth = (int) (theScreenBounds.width);
 		int availableHeight = (int) (theScreenBounds.height);
 

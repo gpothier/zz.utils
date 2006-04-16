@@ -16,6 +16,18 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
+/**
+ * A multipurpose renderer: can be used for list, tree and tables.
+ * Subclasses should at least override {@link #getName(Object)}, and
+ * can optionally override {@link #getIcon(Object)}, {@link #getTextColor(Object)},
+ * {@link #getToolTipText(Object)}, {@link #getBackgroundColor(Object)} to further
+ * customize the rendering.
+ * For full coontrol over the rendering, override {@link #setupLabel(JLabel, Object)}.
+ * 
+ * @param <V> Type of the objects that are found in the underlying model.
+ * 
+ * @author gpothier
+ */
 public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCellRenderer, TableCellRenderer
 {
 	private ListCellRenderer itsListCellRenderer;
