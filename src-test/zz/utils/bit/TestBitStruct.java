@@ -13,7 +13,7 @@ public class TestBitStruct
 {
 	@Test public void readWriteTest()
 	{
-		BitStruct theStruct = new BitStruct();
+		ByteBitStruct theStruct = new ByteBitStruct();
 		
 		theStruct.writeLong(0xcc, 8);
 		System.out.println(theStruct);

@@ -42,7 +42,18 @@ implements Iterator<O>, Iterable<O>
 	public AbstractFilteredIterator (Iterator<I> aIterator)
 	{
 		itsIterator = aIterator;
+		init();
 		findNext();
+	}
+
+	
+	/**
+	 * Subclasses can override this method if they need to perform some
+	 * initialization before {@link #findNext()} is called for the first time
+	 * in the constructor.
+	 */
+	protected void init()
+	{
 	}
 	
 	/**

@@ -10,7 +10,7 @@ package zz.utils.bit;
  * updated by certain methods.
  * @author gpothier
  */
-public class BitStruct
+public class ByteBitStruct extends BitStruct
 {
 	private byte[] itsBytes;
 	
@@ -21,18 +21,18 @@ public class BitStruct
 	 */
 	private int itsOffset;
 	
-	public BitStruct(byte[] aBytes, int aOffset)
+	public ByteBitStruct(byte[] aBytes, int aOffset)
 	{
 		if (aBytes != null) setBytes(aBytes);
 		itsOffset = aOffset;
 	}
 	
-	public BitStruct(byte[] aBytes)
+	public ByteBitStruct(byte[] aBytes)
 	{
 		this(aBytes, 0);
 	}
 	
-	public BitStruct(int aBitCount)
+	public ByteBitStruct(int aBitCount)
 	{
 		this(new byte[(aBitCount+7)/8]);
 	}
@@ -40,7 +40,7 @@ public class BitStruct
 	/**
 	 * Construct a struct with an initial size of 64 bits.
 	 */
-	public BitStruct()
+	public ByteBitStruct()
 	{
 		this(64);
 	}
@@ -96,22 +96,6 @@ public class BitStruct
 	public void setPos(int aPos)
 	{
 		itsPos = aPos;
-	}
-	
-	/**
-	 * Skips a number of bits.
-	 */
-	public void skip(int aBits)
-	{
-		itsPos += aBits;
-	}
-	
-	/**
-	 * Resets the current bit pointer.
-	 */
-	public void reset()
-	{
-		setPos(0);
 	}
 	
 	/**
@@ -187,27 +171,17 @@ public class BitStruct
 		}
 	}
 	
-	/**
-	 * Writes the bits from the given byte array into this struct.
-	 */
-	public void writeBytes(byte[] aBytes)
+	@Override
+	public void readBytes(int aBitCount, byte[] aBuffer)
 	{
-		writeBytes(aBytes, aBytes.length * 8);
-	}
-	
-	public byte[] readBytes(int aBitCount)
-	{
-		byte[] theResult = new byte[(aBitCount+7)/8];
 		int i = 0;
 		while (aBitCount > 0)
 		{
 			int theBits = Math.min(aBitCount, 8);
-			theResult[i++] = BitUtils.readByte(getBytes(), itsOffset, itsPos, theBits);
+			aBuffer[i++] = BitUtils.readByte(getBytes(), itsOffset, itsPos, theBits);
 			aBitCount -= theBits;
 			itsPos += theBits;
 		}
-		
-		return theResult;
 	}
 	
 	public long readLong(int aBitCount)

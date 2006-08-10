@@ -10,6 +10,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -339,12 +340,20 @@ public final class Utils
 	/**
 	 * Writes a newline and a number of spaces into the specified string builder.
 	 */
-	public static void indent (StringBuilder aBuilder, int aIndent)
+	public static void indentln (StringBuilder aBuilder, int aIndent)
 	{
-		aBuilder.append("\r\n");
-		for (int i=0;i<aIndent;i++) aBuilder.append(' ');
+		aBuilder.append('\n');
+		indent(aBuilder, aIndent);
 	}
 
+	/**
+	 * Writes a number of spaces into the specified string builder.
+	 */
+	public static void indent (StringBuilder aBuilder, int aIndent)
+	{
+		for (int i=0;i<aIndent;i++) aBuilder.append(' ');
+	}
+	
 	/**
 	 * Merges two arrays in one. 
 	 */
@@ -378,4 +387,70 @@ public final class Utils
 		
 		aOutputStream.flush();
 	}
+
+	public static void memset(byte[] aArray, byte aValue)
+	{
+		memset(aArray, aValue, 16);
+	}
+	
+	public static void memset(byte[] aArray, byte aValue, int k)
+	{
+		for (int i=0;i<Math.min(aArray.length, k);i++) aArray[i] = aValue;
+		if (aArray.length <= k) return;
+		
+		int thePos = k;
+		int theLength = k;
+		while (theLength < aArray.length/2)
+		{
+			System.arraycopy(aArray, 0, aArray, thePos, theLength);
+			thePos += theLength;
+			theLength *=2;
+		}
+		
+		System.arraycopy(aArray, 0, aArray, thePos, aArray.length-thePos);
+	}
+
+	public static void memset(int[] aArray, int aValue)
+	{
+		memset(aArray, aValue, 16);
+	}
+	
+	public static void memset(int[] aArray, int aValue, int k)
+	{
+		for (int i=0;i<Math.min(aArray.length, k);i++) aArray[i] = aValue;
+		if (aArray.length <= k) return;
+		
+		int thePos = k;
+		int theLength = k;
+		while (theLength < aArray.length/2)
+		{
+			System.arraycopy(aArray, 0, aArray, thePos, theLength);
+			thePos += theLength;
+			theLength *=2;
+		}
+		
+		System.arraycopy(aArray, 0, aArray, thePos, aArray.length-thePos);
+	}
+	
+	/**
+	 * Lexicographic comparison of byte arrays
+	 */
+	public static int compare(byte[] aBytes1, byte[] aBytes2)
+	{
+		int len1 = aBytes1.length;
+		int len2 = aBytes2.length;
+		int n = Math.min(len1, len2);
+
+		int k = 0;
+		while (k < n)
+		{
+			byte b1 = aBytes1[k];
+			byte b2 = aBytes2[k];
+			if (b1 != b2) return b1 - b2; 
+			k++;
+		}
+
+		return len1 - len2;
+	}
+
 }

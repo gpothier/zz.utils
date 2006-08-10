@@ -4,10 +4,10 @@
 package zz.utils.bit;
 
 /**
- * Similar to {@link BitStruct} but backed by an int array.
+ * Similar to {@link ByteBitStruct} but backed by an int array.
  * @author gpothier
  */
-public class IntBitStruct
+public class IntBitStruct extends BitStruct
 {
 	private int[] itsData;
 	
@@ -96,22 +96,6 @@ public class IntBitStruct
 	}
 	
 	/**
-	 * Skips a number of bits.
-	 */
-	public void skip(int aBits)
-	{
-		itsPos += aBits;
-	}
-	
-	/**
-	 * Resets the current bit pointer.
-	 */
-	public void reset()
-	{
-		setPos(0);
-	}
-	
-	/**
 	 * Grows the storage space so that it allows for at least for 
 	 * the given size (in bits).
 	 */
@@ -181,19 +165,17 @@ public class IntBitStruct
 		writeBytes(aBytes, aBytes.length * 8);
 	}
 	
-	public byte[] readBytes(int aBitCount)
+	@Override
+	public void readBytes(int aBitCount, byte[] aBuffer)
 	{
-		byte[] theResult = new byte[(aBitCount+7)/8];
 		int i = 0;
 		while (aBitCount > 0)
 		{
 			int theBits = Math.min(aBitCount, 8);
-			theResult[i++] = (byte) (BitUtils.readInt(getData(), itsOffset, itsPos, theBits) & 0xff);
+			aBuffer[i++] = (byte) (BitUtils.readInt(getData(), itsOffset, itsPos, theBits) & 0xff);
 			aBitCount -= theBits;
 			itsPos += theBits;
 		}
-		
-		return theResult;
 	}
 	
 	public long readLong(int aBitCount)
