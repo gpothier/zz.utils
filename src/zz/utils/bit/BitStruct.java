@@ -11,14 +11,33 @@ public abstract class BitStruct
 {
 	
 	/**
-	 * Returns the offset of the first used byte in this struct's backing array.
+	 * Returns the offset of the first used slot in this struct's backing array.
 	 */
 	public abstract int getOffset();
 
 	/**
-	 * Sets the offset of the firsy used byte in this struct's backing array.
+	 * Sets the offset of the firsy used slot in this struct's backing array.
 	 */
 	public abstract void setOffset(int aOffset);
+	
+	/**
+	 * Returns the number of slots that can be used in the backing array.
+	 */
+	public abstract int getSize();
+	
+	/**
+	 * Sets the number of slots that can be used in the backing array.
+	 */
+	public abstract void setSize(int aSize);
+	
+	/**
+	 * Sets both the offset and size of this struct.
+	 */
+	public void setRange(int aOffset, int aSize)
+	{
+		setSize(aSize);
+		setOffset(aOffset);
+	}
 
 	/**
 	 * Returns the number of bits that can be stored withou

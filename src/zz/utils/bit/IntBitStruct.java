@@ -18,15 +18,18 @@ public class IntBitStruct extends BitStruct
 	 */
 	private int itsOffset;
 	
-	public IntBitStruct(int[] aData, int aOffset)
+	private int itsSize;
+	
+	public IntBitStruct(int[] aData, int aOffset, int aSize)
 	{
 		if (aData != null) setData(aData);
 		itsOffset = aOffset;
+		itsSize = aSize;
 	}
 	
 	public IntBitStruct(int[] aData)
 	{
-		this(aData, 0);
+		this(aData, 0, aData.length);
 	}
 	
 	public IntBitStruct(int aBitCount)
@@ -52,20 +55,24 @@ public class IntBitStruct extends BitStruct
 		return itsData;
 	}
 	
-	/**
-	 * Returns the offset of the first used byte in this struct's backing array.
-	 */
 	public int getOffset()
 	{
 		return itsOffset;
 	}
 
-	/**
-	 * Sets the offset of the firsy used byte in this struct's backing array.
-	 */
 	public void setOffset(int aOffset)
 	{
 		itsOffset = aOffset;
+	}
+	
+	public int getSize()
+	{
+		return itsSize;
+	}
+
+	public void setSize(int aSize)
+	{
+		itsSize = aSize;
 	}
 
 	/**
@@ -75,7 +82,7 @@ public class IntBitStruct extends BitStruct
 	 */
 	public int getRemainingBits()
 	{
-		return (getData().length - itsOffset)*32 - getPos();
+		return itsSize*32 - getPos();
 	}
 
 	
@@ -101,7 +108,7 @@ public class IntBitStruct extends BitStruct
 	 */
 	protected void grow(int aMinSize)
 	{
-		if (itsOffset != 0) throw new UnsupportedOperationException("Cannot grow a struct when offset is not 0");
+		if (itsOffset != 0 || itsSize != getData().length) throw new UnsupportedOperationException("Cannot grow a struct when offset is not 0");
 		
 		int theNewSize = Math.max(getData().length*2, (aMinSize+31)/32);
 		int[] theNewData = new int[theNewSize];
@@ -109,9 +116,14 @@ public class IntBitStruct extends BitStruct
 		setData(theNewData);
 	}
 	
+	private void checkCapacity(int aMinCapacity)
+	{
+		if (itsSize * 32 < aMinCapacity) throw new RuntimeException("Insufficient capacity");
+	}
+	
 	private void ensureCapacity(int aMinCapacity)
 	{
-		if ((getData().length - itsOffset) * 32 < aMinCapacity) grow(aMinCapacity);
+		if (itsSize * 32 < aMinCapacity) grow(aMinCapacity);
 	}
 	
 	public void writeLong(long aValue, int aBitCount)
@@ -168,6 +180,8 @@ public class IntBitStruct extends BitStruct
 	@Override
 	public void readBytes(int aBitCount, byte[] aBuffer)
 	{
+		checkCapacity(itsPos+aBitCount);
+		
 		int i = 0;
 		while (aBitCount > 0)
 		{
@@ -180,6 +194,8 @@ public class IntBitStruct extends BitStruct
 	
 	public long readLong(int aBitCount)
 	{
+		checkCapacity(itsPos+aBitCount);
+		
 		long theResult = BitUtils.readLong(getData(), itsOffset, itsPos, aBitCount);
 		itsPos += aBitCount;
 		return theResult;
@@ -187,6 +203,8 @@ public class IntBitStruct extends BitStruct
 	
 	public int readInt(int aBitCount)
 	{
+		checkCapacity(itsPos+aBitCount);
+
 		int theResult = BitUtils.readInt(getData(), itsOffset, itsPos, aBitCount);
 		itsPos += aBitCount;
 		return theResult;
@@ -194,6 +212,8 @@ public class IntBitStruct extends BitStruct
 	
 	public byte readByte(int aBitCount)
 	{
+		checkCapacity(itsPos+aBitCount);
+
 		byte theResult = (byte) (BitUtils.readInt(getData(), itsOffset, itsPos, aBitCount) & 0xff);
 		itsPos += aBitCount;
 		return theResult;
@@ -201,6 +221,8 @@ public class IntBitStruct extends BitStruct
 	
 	public boolean readBoolean()
 	{
+		checkCapacity(itsPos+1);
+
 		int theResult = BitUtils.readInt(getData(), itsOffset, itsPos, 1);
 		itsPos += 1;
 		return theResult != 0;
@@ -210,7 +232,7 @@ public class IntBitStruct extends BitStruct
 	public String toString()
 	{
 		StringBuilder theBuilder = new StringBuilder("BitStruct: ");
-		for (int j=itsOffset;j<getData().length;j++)
+		for (int j=itsOffset;j<itsOffset+itsSize;j++)
 		{
 			int theData = getData()[j];
 			theBuilder.append(Integer.toHexString(theData));

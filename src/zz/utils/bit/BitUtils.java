@@ -240,5 +240,54 @@ public class BitUtils
 	{
 		return aN < 32 ? 1 << aN : 0;
 	}
+	
+	/**
+	 * Returns the base-2 logarithm of the argument
+	 */
+	public static final double log2(int aN)
+	{
+		return Math.log(aN)/Math.log(2);
+	}
+	
+	/**
+	 * Returns the base-2 logarithm of the argument if the argument
+	 * is a power of 2, otherwise returns -1;
+	 */
+	public static final int log2ex(int aN)
+	{
+		if (aN <= 0) return -1;
+		
+		int k = 1;
+		int l = 0;
+		
+		while (k != 0)
+		{
+			if (aN == k) return l;
+			l++;
+			k <<= 1;
+		}
+		
+		return -1;
+	}
+	
+	public static boolean isOverflow(int aValue, int aBits)
+	{
+		if (aBits >= 32) return false;
+		else 
+		{
+			int theMask = ~(pow2i(aBits)-1);
+			return (aValue & theMask) != 0; 
+		}
+	}
+	
+	public static boolean isOverflow(long aValue, int aBits)
+	{
+		if (aBits >= 64) return false;
+		else 
+		{
+			long theMask = ~(pow2(aBits)-1);
+			return (aValue & theMask) != 0; 
+		}
+	}
 
 }

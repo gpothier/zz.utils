@@ -17,19 +17,25 @@ public class ByteBitStruct extends BitStruct
 	private int itsPos;
 	
 	/**
-	 * Offset (in bytes) of the first used byte in the array.
+	 * Offset (in slots) of the first used byte in the array.
 	 */
 	private int itsOffset;
 	
-	public ByteBitStruct(byte[] aBytes, int aOffset)
+	/**
+	 * Number of array slots  that can be used.
+	 */
+	private int itsSize;
+	
+	public ByteBitStruct(byte[] aBytes, int aOffset, int aSize)
 	{
 		if (aBytes != null) setBytes(aBytes);
 		itsOffset = aOffset;
+		itsSize = aSize;
 	}
 	
 	public ByteBitStruct(byte[] aBytes)
 	{
-		this(aBytes, 0);
+		this(aBytes, 0, aBytes.length);
 	}
 	
 	public ByteBitStruct(int aBitCount)
@@ -50,25 +56,29 @@ public class ByteBitStruct extends BitStruct
 		itsBytes = bytes;
 	}
 
-	protected byte[] getBytes()
+	protected byte[] getData()
 	{
 		return itsBytes;
 	}
 	
-	/**
-	 * Returns the offset of the first used byte in this struct's backing array.
-	 */
 	public int getOffset()
 	{
 		return itsOffset;
 	}
 
-	/**
-	 * Sets the offset of the firsy used byte in this struct's backing array.
-	 */
 	public void setOffset(int aOffset)
 	{
 		itsOffset = aOffset;
+	}
+	
+	public int getSize()
+	{
+		return itsSize;
+	}
+
+	public void setSize(int aSize)
+	{
+		itsSize = aSize;
 	}
 
 	/**
@@ -78,7 +88,7 @@ public class ByteBitStruct extends BitStruct
 	 */
 	public int getRemainingBits()
 	{
-		return (getBytes().length - itsOffset)*8 - getPos();
+		return itsSize*8 - getPos();
 	}
 
 	
@@ -104,8 +114,8 @@ public class ByteBitStruct extends BitStruct
 	 */
 	public byte[] packedBytes()
 	{
-		byte[] theResult = new byte[itsPos+7/8];
-		System.arraycopy(getBytes(), itsOffset, theResult, 0, theResult.length);
+		byte[] theResult = new byte[(itsPos+7)/8];
+		System.arraycopy(getData(), itsOffset, theResult, 0, theResult.length);
 		return theResult;
 	}
 	
@@ -115,24 +125,29 @@ public class ByteBitStruct extends BitStruct
 	 */
 	protected void grow(int aMinSize)
 	{
-		if (itsOffset != 0) throw new UnsupportedOperationException("Cannot grow a struct when offset is not 0");
+		if (itsOffset != 0 || itsSize != getData().length) throw new UnsupportedOperationException("Cannot grow a struct when offset is not 0");
 		
-		int theNewSize = Math.max(getBytes().length*2, (aMinSize+7)/8);
+		int theNewSize = Math.max(getData().length*2, (aMinSize+7)/8);
 		byte[] theNewBytes = new byte[theNewSize];
-		System.arraycopy(getBytes(), 0, theNewBytes, 0, getBytes().length);
+		System.arraycopy(getData(), 0, theNewBytes, 0, getData().length);
 		setBytes(theNewBytes);
+	}
+	
+	private void checkCapacity(int aMinCapacity)
+	{
+		if (itsSize * 8 < aMinCapacity) throw new RuntimeException("Insufficient capacity");;
 	}
 	
 	private void ensureCapacity(int aMinCapacity)
 	{
-		if ((getBytes().length - itsOffset) * 8 < aMinCapacity) grow(aMinCapacity);
+		if (itsSize * 8 < aMinCapacity) grow(aMinCapacity);
 	}
 	
 	public void writeLong(long aValue, int aBitCount)
 	{
 		ensureCapacity(itsPos+aBitCount);
 		
-		BitUtils.writeLong(getBytes(), itsOffset, aValue, itsPos, aBitCount);
+		BitUtils.writeLong(getData(), itsOffset, aValue, itsPos, aBitCount);
 		itsPos += aBitCount;
 	}
 
@@ -140,7 +155,7 @@ public class ByteBitStruct extends BitStruct
 	{
 		ensureCapacity(itsPos+aBitCount);
 		
-		BitUtils.writeInt(getBytes(), itsOffset, aValue, itsPos, aBitCount);
+		BitUtils.writeInt(getData(), itsOffset, aValue, itsPos, aBitCount);
 		itsPos += aBitCount;
 	}
 	
@@ -148,7 +163,7 @@ public class ByteBitStruct extends BitStruct
 	{
 		ensureCapacity(itsPos+1);
 		
-		BitUtils.writeBoolean(getBytes(), itsOffset, aValue, itsPos);
+		BitUtils.writeBoolean(getData(), itsOffset, aValue, itsPos);
 		itsPos += 1;
 	}
 	
@@ -165,7 +180,7 @@ public class ByteBitStruct extends BitStruct
 		{
 			byte b = aBytes[i++];
 			int theBits = Math.min(aBitCount, 8);
-			BitUtils.writeByte(getBytes(), itsOffset, b, itsPos, theBits);
+			BitUtils.writeByte(getData(), itsOffset, b, itsPos, theBits);
 			itsPos += theBits;
 			aBitCount -= theBits;
 		}
@@ -174,11 +189,13 @@ public class ByteBitStruct extends BitStruct
 	@Override
 	public void readBytes(int aBitCount, byte[] aBuffer)
 	{
+		checkCapacity(itsPos+aBitCount);
+
 		int i = 0;
 		while (aBitCount > 0)
 		{
 			int theBits = Math.min(aBitCount, 8);
-			aBuffer[i++] = BitUtils.readByte(getBytes(), itsOffset, itsPos, theBits);
+			aBuffer[i++] = BitUtils.readByte(getData(), itsOffset, itsPos, theBits);
 			aBitCount -= theBits;
 			itsPos += theBits;
 		}
@@ -186,28 +203,36 @@ public class ByteBitStruct extends BitStruct
 	
 	public long readLong(int aBitCount)
 	{
-		long theResult = BitUtils.readLong(getBytes(), itsOffset, itsPos, aBitCount);
+		checkCapacity(itsPos+aBitCount);
+
+		long theResult = BitUtils.readLong(getData(), itsOffset, itsPos, aBitCount);
 		itsPos += aBitCount;
 		return theResult;
 	}
 	
 	public int readInt(int aBitCount)
 	{
-		int theResult = BitUtils.readInt(getBytes(), itsOffset, itsPos, aBitCount);
+		checkCapacity(itsPos+aBitCount);
+
+		int theResult = BitUtils.readInt(getData(), itsOffset, itsPos, aBitCount);
 		itsPos += aBitCount;
 		return theResult;
 	}
 	
 	public byte readByte(int aBitCount)
 	{
-		byte theResult = BitUtils.readByte(getBytes(), itsOffset, itsPos, aBitCount);
+		checkCapacity(itsPos+aBitCount);
+
+		byte theResult = BitUtils.readByte(getData(), itsOffset, itsPos, aBitCount);
 		itsPos += aBitCount;
 		return theResult;
 	}
 	
 	public boolean readBoolean()
 	{
-		byte theResult = BitUtils.readByte(getBytes(), itsOffset, itsPos, 1);
+		checkCapacity(itsPos+1);
+
+		byte theResult = BitUtils.readByte(getData(), itsOffset, itsPos, 1);
 		itsPos += 1;
 		return theResult != 0;
 	}
@@ -216,9 +241,9 @@ public class ByteBitStruct extends BitStruct
 	public String toString()
 	{
 		StringBuilder theBuilder = new StringBuilder("BitStruct: ");
-		for (int j=itsOffset;j<getBytes().length;j++)
+		for (int j=itsOffset;j<itsOffset+itsSize;j++)
 		{
-			byte b = getBytes()[j];
+			byte b = getData()[j];
 			for(int i=0;i<8;i++)
 			{
 				theBuilder.append((b & 1) == 1 ? "1" : "0");
