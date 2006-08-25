@@ -75,14 +75,9 @@ public class IntBitStruct extends BitStruct
 		itsSize = aSize;
 	}
 
-	/**
-	 * Returns the number of bits that can be stored withou
-	 * growing the backing array, according to the current
-	 * position.
-	 */
-	public int getRemainingBits()
+	public int getTotalBits()
 	{
-		return itsSize*32 - getPos();
+		return itsSize*32;
 	}
 
 	

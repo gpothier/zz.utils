@@ -44,7 +44,17 @@ public abstract class BitStruct
 	 * growing the backing array, according to the current
 	 * position.
 	 */
-	public abstract int getRemainingBits();
+	public final int getRemainingBits()
+	{
+		return getTotalBits() - getPos();
+	}
+
+	
+	/**
+	 * Returns the total number of bits that can be stored in
+	 * this struct. 
+	 */
+	public abstract int getTotalBits();
 	
 	/**
 	 * Returns the position of the next bit read or written.
