@@ -25,6 +25,7 @@ public abstract class Server extends Thread
 	{
 		try
 		{
+			setName(getClass().getSimpleName());
 			itsServerSocket = new ServerSocket(aPort);
 			start();
 		}
