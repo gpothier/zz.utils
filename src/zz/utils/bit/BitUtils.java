@@ -250,6 +250,15 @@ public class BitUtils
 	}
 	
 	/**
+	 * Returns the smallest integer that is greater than the 
+	 * log of the specified number.
+	 */
+	public static final int log2ceil(int aN)
+	{
+		return (int) Math.ceil(log2(aN));
+	}
+	
+	/**
 	 * Returns the base-2 logarithm of the argument if the argument
 	 * is a power of 2, otherwise returns -1;
 	 */

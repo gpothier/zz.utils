@@ -453,4 +453,19 @@ public final class Utils
 		return len1 - len2;
 	}
 
+	/**
+	 * Sets a list element at the specified position, padding the list with
+	 * null values if it is too small.
+	 */
+	public static <T> void listSet(List<T> aList, int aIndex, T aValue)
+	{
+		if (aList.size() > aIndex) 
+		{
+			aList.set(aIndex, aValue);
+			return;
+		}
+		
+		while (aList.size() < aIndex) aList.add(null);
+		aList.add(aValue);
+	}
 }
