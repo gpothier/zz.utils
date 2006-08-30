@@ -2,6 +2,7 @@ package zz.utils;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,6 +52,18 @@ public final class Utils
 			sw.write (cbuf, 0, n);
 
 		return sw.toString ();
+	}
+	
+	public static void readFully(InputStream aStream, byte[] aBuffer) throws IOException
+	{
+		int n = 0;
+		int len = aBuffer.length;
+		while (n < len)
+		{
+			int count = aStream.read(aBuffer, n, len - n);
+			if (count < 0) throw new EOFException();
+			n += count;
+		}
 	}
 
 	/**
