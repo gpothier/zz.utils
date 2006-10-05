@@ -32,8 +32,9 @@ public class SortedRingBuffer<T> extends RingBuffer<T>
 			if (itsComparator.compare(theOtherObject, aObject) <= 0) break;
 			else set(i, theOtherObject);
 			
-			i++;
+			i--;
 		}
+		if (i == 0) System.err.println("SortedRingBuffer: warning, got back to the beginning of buffer.");
 		
 		set(i, aObject);
 	}

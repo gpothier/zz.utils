@@ -19,6 +19,11 @@ public class RingBuffer<T>
 		itsOutputIndex = 0;
 	}
 	
+	public int getCapacity()
+	{
+		return itsBuffer.length;
+	}
+	
 	public boolean isFull()
 	{
 		return itsSize == itsBuffer.length;

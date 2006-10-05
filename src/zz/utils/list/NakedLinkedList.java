@@ -26,7 +26,7 @@ public class NakedLinkedList<E>
 	 * Creates a new entry. Subclasses can override this method to create
 	 * custom entries.
 	 */
-	protected Entry<E> createEntry(E aElement)
+	public Entry<E> createEntry(E aElement)
 	{
 		return new Entry<E>(aElement);
 	}
