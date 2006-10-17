@@ -26,6 +26,7 @@ public class SortedRingBuffer<T> extends RingBuffer<T>
 		super.add(null);
 		
 		int i = getSize()-1;
+		int origI = i;
 		while(i > 0)
 		{
 			T theOtherObject = get(i-1);
@@ -35,6 +36,7 @@ public class SortedRingBuffer<T> extends RingBuffer<T>
 			i--;
 		}
 		if (i == 0) System.err.println("SortedRingBuffer: warning, got back to the beginning of buffer.");
+		if (i != origI) System.err.println("SortedRingBuffer: went back "+(origI-i)+" events");
 		
 		set(i, aObject);
 	}

@@ -38,6 +38,16 @@ public class ItemAction extends AbstractAction
 		return (String) getValue(Action.NAME);
 	}
 
+	public void setDescription (String aDescription)
+	{
+		putValue(Action.SHORT_DESCRIPTION, aDescription);
+	}
+	
+	public String getDescription ()
+	{
+		return (String) getValue(Action.SHORT_DESCRIPTION);
+	}
+	
 	public void setIcon (Icon anIcon)
 	{
 		putValue(Action.SMALL_ICON, anIcon);

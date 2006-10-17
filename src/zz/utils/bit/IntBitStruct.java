@@ -94,6 +94,7 @@ public class IntBitStruct extends BitStruct
 	 */
 	public void setPos(int aPos)
 	{
+		assert aPos>=0;
 		itsPos = aPos;
 	}
 	

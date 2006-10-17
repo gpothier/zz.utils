@@ -87,5 +87,20 @@ public abstract class Server extends Thread
 	 * This method is called when this server accepted a connection. 
 	 */
 	protected abstract void accepted(Socket aSocket);
+	
+	/**
+	 * Stops accepting connections
+	 */
+	public void disconnect()
+	{
+		try
+		{
+			itsServerSocket.close();
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
 
 }

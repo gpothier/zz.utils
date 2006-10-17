@@ -24,6 +24,7 @@ public class BitUtils
 
 	public static void writeLong(byte[] aDest, int aOffset, long aValue, int aStart, int aBitCount)
 	{
+		assert aBitCount > 0;
 		assert aBitCount <= 64;
 	
 		while (aBitCount > 0)
@@ -44,6 +45,7 @@ public class BitUtils
 
 	public static void writeByte(byte[] aDest, int aOffset, byte aValue, int aStart, int aBitCount)
 	{
+		assert aBitCount > 0;
 		assert aBitCount <= 8;
 		
 		int theBitShift = aStart % 8;
@@ -75,6 +77,7 @@ public class BitUtils
 
 	public static void writeInt(int[] aDest, int aOffset, int aValue, int aStart, int aBitCount)
 	{
+		assert aBitCount > 0;
 		assert aBitCount <= 32;
 		
 		int theBitShift = aStart % 32;
@@ -114,6 +117,7 @@ public class BitUtils
 
 	public static long readLong(byte[] aBytes, int aOffset, int aStart, int aBitCount)
 	{
+		assert aBitCount > 0;
 		long theResult = 0;
 		
 		int theReadBits = 0;
@@ -144,6 +148,7 @@ public class BitUtils
 
 	public static byte readByte(byte[] aBytes, int aOffset, int aStart, int aBitCount)
 	{
+		assert aBitCount > 0;
 		assert aBitCount <= 8;
 		int theBitShift = aStart % 8;
 	
@@ -176,6 +181,7 @@ public class BitUtils
 	
 	public static int readInt(int[] aSrc, int aOffset, int aStart, int aBitCount)
 	{
+		assert aBitCount > 0;
 		assert aBitCount <= 32;
 		
 		int theBitShift = aStart % 32;
@@ -208,6 +214,7 @@ public class BitUtils
 
 	public static long readLong(int[] aSrc, int aOffset, int aStart, int aBitCount)
 	{
+		assert aBitCount > 0;
 		assert aBitCount <= 64;
 		long theValue = readInt(aSrc, aOffset, aStart, Math.min(aBitCount, 32)) & 0xffffffffL;
 		if (aBitCount > 32) 
