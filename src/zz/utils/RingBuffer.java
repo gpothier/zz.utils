@@ -72,6 +72,17 @@ public class RingBuffer<T>
 	}
 	
 	/**
+	 * Returns the element that would be returned by {@link #remove()}, or
+	 * null if there is no element.
+	 * @return
+	 */
+	public T peek()
+	{
+		if (isEmpty()) return null;
+		else return itsBuffer[itsOutputIndex];
+	}
+	
+	/**
 	 * Sets the element at the specified index.
 	 * Index 0 is the last added object that has not been removed.
 	 * @return The element that is being overwritten.

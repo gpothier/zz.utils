@@ -249,6 +249,17 @@ public class BitUtils
 	}
 	
 	/**
+	 * Computes x^n
+	 */
+	public static final int powi(int x, int n)
+	{
+		assert n>=0;
+		int theResult = 1;
+		for(int i=0;i<n;i++) theResult *= x;
+		return theResult;
+	}
+	
+	/**
 	 * Returns the base-2 logarithm of the argument
 	 */
 	public static final double log2(int aN)
