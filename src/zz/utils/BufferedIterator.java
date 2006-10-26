@@ -16,11 +16,25 @@ import java.util.NoSuchElementException;
  */
 public abstract class BufferedIterator<B, I> implements Iterator<I>
 {
+	private boolean itsUseFutures;
+	
 	private I itsNext;
 	private B itsBuffer;
+	private Future<B> itsFutureBuffer;
+	
 	private int itsIndex;
 	private int itsRemaining;
 	
+	public BufferedIterator()
+	{
+		this(false);
+	}
+	
+	public BufferedIterator(boolean aUseFutures)
+	{
+		itsUseFutures = aUseFutures;
+	}
+
 	/**
 	 * Fetches the next available buffer.
 	 * @return A buffer, or null if no more elements are available.
@@ -36,18 +50,12 @@ public abstract class BufferedIterator<B, I> implements Iterator<I>
 	 * Returns the size of the given buffer.
 	 */
 	protected abstract int getSize(B aBuffer);
-
-	private void fetchNextBuffer0()
-	{
-		itsBuffer = fetchNextBuffer();
-		itsIndex = 0;
-		itsRemaining = itsBuffer != null ? getSize(itsBuffer) : 0;
-	}
 	
 	protected void reset()
 	{
 		itsRemaining = 0;
 		itsBuffer = null;
+		itsFutureBuffer = null;
 		itsNext = null;
 		fetchNext();
 	}
@@ -55,7 +63,29 @@ public abstract class BufferedIterator<B, I> implements Iterator<I>
 
 	private void fetchNext()
 	{
-		if (itsRemaining == 0) fetchNextBuffer0();
+		if (itsRemaining == 0) 
+		{
+			if (itsUseFutures)
+			{
+				itsFutureBuffer = new Future<B>()
+				{
+					@Override
+					protected B fetch() throws Throwable
+					{
+						return fetchNextBuffer();
+					}
+				};
+				
+				return;
+			}
+			else
+			{
+				itsBuffer = fetchNextBuffer();
+				itsIndex = 0;
+				itsRemaining = itsBuffer != null ? getSize(itsBuffer) : 0;
+			}
+		}
+		
 		if (itsBuffer != null)
 		{
 			itsNext = get(itsBuffer, itsIndex++);
@@ -63,16 +93,37 @@ public abstract class BufferedIterator<B, I> implements Iterator<I>
 		}
 		else itsNext = null;
 	}
+	
+	private I getNext()
+	{
+		if (itsFutureBuffer != null)
+		{
+			itsBuffer = itsFutureBuffer.get();
+			itsIndex = 0;
+			itsRemaining = itsBuffer != null ? getSize(itsBuffer) : 0;
+
+			if (itsBuffer != null)
+			{
+				itsNext = get(itsBuffer, itsIndex++);
+				itsRemaining--;
+			}
+			else itsNext = null;
+
+			itsFutureBuffer = null;
+		}
+
+		return itsNext;
+	}
 
 	public boolean hasNext()
 	{
-		return itsNext != null;
+		return getNext() != null;
 	}
 
 	public I next()
 	{
 		if (! hasNext()) throw new NoSuchElementException();
-		I theResult = itsNext;
+		I theResult = getNext();
 		fetchNext();
 		return theResult;
 	}

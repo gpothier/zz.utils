@@ -12,7 +12,7 @@ import zz.utils.list.NakedLinkedList.Entry;
 /**
  * A buffer that keeps the most recently used items in memory.
  * Subclasses can be notified of dropped items by overriding
- * the {@link #drop(Object)} method.
+ * the {@link #dropped(Object)} method.
  * @author gpothier
  */
 public abstract class MRUBuffer<K, V>
@@ -36,7 +36,11 @@ public abstract class MRUBuffer<K, V>
 	 */
 	protected abstract K getKey(V aValue);
 	
-	private void use(Entry<V> aEntry)
+	/**
+	 * Brings the specified entry to the top of the buffer.
+	 * This is done automatically when an entry is retrieved or added.
+	 */
+	public void use(Entry<V> aEntry)
 	{
 		if (aEntry.isAttached()) itsItemsList.remove(aEntry);
 		itsItemsList.addLast(aEntry);
@@ -47,8 +51,8 @@ public abstract class MRUBuffer<K, V>
 			itsItemsList.remove(theFirst);
 			
 			V theValue = theFirst.getValue();
-			drop(theValue);
 			itsCache.remove(getKey(theValue));
+			dropped(theValue);
 		}			
 	}
 
@@ -62,11 +66,10 @@ public abstract class MRUBuffer<K, V>
 	}
 	
 	/**
-	 * This method is called when a dirty item is about to
-	 * be dropped. 
+	 * This method is called when an item is dropped. 
 	 * This method does nothing by default.
 	 */
-	protected void drop(V aValue)
+	protected void dropped(V aValue)
 	{
 	}
 
@@ -95,7 +98,18 @@ public abstract class MRUBuffer<K, V>
 	 */
 	public V get(K aKey, boolean aFetch)
 	{
-//		System.out.println("get node: "+aId);
+		Entry<V> theEntry = getEntry(aKey, aFetch);
+		return theEntry != null ? theEntry.getValue() : null;
+	}
+	
+	public Entry<V> getEntry(K aKey)
+	{
+		return getEntry(aKey, true);
+	}
+
+	
+	public Entry<V> getEntry(K aKey, boolean aFetch)
+	{
 		Entry<V> theEntry = itsCache.get(aKey);
 		if (theEntry == null && aFetch)
 		{
@@ -107,18 +121,32 @@ public abstract class MRUBuffer<K, V>
 		
 		if (theEntry != null) use(theEntry);
 		
-		return theEntry != null ? theEntry.getValue() : null;
+		return theEntry;
+	}
+	
+	/**
+	 * Removes the mapping corresponding to the given key
+	 * from this buffer
+	 */
+	public void drop(K aKey)
+	{
+		Entry<V> theEntry = itsCache.remove(aKey);
+		if (theEntry != null) itsItemsList.remove(theEntry);
+		dropped(theEntry.getValue());
 	}
 	
 	/**
 	 * Forcefully adds an item to this cache
+	 * @return The newly created entry.
 	 */
-	public void add(V aValue)
+	public Entry<V> add(V aValue)
 	{
 		Entry<V> theEntry = new Entry<V>(aValue);
 		itsCache.put(getKey(aValue), theEntry);
 		added(aValue);
 		use(theEntry);
+		
+		return theEntry;
 	}
 	
 	/**
