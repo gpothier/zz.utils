@@ -47,7 +47,7 @@
 		</javac>
 	</target>
 	
-	<target name="jar" depends="init, clean, compile">
+	<target name="jar" depends="init, compile">
 		
 		<mkdir dir="${path.build}"/>
 		
