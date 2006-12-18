@@ -26,9 +26,15 @@ public abstract class MRUBuffer<K, V>
 	 */
 	private NakedLinkedList<V> itsItemsList = new NakedLinkedList<V>();
 	
-	public MRUBuffer(int aCacheSize)
+	public MRUBuffer(int aCacheSize, boolean aUseMap)
 	{
 		itsCacheSize = aCacheSize;
+		itsCache = aUseMap ? new HashMap<K, Entry<V>>() : null;
+	}
+	
+	public MRUBuffer(int aCacheSize)
+	{
+		this(aCacheSize, true);
 	}
 
 	/**
@@ -51,7 +57,7 @@ public abstract class MRUBuffer<K, V>
 			itsItemsList.remove(theFirst);
 			
 			V theValue = theFirst.getValue();
-			itsCache.remove(getKey(theValue));
+			if (itsCache != null) itsCache.remove(getKey(theValue));
 			dropped(theValue);
 		}			
 	}
@@ -110,6 +116,7 @@ public abstract class MRUBuffer<K, V>
 	
 	public Entry<V> getEntry(K aKey, boolean aFetch)
 	{
+		if (itsCache == null) throw new UnsupportedOperationException("This MRU buffer does not have a map"); 
 		Entry<V> theEntry = itsCache.get(aKey);
 		if (theEntry == null && aFetch)
 		{
@@ -130,6 +137,7 @@ public abstract class MRUBuffer<K, V>
 	 */
 	public void drop(K aKey)
 	{
+		if (itsCache == null) throw new UnsupportedOperationException("This MRU buffer does not have a map"); 
 		Entry<V> theEntry = itsCache.remove(aKey);
 		if (theEntry != null) itsItemsList.remove(theEntry);
 		dropped(theEntry.getValue());
@@ -142,7 +150,7 @@ public abstract class MRUBuffer<K, V>
 	public Entry<V> add(V aValue)
 	{
 		Entry<V> theEntry = new Entry<V>(aValue);
-		itsCache.put(getKey(aValue), theEntry);
+		if (itsCache != null) itsCache.put(getKey(aValue), theEntry);
 		added(aValue);
 		use(theEntry);
 		

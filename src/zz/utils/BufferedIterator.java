@@ -15,8 +15,7 @@ import java.util.NoSuchElementException;
  * @author gpothier
  */
 public abstract class BufferedIterator<B, I> implements Iterator<I>
-{
-	private boolean itsUseFutures;
+{	private boolean itsUseFutures;
 	
 	private I itsNext;
 	private B itsBuffer;

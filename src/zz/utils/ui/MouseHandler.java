@@ -22,7 +22,8 @@ import zz.utils.Stack;
  * drag and drop support.
  * @author gpothier
  */
-public abstract class MouseHandler<T> implements MouseListener, MouseMotionListener, KeyListener
+public abstract class MouseHandler<T> 
+implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 {
 	/**
 	 * This flag determines what happens when the mouse enters an element:
@@ -153,7 +154,7 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 			} while (itsPathToCurrentElement.size() > 0);
 			
 			IMouseAware theMouseAware = getMouseAware(itsCurrentElement);
-			if (theMouseAware != null) theMouseAware.mouseMoved(thePoint, e);
+			if (theMouseAware != null) theMouseAware.mouseMoved(e, thePoint);
 		}
 		
 		e.consume();
@@ -225,6 +226,14 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 		itsPressTime = System.currentTimeMillis();
 		
 		fireMousePressed(e, thePoint, itsCurrentElement);
+	}
+	
+	public void mouseWheelMoved(MouseWheelEvent e)
+	{
+		Point2D thePoint = pixelToRoot(e.getPoint());
+		itsCurrentElement = getElementAt(thePoint);
+
+		fireMouseWheelMoved(e, thePoint, itsCurrentElement);
 	}
 
 	public void mouseReleased (MouseEvent e)
@@ -299,6 +308,20 @@ public abstract class MouseHandler<T> implements MouseListener, MouseMotionListe
 
 	public void keyReleased (KeyEvent e)
 	{
+	}
+	
+	private void fireMouseWheelMoved(MouseWheelEvent aEvent, Point2D aRootPoint, T aElement)
+	{
+		while (aElement != null)
+		{
+			IMouseAware theMouseAware = getMouseAware(aElement);
+			if (theMouseAware != null) 
+			{
+				Point2D thePoint = rootToLocal(aElement, aRootPoint);
+				if (theMouseAware.mouseWheelMoved(aEvent, thePoint)) break;
+			}
+			aElement = getParent(aElement);
+		}
 	}
 	
 	private void fireMousePressed (MouseEvent aEvent, Point2D aRootPoint, T aElement)
