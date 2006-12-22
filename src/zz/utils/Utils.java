@@ -390,13 +390,56 @@ public final class Utils
 	 */
 	public static void pipe(InputStream aInputStream, OutputStream aOutputStream) throws IOException
 	{
-		byte[] theBuffer = new byte[1024];
-		int theCount;
+		pipe(aInputStream, aOutputStream, -1);
+	}
+	
+	/**
+	 * Writes all the bytes obtained from the specified input stream into
+	 * the specified output stream, until the input stream reaches
+	 * end of file, or the specified number of bytes have been
+	 * transfered.
+	 * @param aByteCount Maximum number of bytes to transfer, or -1
+	 * for no limit.
+	 */
+	public static void pipe(
+			InputStream aInputStream, 
+			OutputStream aOutputStream,
+			int aByteCount) throws IOException
+	{
+		pipe(new byte[1024], aInputStream, aOutputStream, aByteCount);
+	}
+			
+	/**
+	 * Writes all the bytes obtained from the specified input stream into
+	 * the specified output stream, until the input stream reaches
+	 * end of file, or the specified number of bytes have been
+	 * transfered.
+	 * @param aBuffer User-specified buffer, so that the buffer
+	 * does not have to be instantiated in this method.
+	 * @param aByteCount Maximum number of bytes to transfer, or -1
+	 * for no limit.
+	 */
+	public static void pipe(
+			byte[] aBuffer,
+			InputStream aInputStream, 
+			OutputStream aOutputStream,
+			int aByteCount) throws IOException
+	{
+		int theRemaining = aByteCount != -1 ? aByteCount : Integer.MAX_VALUE;
 		
-		while ((theCount = aInputStream.read(theBuffer)) >= 0)
+		do
 		{
-			aOutputStream.write(theBuffer, 0, theCount);
-		}
+			int theCount = aInputStream.read(
+				aBuffer, 
+				0, 
+				Math.min(aBuffer.length, theRemaining));
+			
+			if (theCount < 0) break;
+			aOutputStream.write(aBuffer, 0, theCount);
+			
+			if (aByteCount != -1) theRemaining -= theCount;
+			
+		} while(theRemaining > 0);
 		
 		aOutputStream.flush();
 	}

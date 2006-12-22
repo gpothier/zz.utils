@@ -4,8 +4,11 @@
 package zz.utils.net;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * Manages incoming connections: starts a server socket that waits 
@@ -16,6 +19,7 @@ import java.net.Socket;
 public abstract class Server extends Thread
 {
 	private ServerSocket itsServerSocket;
+	private final int itsPort;
 	
 	/**
 	 * Creates a socket thread that accepts incoming connections
@@ -23,6 +27,7 @@ public abstract class Server extends Thread
 	 */
 	public Server(int aPort)
 	{
+		itsPort = aPort;
 		try
 		{
 			setName(getClass().getSimpleName());
@@ -35,6 +40,30 @@ public abstract class Server extends Thread
 		}
 	}
 	
+	/**
+	 * Returns the port on which this server is accepting connections.
+	 */
+	public int getPort()
+	{
+		return itsPort;
+	}
+	
+	/**
+	 * Returns the adress of this server (host name and port).
+	 */
+	public ServerAdress getAdress()
+	{
+		try
+		{
+			String theHostName = InetAddress.getLocalHost().getHostName();
+			return new ServerAdress(theHostName, itsPort);
+		}
+		catch (UnknownHostException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+
 	public final void run()
 	{
 		try
@@ -103,4 +132,22 @@ public abstract class Server extends Thread
 		}
 	}
 
+	public static class ServerAdress implements Serializable
+	{
+		private static final long serialVersionUID = -7194261576290479370L;
+		
+		public final String hostName;
+		public final int port;
+		
+		private ServerAdress(final String aHostName, final int aPort)
+		{
+			hostName = aHostName;
+			port = aPort;
+		}
+		
+		public Socket connect() throws UnknownHostException, IOException
+		{
+			return new Socket(hostName, port);
+		}
+	}
 }
