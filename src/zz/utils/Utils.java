@@ -435,13 +435,12 @@ public final class Utils
 				Math.min(aBuffer.length, theRemaining));
 			
 			if (theCount < 0) break;
+			
 			aOutputStream.write(aBuffer, 0, theCount);
 			
 			if (aByteCount != -1) theRemaining -= theCount;
 			
 		} while(theRemaining > 0);
-		
-		aOutputStream.flush();
 	}
 
 	public static void memset(byte[] aArray, byte aValue)
