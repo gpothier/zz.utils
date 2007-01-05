@@ -3,17 +3,18 @@
 	
 	<property environment="env"/>
 	
-	<property name="path.src.java" location="${basedir}/src"/>
-	
-	<property name="path.build" location="${basedir}/build"/>
-	<property name="path.classes" location="${basedir}/classes"/>
-	<property name="path.javadoc" location="${basedir}/doc"/>
-	
-	<property name="file.jar" location="${path.build}/zz.utils.jar"/>
-	
-	<property name="encoding" value="UTF-8"/>
 		
 	<target name="init">
+		<property name="path.src.java" location="${basedir}/src"/>
+		
+		<property name="path.build" location="${basedir}/build"/>
+		<property name="path.classes" location="${basedir}/classes"/>
+		<property name="path.javadoc" location="${basedir}/doc"/>
+		
+		<property name="file.jar" location="${path.build}/zz.utils.jar"/>
+		
+		<property name="encoding" value="UTF-8"/>
+
 		<echo message="Base dir: ${basedir}" />
 	</target>	
 		
@@ -41,7 +42,7 @@
 	<target name="jar" depends="init, compile">
 		
 		<mkdir dir="${path.build}"/>
-		
+		<echo message="zz.utils: creating jar ${file.jar}"/>
 		<jar jarfile="${file.jar}" index="true">
 			<fileset dir="${path.classes}" />
 		</jar>
