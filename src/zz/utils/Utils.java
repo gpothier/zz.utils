@@ -247,6 +247,25 @@ public final class Utils
 	}
 
 	/**
+	 * Similar to {@link java.util.List#indexOf}, except that it uses the 
+	 * identity operator instead of the {@link #equals(Object)} method.
+	 * @param aObject An object to look for.
+	 * @return The index of the first object that is identical to 
+	 * the specified object, or -1 if not found. 
+	 */
+	public static int indexOfIdent (Object aObject, java.util.List aList)
+	{
+		int theIndex = 0;
+		for (Iterator theIterator = aList.iterator (); theIterator.hasNext ();)
+		{
+			Object o = theIterator.next ();
+			if (o == aObject) return theIndex;
+			theIndex ++;
+		}
+		return -1;
+	}
+	
+	/**
 	 * Searches and returns the first object in the list whose equals method returns
 	 * true when passed the specified object.
 	 */
