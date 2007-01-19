@@ -6,6 +6,10 @@ package zz.utils.properties;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Set;
+
+import zz.utils.list.ICollection;
+import zz.utils.list.ICollectionListener;
 
 /**
  * Various utility methods for dealing with properties
@@ -81,6 +85,17 @@ public class PropertyUtils
 		return theConnector;
 	}
 
+	public static <T> SetConnector<T> connectSets(
+			ISetProperty<T> aSourceProperty,
+			ISetProperty<T> aTargetProperty,
+			boolean aSymmetric,
+			boolean aHard)
+	{
+		SetConnector<T> theConnector = new SetConnector<T>(aSourceProperty, aTargetProperty, aSymmetric, aHard);
+		theConnector.connect();
+		return theConnector;
+	}
+	
 	/**
 	 * Same as {@link #connectSizes(IRWProperty, IRWProperty, boolean)} but with hard listeners
 	 */
@@ -153,23 +168,23 @@ public class PropertyUtils
 	 * A property listener that forwards property changes to a target property.
 	 * @author gpothier
 	 */
-	public abstract static class Connector<T> extends PropertyListener<T>
+	public abstract static class Connector<T> 
 	{
-		private IRWProperty<T> itsSourceProperty;
-		private IRWProperty<T> itsTargetProperty;
+		private IProperty<T> itsSourceProperty;
+		private IProperty<T> itsTargetProperty;
 		
-		public Connector(IRWProperty<T> aSourceProperty, IRWProperty<T> aTargetProperty)
+		public Connector(IProperty<T> aSourceProperty, IProperty<T> aTargetProperty)
 		{
 			itsSourceProperty = aSourceProperty;
 			itsTargetProperty = aTargetProperty;
 		}
 
-		public IRWProperty<T> getSourceProperty()
+		public IProperty<T> getSourceProperty()
 		{
 			return itsSourceProperty;
 		}
 
-		public IRWProperty<T> getTargetProperty()
+		public IProperty<T> getTargetProperty()
 		{
 			return itsTargetProperty;
 		}
@@ -196,6 +211,7 @@ public class PropertyUtils
 	 * @author gpothier
 	 */
 	public abstract static class SimpleConnector<T> extends Connector<T>
+	implements IPropertyListener<T>
 	{
 		private boolean itsSymmetric;
 		private boolean itsHard;
@@ -211,6 +227,16 @@ public class PropertyUtils
 			itsSymmetric = aSymmetric;
 			itsHard = aHard;
 		}
+		
+		public IRWProperty<T> getSourceProperty()
+		{
+			return (IRWProperty<T>) super.getSourceProperty();
+		}
+
+		public IRWProperty<T> getTargetProperty()
+		{
+			return (IRWProperty<T>) super.getTargetProperty();
+		}
 
 		public void propertyChanged(IProperty<T> aProperty, T aOldValue, T aNewValue)
 		{
@@ -225,6 +251,10 @@ public class PropertyUtils
 			else throw new RuntimeException("Unknown property: "+aProperty);
 		}
 		
+		public void propertyValueChanged(IProperty<T> aProperty)
+		{
+		}
+
 		protected abstract void forward (IRWProperty<T> aSource, IRWProperty<T> aTarget);
 		
 		public void connect()
@@ -278,5 +308,89 @@ public class PropertyUtils
 		}
 	}
 
+	public static class SetConnector<T> extends Connector<Set<T>>
+	implements ICollectionListener<T>
+	{
+		private boolean itsSymmetric;
+		private boolean itsHard;
+		
+		public SetConnector(
+				ISetProperty<T> aSourceProperty, 
+				ISetProperty<T> aTargetProperty, 
+				boolean aSymmetric, 
+				boolean aHard)
+		{
+			super(aSourceProperty, aTargetProperty);
+			
+			itsSymmetric = aSymmetric;
+			itsHard = aHard;
+		}
 
+		public ISetProperty<T> getSourceProperty()
+		{
+			return (ISetProperty<T>) super.getSourceProperty();
+		}
+
+		public ISetProperty<T> getTargetProperty()
+		{
+			return (ISetProperty<T>) super.getTargetProperty();
+		}
+
+
+		public void elementAdded(ICollection<T> aCollection, T aElement)
+		{
+			if (aCollection == getSourceProperty()) 
+			{
+				getTargetProperty().add(aElement);
+			}
+			else if (aCollection == getTargetProperty())
+			{
+				if (itsSymmetric) getSourceProperty().add(aElement);
+			}
+			else throw new RuntimeException("Unknown property: "+aCollection);
+		}
+
+		public void elementRemoved(ICollection<T> aCollection, T aElement)
+		{
+			if (aCollection == getSourceProperty()) 
+			{
+				getTargetProperty().remove(aElement);
+			}
+			else if (aCollection == getTargetProperty())
+			{
+				if (itsSymmetric) getSourceProperty().remove(aElement);
+			}
+			else throw new RuntimeException("Unknown property: "+aCollection);
+		}
+
+		protected void forward (ISetProperty<T> aSource, ISetProperty<T> aTarget)
+		{
+			aTarget.clear();
+			for (T theElement : aSource)
+			{
+				aTarget.add(theElement);
+			}
+		}
+		
+		public void connect()
+		{
+			forward(getSourceProperty(), getTargetProperty());
+			
+			if (itsHard) getSourceProperty().addHardListener(this);
+			else getSourceProperty().addListener(this);
+			
+			if (itsSymmetric) 
+			{
+				if (itsHard) getTargetProperty().addHardListener(this);
+				else getTargetProperty().addListener(this);
+			}
+		}
+		
+		public void disconnect()
+		{
+			getSourceProperty().removeListener(this);
+			if (itsSymmetric) getTargetProperty().removeListener(this);
+		}
+		
+	}
 }
