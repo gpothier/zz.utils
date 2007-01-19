@@ -218,6 +218,7 @@ public class TextPainter
 			boolean aUnderline,
 			String aText)
 	{
+		if (aText.length() == 0) return new Point2D.Double();
 		AttributedString theString = createAttributedString(aFont, aUnderline, null, aText);
 		return computeSize(aGraphics, theString);
 	}
@@ -238,6 +239,46 @@ public class TextPainter
 		
 		return new Point2D.Double(theLayout.getAdvance() + 1, theLayout.getAscent() + theLayout.getDescent() + 1);
 	}
+	
+	public static float computeHeight(
+			Graphics2D aGraphics,
+			float aWidth,
+			Font aFont,
+			boolean aUnderline,
+			String aText)
+	{
+		if (aText.length() == 0) return 0;
+		AttributedString theString = createAttributedString(aFont, aUnderline, null, aText);
+		return computeHeight(aGraphics, aWidth, theString);		
+	}
+	
+	/**
+	 * Computes the necessary height to completely display the specified text
+	 * given an available width.
+	 */
+	public static float computeHeight(
+			Graphics2D aGraphics,
+			float aWidth,
+			AttributedString aText)
+	{
+		if (aText == null) return 0;
+		
+		FontRenderContext theContext = aGraphics.getFontRenderContext();
+
+		AttributedCharacterIterator theIterator = aText.getIterator();
+
+		LineBreakMeasurer theMeasurer = new LineBreakMeasurer(theIterator, theContext);
+
+		float theY = 0;
+		while (theMeasurer.getPosition() < theIterator.getEndIndex())
+		{
+			TextLayout theLayout = theMeasurer.nextLayout(aWidth);
+			theY = theY + theLayout.getAscent()+theLayout.getDescent() +theLayout.getLeading();
+		}
+		
+		return theY;
+	}
+	
 	
 	public static void main(String[] args)
 	{
