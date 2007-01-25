@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 
@@ -377,6 +378,21 @@ public final class Utils
 		aBuilder.append('\n');
 		indent(aBuilder, aIndent);
 	}
+	
+	public static String indent(String aString, int aIndent, String aPattern)
+	{
+		StringBuilder theBuilder = new StringBuilder();
+		StringTokenizer theTokenizer = new StringTokenizer(aString, "\n");
+		while (theTokenizer.hasMoreTokens())
+		{
+			String theLine = theTokenizer.nextToken();
+			for (int i=0;i<aIndent;i++) theBuilder.append(aPattern);
+			theBuilder.append(theLine);
+			theBuilder.append('\n');
+		}
+		
+		return theBuilder.toString();
+	}
 
 	/**
 	 * Writes a number of spaces into the specified string builder.
@@ -542,4 +558,36 @@ public final class Utils
 		while (aList.size() < aIndex) aList.add(null);
 		aList.add(aValue);
 	}
+	
+	/**
+	 * Forks a given task between a number of targets.
+	 * @param <T> Type of target
+	 * @param <R> Type of task result
+	 * @return The result of each target
+	 */
+	public static <T, R> List<R> fork(
+			Iterable<T> aTargets, 
+			final Task<T, R> aTask)
+	{
+		// TODO: maybe use something else than Future...
+		List<Future<R>> theFutures = new ArrayList<Future<R>>();
+		for (T theTarget : aTargets)
+		{
+			final T theTarget0 = theTarget;
+			theFutures.add (new Future<R>()
+			{
+				@Override
+				protected R fetch() throws Throwable
+				{
+					return aTask.run(theTarget0);
+				}
+			});
+		}
+		
+		List<R> theResult = new ArrayList<R>();
+		for (Future<R> theFuture : theFutures) theResult.add(theFuture.get());
+		
+		return theResult;
+	}
+
 }

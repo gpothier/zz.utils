@@ -15,30 +15,32 @@ import java.util.NoSuchElementException;
  * @author gpothier
  */
 public abstract class BufferedIterator<B, I> implements Iterator<I>
-{	private boolean itsUseFutures;
-	
+{	
 	private I itsNext;
+	private I itsPrevious;
+	private boolean itsNextReady = false;
+	private boolean itsPreviousReady = false;
 	private B itsBuffer;
-	private Future<B> itsFutureBuffer;
 	
 	private int itsIndex;
-	private int itsRemaining;
+	private int itsSize;
 	
-	public BufferedIterator()
-	{
-		this(false);
-	}
-	
-	public BufferedIterator(boolean aUseFutures)
-	{
-		itsUseFutures = aUseFutures;
-	}
-
 	/**
 	 * Fetches the next available buffer.
 	 * @return A buffer, or null if no more elements are available.
 	 */
 	protected abstract B fetchNextBuffer();
+	
+	/**
+	 * Fetches the previous available buffer.
+	 * Returns null by default; subclasses that need support for bidirectional
+	 * iteration should provide an implementation. 
+	 * @return A buffer, or null if no more elements are available.
+	 */
+	protected B fetchPreviousBuffer()
+	{
+		return null;
+	}
 	
 	/**
 	 * Returns an item of the given buffer.
@@ -52,81 +54,87 @@ public abstract class BufferedIterator<B, I> implements Iterator<I>
 	
 	protected void reset()
 	{
-		itsRemaining = 0;
+		itsIndex = 0;
+		itsSize = 0;
 		itsBuffer = null;
-		itsFutureBuffer = null;
 		itsNext = null;
 		fetchNext();
+		if (itsBuffer == null) fetchPrevious();
 	}
 	
 
 	private void fetchNext()
 	{
-		if (itsRemaining == 0) 
+		if (itsIndex == itsSize) 
 		{
-			if (itsUseFutures)
-			{
-				itsFutureBuffer = new Future<B>()
-				{
-					@Override
-					protected B fetch() throws Throwable
-					{
-						return fetchNextBuffer();
-					}
-				};
-				
-				return;
-			}
-			else
-			{
-				itsBuffer = fetchNextBuffer();
-				itsIndex = 0;
-				itsRemaining = itsBuffer != null ? getSize(itsBuffer) : 0;
-			}
+			itsBuffer = fetchNextBuffer();
+			itsSize = itsBuffer != null ? getSize(itsBuffer) : 0;
+			itsIndex = 0;
 		}
-		
-		if (itsBuffer != null)
-		{
-			itsNext = get(itsBuffer, itsIndex++);
-			itsRemaining--;
-		}
-		else itsNext = null;
+		itsNextReady = false;
 	}
 	
-	private I getNext()
+	private void fetchPrevious()
 	{
-		if (itsFutureBuffer != null)
+		if (itsIndex == 0) 
 		{
-			itsBuffer = itsFutureBuffer.get();
-			itsIndex = 0;
-			itsRemaining = itsBuffer != null ? getSize(itsBuffer) : 0;
-
-			if (itsBuffer != null)
-			{
-				itsNext = get(itsBuffer, itsIndex++);
-				itsRemaining--;
-			}
-			else itsNext = null;
-
-			itsFutureBuffer = null;
+			itsBuffer = fetchPreviousBuffer();
+			itsSize = itsBuffer != null ? getSize(itsBuffer) : 0;
+			itsIndex = itsSize;
 		}
-
+		itsPreviousReady = false;
+	}
+	
+	protected I getNext(boolean aFetch)
+	{
+		if (! itsNextReady && aFetch)
+		{
+			itsPrevious = itsNext;
+			itsPreviousReady = true;
+			itsNext = itsBuffer != null ? get(itsBuffer, itsIndex++) : null;
+			itsNextReady = true;
+		}
 		return itsNext;
 	}
 
+	protected I getPrevious(boolean aFetch)
+	{
+		if (! itsPreviousReady && aFetch)
+		{
+			itsNext = itsPrevious;
+			itsNextReady = true;
+			itsPrevious = itsBuffer != null ? get(itsBuffer, --itsIndex) : null;
+			itsPreviousReady = true;
+		}
+		return itsPrevious;
+	}
+	
 	public boolean hasNext()
 	{
-		return getNext() != null;
+		return getNext(true) != null;
 	}
 
+	public boolean hasPrevious()
+	{
+		return getPrevious(true) != null;
+	}
+	
 	public I next()
 	{
 		if (! hasNext()) throw new NoSuchElementException();
-		I theResult = getNext();
+		I theResult = getNext(true);
 		fetchNext();
 		return theResult;
 	}
 
+	public I previous()
+	{
+		if (! hasPrevious()) throw new NoSuchElementException();
+		I theResult = getPrevious(true);
+		fetchPrevious();
+		return theResult;
+	}
+	
 	public void remove()
 	{
 		throw new UnsupportedOperationException();

@@ -29,6 +29,9 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import zz.utils.ui.HorizontalAlignment;
+import zz.utils.ui.VerticalAlignment;
+
 /**
  * Provides utilities to paint text.
  * 
@@ -36,14 +39,6 @@ import javax.swing.JPanel;
  */
 public class TextPainter
 {
-	public static enum VerticalAlignment {
-		TOP, CENTER, BOTTOM
-	}
-	
-	public static enum HorizontalAlignment {
-		LEFT, CENTER, RIGHT
-	}
-	
 	/**
 	 * A font constant.
 	 */
@@ -191,13 +186,13 @@ public class TextPainter
 			theY += theLayout.getAscent();
 			float theLineW = (float) theLayout.getBounds().getWidth();
 			
-			float theXMargin = 0;
-			switch (aHAlign)
-			{
-				case LEFT: theXMargin = 0;break;
-				case CENTER: theXMargin = (theW - theLineW)/2f;break;
-				case RIGHT:	theXMargin = theW - theLineW;break;
-			}
+			float theXMargin = aHAlign.getOffset(theLineW, theW);
+//			switch (aHAlign)
+//			{
+//				case LEFT: theXMargin = 0;break;
+//				case CENTER: theXMargin = (theW - theLineW)/2f;break;
+//				case RIGHT:	theXMargin = theW - theLineW;break;
+//			}
 			
 			theLayout.draw(aGraphics, theX + theXMargin, theY);
 			theY += theLayout.getDescent() +theLayout.getLeading();
