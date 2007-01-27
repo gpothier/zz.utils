@@ -213,7 +213,7 @@ public class TextPainter
 			boolean aUnderline,
 			String aText)
 	{
-		if (aText.length() == 0) return new Point2D.Double();
+		if (aText == null || aText.length() == 0) return new Point2D.Double();
 		AttributedString theString = createAttributedString(aFont, aUnderline, null, aText);
 		return computeSize(aGraphics, theString);
 	}
