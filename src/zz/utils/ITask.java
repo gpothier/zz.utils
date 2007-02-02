@@ -8,7 +8,7 @@ package zz.utils;
  * an argument.
  * @author gpothier
  */
-public interface Task<I, O>
+public interface ITask<I, O>
 {
 	public O run(I aInput);
 }

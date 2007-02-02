@@ -567,7 +567,7 @@ public final class Utils
 	 */
 	public static <T, R> List<R> fork(
 			Iterable<T> aTargets, 
-			final Task<T, R> aTask)
+			final ITask<T, R> aTask)
 	{
 		// TODO: maybe use something else than Future...
 		List<Future<R>> theFutures = new ArrayList<Future<R>>();

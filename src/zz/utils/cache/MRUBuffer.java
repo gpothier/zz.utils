@@ -42,12 +42,25 @@ public abstract class MRUBuffer<K, V>
 	 */
 	protected abstract K getKey(V aValue);
 	
+	private Thread itsThread = null;
+	
+//	private void checkThread()
+//	{
+//		Thread theCurrentThread = Thread.currentThread();
+//		if (itsThread != theCurrentThread) 
+//		{
+//			System.out.println("MRUBuffer.checkThread()");
+//			itsThread = theCurrentThread;
+//		}
+//	}
+//	
 	/**
 	 * Brings the specified entry to the top of the buffer.
 	 * This is done automatically when an entry is retrieved or added.
 	 */
 	public void use(Entry<V> aEntry)
 	{
+//		checkThread();
 		if (aEntry.isAttached()) itsItemsList.remove(aEntry);
 		itsItemsList.addLast(aEntry);
 		
@@ -116,6 +129,7 @@ public abstract class MRUBuffer<K, V>
 	
 	public Entry<V> getEntry(K aKey, boolean aFetch)
 	{
+//		checkThread();
 		if (itsCache == null) throw new UnsupportedOperationException("This MRU buffer does not have a map"); 
 		Entry<V> theEntry = itsCache.get(aKey);
 		if (theEntry == null && aFetch)
@@ -137,6 +151,7 @@ public abstract class MRUBuffer<K, V>
 	 */
 	public void drop(K aKey)
 	{
+//		checkThread();
 		if (itsCache == null) throw new UnsupportedOperationException("This MRU buffer does not have a map"); 
 		Entry<V> theEntry = itsCache.remove(aKey);
 		if (theEntry != null) itsItemsList.remove(theEntry);
@@ -149,6 +164,7 @@ public abstract class MRUBuffer<K, V>
 	 */
 	public Entry<V> add(V aValue)
 	{
+//		checkThread();
 		Entry<V> theEntry = new Entry<V>(aValue);
 		if (itsCache != null) itsCache.put(getKey(aValue), theEntry);
 		added(aValue);
