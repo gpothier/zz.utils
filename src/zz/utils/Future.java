@@ -11,6 +11,7 @@ public abstract class Future<T> extends Thread
 	
 	public Future()
 	{
+		super("Future");
 		start();
 	}
 

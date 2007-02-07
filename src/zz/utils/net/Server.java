@@ -102,7 +102,7 @@ public abstract class Server extends Thread
 	 */
 	protected boolean accept()
 	{
-		return true;
+		return ! itsServerSocket.isClosed();
 	}
 	
 	/**
