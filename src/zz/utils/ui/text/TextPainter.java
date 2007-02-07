@@ -68,7 +68,20 @@ public class TextPainter
 
 
 
-	public static AttributedString createAttributedString(Font aFont,
+	public static AttributedString createAttributedString(
+			XFont aFont,
+			Paint aColor,
+			String aText)
+	{
+		return createAttributedString(
+				aFont.getAWTFont(), 
+				aFont.isUnderline(), 
+				aColor, 
+				aText);
+	}
+	
+	public static AttributedString createAttributedString(
+			Font aFont,
 			boolean aUnderline,
 			Paint aColor,
 			String aText)
@@ -82,6 +95,26 @@ public class TextPainter
 				aUnderline ? TextAttribute.UNDERLINE_ON : null);
 		
 		return theString;
+	}
+	
+	public static void paint(
+			Graphics2D aGraphics, 
+			XFont aFont,
+			Paint aColor,
+			String aText,
+			Shape aShape,
+			VerticalAlignment aVAlign,
+			HorizontalAlignment aHAlign)
+	{
+		paint(
+				aGraphics, 
+				aFont.getAWTFont(), 
+				aFont.isUnderline(), 
+				aColor, 
+				aText, 
+				aShape, 
+				aVAlign, 
+				aHAlign);
 	}
 	
 	public static void paint(
@@ -202,6 +235,14 @@ public class TextPainter
 		aGraphics.setClip(thePreviousClip);
 	}
 
+	public static Point2D computeSize(
+			Graphics2D aGraphics, 
+			XFont aFont,
+			String aText)
+	{
+		return computeSize(aGraphics, aFont.getAWTFont(), aFont.isUnderline(), aText);
+	}
+	
 	/**
 	 * Computes the size of the given text.
 	 * @param aGraphics A graphics used to perform computations. If no graphics
@@ -233,6 +274,20 @@ public class TextPainter
 		TextLayout theLayout = new TextLayout(theIterator, theContext);
 		
 		return new Point2D.Double(theLayout.getAdvance() + 1, theLayout.getAscent() + theLayout.getDescent() + 1);
+	}
+	
+	public static float computeHeight(
+			Graphics2D aGraphics,
+			float aWidth,
+			XFont aFont,
+			String aText)
+	{
+		return computeHeight(
+				aGraphics, 
+				aWidth, 
+				aFont.getAWTFont(), 
+				aFont.isUnderline(), 
+				aText);
 	}
 	
 	public static float computeHeight(
