@@ -10,10 +10,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 
 import javax.swing.JComponent;
+import javax.swing.JPopupMenu;
 
+import zz.utils.SimpleAction;
 import zz.utils.ui.text.TextPainter;
 import zz.utils.ui.text.XFont;
 
@@ -40,6 +46,8 @@ public class ZLabel extends JComponent
 		setOpaque(false);
 		setForeground(aColor);
 		updateSize();
+		
+		setComponentPopupMenu(createPopupMenu());
 	}
 	
 	public void setAlignment(HorizontalAlignment aHorizontalAlignment, VerticalAlignment aVerticalAlignment)
@@ -117,5 +125,22 @@ public class ZLabel extends JComponent
 	public static ZLabel create(String aText, XFont aFont, Color aColor)
 	{
 		return new ZLabel(aText, aFont, aColor);
+	}
+	
+	private JPopupMenu createPopupMenu()
+	{
+		JPopupMenu theMenu = new JPopupMenu();
+		theMenu.add(new SimpleAction("Copy")
+		{
+			public void actionPerformed(ActionEvent aE)
+			{
+				StringSelection theContent = new StringSelection(itsText);
+				Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+						theContent,
+						theContent);
+			}
+		});
+		
+		return theMenu;
 	}
 }
