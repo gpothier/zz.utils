@@ -29,32 +29,32 @@ public class TestPerformance
 //			}
 //		});
 		
-//		testStream(theSize);
-//		runTest("Stream", new Runnable()
-//		{
-//			public void run()
-//			{
-//				testStream(theSize);
-//			}
-//		});
-//		
-//		testBitStruct(theSize);
-//		runTest("BitStruct", new Runnable()
-//		{
-//			public void run()
-//			{
-//				testBitStruct(theSize);
-//			}
-//		});
-//		
-//		testIntBitStruct(theSize);
-//		runTest("IntBitStruct", new Runnable()
-//		{
-//			public void run()
-//			{
-//				testIntBitStruct(theSize);
-//			}
-//		});
+		testStream(theSize);
+		runTest("Stream", new Runnable()
+		{
+			public void run()
+			{
+				testStream(theSize);
+			}
+		});
+		
+		testBitStruct(theSize);
+		runTest("BitStruct", new Runnable()
+		{
+			public void run()
+			{
+				testBitStruct(theSize);
+			}
+		});
+		
+		testIntBitStruct(theSize);
+		runTest("IntBitStruct", new Runnable()
+		{
+			public void run()
+			{
+				testIntBitStruct(theSize);
+			}
+		});
 //		
 //		testIntBitArray(theSize);
 //		runTest("IntBitArray", new Runnable()
@@ -176,6 +176,11 @@ public class TestPerformance
 			System.out.println("ratio: "+(1.0f * theMemsetTime / theLoopTime));
 			
 		}
+	}
+	
+	public static void main(String[] args)
+	{
+		new TestPerformance().compare();
 	}
 	
 }

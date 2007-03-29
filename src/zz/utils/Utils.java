@@ -579,7 +579,6 @@ public final class Utils
 			Iterable<T> aTargets, 
 			final ITask<T, R> aTask)
 	{
-		// TODO: maybe use something else than Future...
 		List<Future<R>> theFutures = new ArrayList<Future<R>>();
 		for (T theTarget : aTargets)
 		{
@@ -598,6 +597,16 @@ public final class Utils
 		for (Future<R> theFuture : theFutures) theResult.add(theFuture.get());
 		
 		return theResult;
+	}
+	
+	/**
+	 * Same as {@link #fork(Iterable, ITask)} for arrays.
+	 */
+	public static <T, R> List<R> fork(
+			T[] aTargets, 
+			final ITask<T, R> aTask)
+	{
+		return fork(Arrays.asList(aTargets), aTask);
 	}
 	
 	/**

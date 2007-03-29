@@ -11,8 +11,13 @@ public abstract class Future<T> extends Thread
 	
 	public Future()
 	{
+		this(true);
+	}
+	
+	protected Future(boolean aStart)
+	{
 		super("Future");
-		start();
+		if (aStart) start();
 	}
 
 	@Override
@@ -20,14 +25,31 @@ public abstract class Future<T> extends Thread
 	{
 		try
 		{
-			itsResult = fetch();
+			done(fetch());
 		}
 		catch (Throwable e)
 		{
-			itsException = e;
+			exception(e);
 		}
+	}
+	
+	/**
+	 * Signals that this future obtained its value.
+	 */
+	protected void done(T aResult)
+	{
+		itsResult = aResult;
 		itsDone = true;
-		notifyAll();
+		notifyAll();		
+	}
+	
+	/**
+	 * Signals that the execution of this furure failed.
+	 */
+	protected void exception(Throwable aThrowable)
+	{
+		itsException = aThrowable;
+		done(null);
 	}
 	
 	protected abstract T fetch() throws Throwable;

@@ -154,8 +154,11 @@ public abstract class MRUBuffer<K, V>
 //		checkThread();
 		if (itsCache == null) throw new UnsupportedOperationException("This MRU buffer does not have a map"); 
 		Entry<V> theEntry = itsCache.remove(aKey);
-		if (theEntry != null) itsItemsList.remove(theEntry);
-		dropped(theEntry.getValue());
+		if (theEntry != null) 
+		{
+			itsItemsList.remove(theEntry);
+			dropped(theEntry.getValue());
+		}
 	}
 	
 	/**
