@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.SwingConstants;
@@ -37,6 +38,15 @@ implements Scrollable
 {
 	public ScrollablePanel()
 	{
+	}
+	
+	/**
+	 * Creates a scrollable panel with a single child.
+	 */
+	public ScrollablePanel(JComponent aComponent)
+	{
+		super(new StackLayout());
+		add(aComponent);
 	}
 
 	public ScrollablePanel(LayoutManager aLayout)

@@ -19,7 +19,7 @@ public abstract class MRUBuffer<K, V>
 {
 	private int itsCacheSize;
 	
-	private Map<K, Entry<V>> itsCache = new HashMap<K, Entry<V>>();
+	private Map<K, Entry<V>> itsCache;
 	
 	/**
 	 * Most recently used items list

@@ -27,6 +27,7 @@ public abstract class Server extends Thread
 	 */
 	public Server(int aPort)
 	{
+		super("Server-"+aPort);
 		itsPort = aPort;
 		try
 		{
