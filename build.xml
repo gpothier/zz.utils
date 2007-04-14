@@ -18,7 +18,7 @@
 		<echo message="Base dir: ${basedir}" />
 	</target>	
 		
-	<target name="clean">
+	<target name="clean" depends="init">
 		<echo message="Cleaning everything."/>
 		<delete failonerror="false">
 			<fileset dir="${path.classes}"/>
@@ -27,7 +27,7 @@
 		</delete>
 	</target>
 	
-	<target name="compile">
+	<target name="compile" depends="init">
 		<mkdir dir="${path.classes}"/>
 		<javac srcdir="${path.src.java}"
 			nowarn="true"
@@ -50,7 +50,7 @@
 	</target>
 	
 	
-	<target name="jdoc">
+	<target name="jdoc" depends="init">
 		
 		<echo message="Creating JavaDoc"/>
 		<mkdir dir="${path.javadoc}"/>

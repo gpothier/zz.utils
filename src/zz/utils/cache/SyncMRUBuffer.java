@@ -35,6 +35,12 @@ public abstract class SyncMRUBuffer<K, V> extends MRUBuffer<K, V>
 	}
 	
 	@Override
+	public synchronized void dropAll()
+	{
+		super.dropAll();
+	}
+	
+	@Override
 	public synchronized V get(K aKey, boolean aFetch)
 	{
 		return super.get(aKey, aFetch);

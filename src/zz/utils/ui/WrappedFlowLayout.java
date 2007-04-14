@@ -3,6 +3,7 @@
  */
 package zz.utils.ui;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -11,27 +12,18 @@ import java.awt.LayoutManager;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 /**
  * A layout manager similar to {@link FlowLayout} but that wraps components
  * to a given width. The width must be explicitly specified by the client.
  * @author gpothier
  */
 public class WrappedFlowLayout 
-implements LayoutManager, ComponentListener
+implements LayoutManager
 {
-	private int itsWidth;
-	private Container itsContainer = null;
-
-	public int getWidth()
-	{
-		return itsWidth;
-	}
-
-	public void setWidth(int aWidth)
-	{
-		itsWidth = aWidth;
-	}
-
 	public void addLayoutComponent(String aName, Component aComp)
 	{
 	}
@@ -40,18 +32,9 @@ implements LayoutManager, ComponentListener
 	{
 	}
 	
-	private void setContainer(Container aContainer)
-	{
-		if (itsContainer == null) 
-		{
-			itsContainer = aContainer;
-			itsContainer.addComponentListener(this);
-		}
-		else throw new RuntimeException("This layout manager is already associated to a container");
-	}
-	
 	public void layoutContainer(Container aParent)
 	{
+		int theWidth = aParent.getWidth();
 		int theCurrentHeight = 0;
 		int theX = 0;
 		int theY = 0;
@@ -62,28 +45,27 @@ implements LayoutManager, ComponentListener
 			if (! theComponent.isVisible()) continue;
 			
 			Dimension theSize = theComponent.getPreferredSize();
-			if (theSize.width <= itsWidth-theX)
-			{
-				theComponent.setBounds(theX, theY, theSize.width, theSize.height);
-				
-				theX += theSize.width;
-				theCurrentHeight = Math.max(theCurrentHeight, theSize.height);
-			}
-			else
+			
+			if (theX + theSize.width > theWidth)
 			{
 				theY += theCurrentHeight;
 				theCurrentHeight = theSize.height;
-				theX = 0;
+				theX = 0;				
 			}
+			
+			theComponent.setBounds(theX, theY, theSize.width, theSize.height);
+			theCurrentHeight = Math.max(theCurrentHeight, theSize.height);
+			
+			theX += theSize.width;
 		}
 	}
 
 	public Dimension preferredLayoutSize(Container aParent)
 	{
-		int theTotalHeight = 0;
-		
+		int theWidth = aParent.getWidth();
 		int theCurrentHeight = 0;
-		int theCurrentWidth = 0;
+		int theX = 0;
+		int theY = 0;
 		
 		for(int i=0;i<aParent.getComponentCount();i++)
 		{
@@ -91,21 +73,20 @@ implements LayoutManager, ComponentListener
 			if (! theComponent.isVisible()) continue;
 			
 			Dimension theSize = theComponent.getPreferredSize();
-			if (theSize.width <= itsWidth-theCurrentWidth)
+			
+			if (theX + theSize.width > theWidth)
 			{
-				theCurrentWidth += theSize.width;
-				theCurrentHeight = Math.max(theCurrentHeight, theSize.height);
-			}
-			else
-			{
-				theTotalHeight += theCurrentHeight;
+				theY += theCurrentHeight;
 				theCurrentHeight = theSize.height;
-				theCurrentWidth = 0;
+				theX = 0;				
 			}
+			
+			theCurrentHeight = Math.max(theCurrentHeight, theSize.height);
+			
+			theX += theSize.width;
 		}
-		theTotalHeight += theCurrentHeight;
 		
-		return new Dimension(itsWidth, theTotalHeight);
+		return new Dimension(theWidth, theY + theCurrentHeight);
 	}
 
 	public Dimension minimumLayoutSize(Container aParent)
@@ -113,24 +94,26 @@ implements LayoutManager, ComponentListener
 		return preferredLayoutSize(aParent);
 	}
 
-	public void componentHidden(ComponentEvent aE)
+	public static void main(String[] args)
 	{
+		JFrame theFrame = new JFrame("WrappedFlowLayout test");
+		JPanel thePanel = new JPanel(new WrappedFlowLayout());
+		theFrame.setContentPane(thePanel);
+		
+		thePanel.add(new JLabel("1haha"));
+		thePanel.add(new JLabel("2werwer"));
+		thePanel.add(new JLabel("3wre"));
+		thePanel.add(new JLabel("4haghfghfhha"));
+		thePanel.add(new JLabel("5rtyughsd"));
+		thePanel.add(new JLabel("6rt"));
+		thePanel.add(new JLabel("7tyrtyry"));
+		thePanel.add(new JLabel("8efsdf"));
+		thePanel.add(new JLabel("9fgdg"));
+		thePanel.add(new JLabel("10utyu"));
+		thePanel.add(new JLabel("11hsdsaha"));
+		
+		theFrame.pack();
+		theFrame.setVisible(true);
 	}
-
-	public void componentMoved(ComponentEvent aE)
-	{
-	}
-
-	public void componentResized(ComponentEvent aE)
-	{
-		assert aE.getComponent() == itsContainer;
-		itsWidth = itsContainer.getWidth();
-	}
-
-	public void componentShown(ComponentEvent aE)
-	{
-	}
-
-	
 	
 }

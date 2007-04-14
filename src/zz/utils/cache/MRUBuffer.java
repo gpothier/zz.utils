@@ -162,6 +162,20 @@ public abstract class MRUBuffer<K, V>
 	}
 	
 	/**
+	 * Drop all mappings from this buffer.
+	 */
+	public void dropAll()
+	{
+		if (itsCache != null) itsCache.clear();
+		while (itsItemsList.size() > 0)
+		{
+			Entry<V> theFirstEntry = itsItemsList.getFirstEntry();
+			itsItemsList.remove(theFirstEntry);
+			dropped(theFirstEntry.getValue());
+		}
+	}
+	
+	/**
 	 * Forcefully adds an item to this cache
 	 * @return The newly created entry.
 	 */
