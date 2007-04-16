@@ -13,7 +13,12 @@ import javax.swing.Icon;
  */
 public abstract class SimpleAction extends AbstractAction
 {
-	public SimpleAction(String aTitle, String aDescription, Icon aIcon)
+	public SimpleAction(Icon aIcon, String aDescription)
+	{
+		this("", aIcon, aDescription);
+	}
+	
+	public SimpleAction(String aTitle, Icon aIcon, String aDescription)
 	{
 		putValue(Action.NAME, aTitle);
 		putValue(Action.SHORT_DESCRIPTION, aDescription);
@@ -22,7 +27,7 @@ public abstract class SimpleAction extends AbstractAction
 	
 	public SimpleAction(String aTitle, String aDescription)
 	{
-		this(aTitle, aDescription, null);
+		this(aTitle, null, aDescription);
 	}
 	
 	public SimpleAction(String aTitle)
