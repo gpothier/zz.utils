@@ -602,11 +602,29 @@ public final class Utils
 	/**
 	 * Same as {@link #fork(Iterable, ITask)} for arrays.
 	 */
-	public static <T, R> List<R> fork(
+	public static <T, R> R[] fork(
 			T[] aTargets, 
 			final ITask<T, R> aTask)
 	{
-		return fork(Arrays.asList(aTargets), aTask);
+		int theSize = aTargets.length;
+		Future<R>[] theFutures = new Future[theSize];
+		for (int i=0;i<theSize;i++)
+		{
+			final T theTarget = aTargets[i];
+			theFutures[i] = (new Future<R>()
+			{
+				@Override
+				protected R fetch() throws Throwable
+				{
+					return aTask.run(theTarget);
+				}
+			});
+		}
+		
+		R[] theResult = (R[]) new Object[theSize];
+		for (int i=0;i<theSize;i++) theResult[i] = theFutures[i].get();
+		
+		return theResult;
 	}
 	
 	/**
