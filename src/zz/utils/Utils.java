@@ -200,6 +200,15 @@ public final class Utils
     }
     
     /**
+     * Adds to the collections all the items of the array.
+     */
+    public static final <T> Collection<T> fillCollection (Collection<T> aCollection, T[] aArray)
+    {
+    	for (T theObject : aArray) aCollection.add(theObject);
+    	return aCollection;
+    }
+    
+    /**
      * Creates a list out of a collection.
      */
     public static <T> List<T> createList (Collection<T> aCollection)
