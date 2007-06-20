@@ -686,5 +686,16 @@ public final class Utils
 		// again
 		return dir.delete();
 	}
-
+	
+	/**
+	 * Returns the root cause of the given throwable (or the throwable itself
+	 * if it has no cause).
+	 */
+	public static Throwable getRootCause(Throwable aThrowable)
+	{ 
+		if (aThrowable == null) throw new IllegalArgumentException();
+		Throwable theCause = aThrowable;
+		while (theCause.getCause() != null) theCause = theCause.getCause();
+		return theCause;
+	}
 }
