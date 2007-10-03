@@ -2,15 +2,26 @@ package zz.utils;
 
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
+import java.math.BigInteger;
+import java.security.DigestException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,6 +67,21 @@ public final class Utils
 			sw.write (cbuf, 0, n);
 
 		return sw.toString ();
+	}
+	
+	/**
+	 * Reads the whole specified input stream into a byte array.
+	 */
+	public static byte[] readInputStream_byte (InputStream aStream) throws IOException
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream ();
+
+		byte[] cbuf = new byte[1024];
+		int n;
+		while ((n = aStream.read (cbuf)) >= 0)
+			baos.write (cbuf, 0, n);
+
+		return baos.toByteArray();
 	}
 	
 	public static void readFully(InputStream aStream, byte[] aBuffer) throws IOException
@@ -579,6 +605,15 @@ public final class Utils
 	}
 	
 	/**
+	 * Returns the element at the given position in the list, or null if the
+	 * index is out of the range.
+	 */
+	public static <T> T listGet(List<T> aList, int aIndex)
+	{
+		return aIndex < aList.size() ? aList.get(aIndex) : null;
+	}
+	
+	/**
 	 * Forks a given task between a number of targets.
 	 * @param <T> Type of target
 	 * @param <R> Type of task result
@@ -697,5 +732,55 @@ public final class Utils
 		Throwable theCause = aThrowable;
 		while (theCause.getCause() != null) theCause = theCause.getCause();
 		return theCause;
+	}
+
+	/**
+	 * Computes the MD5 digest of a block of data.
+	 */
+	public static byte[] md5(byte[] aData)
+	{
+		try
+		{
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.update(aData);
+			return md.digest();
+		}
+		catch (NoSuchAlgorithmException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	/**
+	 * Computes the md5 sum of a block of data and transforms it into
+	 * an hexadecimal string.
+	 */
+	public static String md5String(byte[] aData)
+	{
+		return new BigInteger(aData).toString(16);
+	}
+	
+	/**
+	 * Writes a serializable object to a file.
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public static void writeObject(Object aObject, File aFile) throws FileNotFoundException, IOException
+	{
+		ObjectOutputStream theStream = new ObjectOutputStream(new FileOutputStream(aFile));
+		theStream.writeObject(aObject);
+		theStream.flush();
+		theStream.close();
+	}
+
+	/**
+	 * Reads a serialized object from a file.
+	 */
+	public static Object readObject(File aFile) throws FileNotFoundException, IOException, ClassNotFoundException
+	{
+		ObjectInputStream theStream = new ObjectInputStream(new FileInputStream(aFile));
+		Object theObject = theStream.readObject();
+		theStream.close();
+		return theObject;
 	}
 }
