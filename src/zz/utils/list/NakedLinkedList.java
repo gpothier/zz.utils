@@ -17,6 +17,15 @@ public class NakedLinkedList<E>
 	
 	public NakedLinkedList()
 	{
+		clear();
+	}
+	
+	/**
+	 * Removes all entries from the list. Note that the entries themselves are not cleared
+	 * (they still have their next/prev pointers)
+	 */
+	public void clear()
+	{
 		itsRoot = new Entry<E>(null);
 		itsRoot.setPrev(itsRoot);
 		itsRoot.setNext(itsRoot);
@@ -61,6 +70,14 @@ public class NakedLinkedList<E>
 		return theLast;
 	}
 	
+	/**
+	 * Checks if the given entry is the last entry of this list
+	 */
+	public boolean isLastEntry(Entry<E> aEntry)
+	{
+		return aEntry == itsRoot.getPrev();
+	}
+	
 	public void addLast(E aElement)
 	{
 		addLast(createEntry(aElement));
@@ -83,6 +100,14 @@ public class NakedLinkedList<E>
 		return theFirst;
 	}
 	
+	/**
+	 * Checks if the given entry is the last entry of this list
+	 */
+	public boolean isFirstEntry(Entry<E> aEntry)
+	{
+		return aEntry == itsRoot.getNext();
+	}
+	
 	public void addFirst(E aElement)
 	{
 		addFirst(createEntry(aElement));
@@ -100,6 +125,32 @@ public class NakedLinkedList<E>
 		aEntry.setPrev(null);
 		aEntry.setNext(null);
 		itsSize--;
+	}
+	
+	public void moveFirst(Entry<E> aEntry)
+	{
+		if (isFirstEntry(aEntry)) return;
+		aEntry.getPrev().setNext(aEntry.getNext());
+		aEntry.getNext().setPrev(aEntry.getPrev());
+
+		Entry<E> theFirst = itsRoot.getNext();
+		aEntry.setPrev(itsRoot);
+		aEntry.setNext(theFirst);
+		itsRoot.setNext(aEntry);
+		theFirst.setPrev(aEntry);
+	}
+	
+	public void moveLast(Entry<E> aEntry)
+	{
+		if (isLastEntry(aEntry)) return;
+		aEntry.getPrev().setNext(aEntry.getNext());
+		aEntry.getNext().setPrev(aEntry.getPrev());
+		
+		Entry<E> theLast = itsRoot.getPrev();
+		aEntry.setPrev(theLast);
+		aEntry.setNext(itsRoot);
+		itsRoot.setPrev(aEntry);
+		theLast.setNext(aEntry);
 	}
 	
 	public static class Entry<E>

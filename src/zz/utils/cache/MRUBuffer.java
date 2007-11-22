@@ -61,18 +61,25 @@ public abstract class MRUBuffer<K, V>
 	public void use(Entry<V> aEntry)
 	{
 //		checkThread();
-		if (aEntry.isAttached()) itsItemsList.remove(aEntry);
-		itsItemsList.addLast(aEntry);
 		
-		if (shouldDrop(itsItemsList.size()))
+		if (aEntry.isAttached()) 
 		{
-			Entry<V> theFirst = itsItemsList.getFirstEntry();
-			itsItemsList.remove(theFirst);
-			
-			V theValue = theFirst.getValue();
-			if (itsCache != null) itsCache.remove(getKey(theValue));
-			dropped(theValue);
-		}			
+			itsItemsList.moveLast(aEntry);
+		}
+		else
+		{
+			itsItemsList.addLast(aEntry);
+
+			if (shouldDrop(itsItemsList.size()))
+			{
+				Entry<V> theFirst = itsItemsList.getFirstEntry();
+				itsItemsList.remove(theFirst);
+				
+				V theValue = theFirst.getValue();
+				if (itsCache != null) itsCache.remove(getKey(theValue));
+				dropped(theValue);
+			}			
+		}
 	}
 
 	/**
