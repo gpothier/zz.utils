@@ -157,40 +157,30 @@ public class ZLabel extends JComponent implements MouseListener
 	@Override
 	public void mouseClicked(MouseEvent e)
 	{
-		if (isDelegatingToParent)
-			for (MouseListener theListener: getParent().getMouseListeners())
-					theListener.mouseClicked(e);
+		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e)
 	{
-		if (isDelegatingToParent)
-			for (MouseListener theListener: getParent().getMouseListeners())
-					theListener.mouseEntered(e);
+		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e)
 	{
-		if (isDelegatingToParent)
-			for (MouseListener theListener: getParent().getMouseListeners())
-					theListener.mouseExited(e);
+		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
-		if (isDelegatingToParent)
-			for (MouseListener theListener: getParent().getMouseListeners())
-					theListener.mousePressed(e);
+		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
-		if (isDelegatingToParent)
-			for (MouseListener theListener: getParent().getMouseListeners())
-					theListener.mouseReleased(e);
+		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 }
