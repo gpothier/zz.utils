@@ -13,6 +13,7 @@ import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 
@@ -28,16 +29,21 @@ import zz.utils.ui.text.XFont;
  * a {@link XFont} and has no icon.
  * @author gpothier
  */
-public class ZLabel extends JComponent
+public class ZLabel extends JComponent implements MouseListener 
 {
 	private String itsText;
 	private XFont itsFont;
+	/**
+	 * set to true (default is false) if this component send mouse events to the listeners of its parent component  
+	 */
+	private boolean isDelegatingToParent = false;  
 	
 	private HorizontalAlignment itsHorizontalAlignment =
 		HorizontalAlignment.LEFT;
 	
 	private VerticalAlignment itsVerticalAlignment =
 		VerticalAlignment.CENTER;
+
 	
 	public ZLabel(String aText, XFont aFont, Color aColor)
 	{
@@ -46,14 +52,18 @@ public class ZLabel extends JComponent
 		setOpaque(false);
 		setForeground(aColor);
 		updateSize();
-		
 		setComponentPopupMenu(createPopupMenu());
+		addMouseListener(this);
 	}
 	
 	public void setAlignment(HorizontalAlignment aHorizontalAlignment, VerticalAlignment aVerticalAlignment)
 	{
 		itsHorizontalAlignment = aHorizontalAlignment;
 		itsVerticalAlignment = aVerticalAlignment;
+	}
+	
+	public void setDelagatingToParent(boolean aBool){
+		isDelegatingToParent=aBool;
 	}
 	
 	private void updateSize()
@@ -142,5 +152,45 @@ public class ZLabel extends JComponent
 		});
 		
 		return theMenu;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e)
+	{
+		if (isDelegatingToParent)
+			for (MouseListener theListener: getParent().getMouseListeners())
+					theListener.mouseClicked(e);
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e)
+	{
+		if (isDelegatingToParent)
+			for (MouseListener theListener: getParent().getMouseListeners())
+					theListener.mouseEntered(e);
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e)
+	{
+		if (isDelegatingToParent)
+			for (MouseListener theListener: getParent().getMouseListeners())
+					theListener.mouseExited(e);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e)
+	{
+		if (isDelegatingToParent)
+			for (MouseListener theListener: getParent().getMouseListeners())
+					theListener.mousePressed(e);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+		if (isDelegatingToParent)
+			for (MouseListener theListener: getParent().getMouseListeners())
+					theListener.mouseReleased(e);
 	}
 }
