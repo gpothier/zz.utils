@@ -154,31 +154,26 @@ public class ZLabel extends JComponent implements MouseListener
 		return theMenu;
 	}
 
-	@Override
 	public void mouseClicked(MouseEvent e)
 	{
 		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
-	@Override
 	public void mouseEntered(MouseEvent e)
 	{
 		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
-	@Override
 	public void mouseExited(MouseEvent e)
 	{
 		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
-	@Override
 	public void mousePressed(MouseEvent e)
 	{
 		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
-	@Override
 	public void mouseReleased(MouseEvent e)
 	{
 		if (isDelegatingToParent) getParent().dispatchEvent(e);
