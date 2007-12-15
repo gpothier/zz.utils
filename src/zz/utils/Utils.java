@@ -757,7 +757,7 @@ public final class Utils
 	 */
 	public static String md5String(byte[] aData)
 	{
-		return new BigInteger(aData).toString(16);
+		return new BigInteger(md5(aData)).toString(16);
 	}
 	
 	/**
