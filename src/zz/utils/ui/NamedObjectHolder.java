@@ -8,6 +8,8 @@
  */
 package zz.utils.ui;
 
+import zz.utils.NamedObject;
+
 /**
  * This class holds a NamedObject
  */

@@ -6,7 +6,7 @@
  * To change template for new interface use 
  * Code Style | Class Templates options (Tools | IDE Options).
  */
-package zz.utils.ui;
+package zz.utils;
 
 import javax.swing.ImageIcon;
 

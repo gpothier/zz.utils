@@ -20,6 +20,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeCellRenderer;
 
+import zz.utils.NamedObject;
+
 /**
  * A renderer (both tree & list) for NamedObjects.
  * Subclasses can override setupLabel to customize the rendering.

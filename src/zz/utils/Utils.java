@@ -34,7 +34,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
 
-import zz.utils.ui.NamedObject;
+import zz.utils.NamedObject;
 
 /**
  * Contains useful methods. <p>
