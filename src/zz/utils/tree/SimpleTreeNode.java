@@ -59,9 +59,23 @@ public class SimpleTreeNode<V>
 						//TODO: cast for compilation problem 
 						getTree().fireChildRemoved((SimpleTreeNode<V>) SimpleTreeNode.this, aIndex, aElement);
 					}
+					
+					@Override
+					protected void init()
+					{
+						SimpleTreeNode.this.init();
+					}
 				};
 		}
 		else pChildren = null;
+	}
+
+	/**
+	 * Subclasses can override this method if they want to perform lazy initialization
+	 * of children.
+	 */
+	protected void init()
+	{
 	}
 	
 	public SimpleTree<V> getTree()

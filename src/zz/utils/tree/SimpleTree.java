@@ -15,7 +15,7 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 
 	public SimpleTree()
 	{
-		itsRootNode = createNode(null);
+		itsRootNode = createRoot();
 	}
 	
 	public SimpleTree(SimpleTreeNode<V> aRootNode)
@@ -73,6 +73,16 @@ public class SimpleTree<V> extends AbstractTree<SimpleTreeNode<V>, V>
 		V thePreviousValue = aNode.pValue().get();
 		aNode.pValue().set(aValue);
 		return thePreviousValue;
+	}
+	
+	/**
+	 * Creates the root node of the tree. Used only if no root node was
+	 * passed in the constructor.
+	 * @return By defaut, a simple node with a null value.
+	 */
+	protected SimpleTreeNode<V> createRoot()
+	{
+		return  createNode(null);
 	}
 
 	/**

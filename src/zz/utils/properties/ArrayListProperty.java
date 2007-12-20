@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import zz.utils.IPublicCloneable;
 import zz.utils.ReverseIteratorWrapper;
 
 /**
@@ -16,7 +15,7 @@ import zz.utils.ReverseIteratorWrapper;
  */
 public class ArrayListProperty<E> extends AbstractListProperty<E> 
 {
-	private List<E> itsList = new MyList ();
+	private List<E> itsList;
 	
 	public ArrayListProperty(Object aOwner)
 	{
@@ -30,7 +29,20 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	
 	public List<E> get()
 	{
+		if (itsList == null)
+		{
+			itsList = new MyList ();
+			init();
+		}
 		return itsList;
+	}
+
+	/**
+	 * Subclasses can override this method if they need to be notified when the 
+	 * list is first accessed.
+	 */
+	protected void init()
+	{
 	}
 	
 	/**
