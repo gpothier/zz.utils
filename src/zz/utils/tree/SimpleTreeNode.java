@@ -23,14 +23,21 @@ public class SimpleTreeNode<V>
 	 */
 	private final IListProperty<SimpleTreeNode<V>> pChildren;
 	
+	private boolean itsInitialized = false;	
+	
 	private final IRWProperty<V> pValue =
 		new SimpleRWProperty<V>(this)
 		{
 			public void set(V aValue)
 			{
 				super.set(aValue); 
-				//TODO: cast for compilation problem 
-				getTree().fireValueChanged((SimpleTreeNode<V>) SimpleTreeNode.this, aValue);
+				//TODO: cast for compilation problem
+				if (itsInitialized)
+				{
+					// Do not send notifications while we are initializing.
+					// Otherwise this causes problems in SwingTreeModel
+					getTree().fireValueChanged((SimpleTreeNode<V>) SimpleTreeNode.this, aValue);
+				}
 			}
 		};
 	
@@ -49,7 +56,7 @@ public class SimpleTreeNode<V>
 						//TODO: cast for compilation problem 
 						aElement.setParent((SimpleTreeNode<V>) SimpleTreeNode.this);
 						//TODO: cast for compilation problem 
-						getTree().fireChildAdded((SimpleTreeNode<V>) SimpleTreeNode.this, aIndex, aElement);
+						if (itsInitialized) getTree().fireChildAdded((SimpleTreeNode<V>) SimpleTreeNode.this, aIndex, aElement);
 					}
 					
 					protected void elementRemoved(int aIndex, SimpleTreeNode<V> aElement)
@@ -57,13 +64,14 @@ public class SimpleTreeNode<V>
 						if (aElement.getParent() != SimpleTreeNode.this) throw new RuntimeException("node has awrong parent: "+aElement);
 						aElement.setParent(null);
 						//TODO: cast for compilation problem 
-						getTree().fireChildRemoved((SimpleTreeNode<V>) SimpleTreeNode.this, aIndex, aElement);
+						if (itsInitialized) getTree().fireChildRemoved((SimpleTreeNode<V>) SimpleTreeNode.this, aIndex, aElement);
 					}
 					
 					@Override
 					protected void init()
 					{
 						SimpleTreeNode.this.init();
+						itsInitialized = true;
 					}
 				};
 		}
