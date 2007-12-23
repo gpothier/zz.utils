@@ -735,6 +735,21 @@ public final class Utils
 	}
 
 	/**
+	 * Searches a throwable of the specified class among the ancestors of the given
+	 * exceptions. Returns null if none is found.
+	 */
+	public static <T extends Throwable> T findAncestorException(Class<T> aClass, Throwable aException)
+	{
+		if (aException == null) throw new IllegalArgumentException();
+		while (aException != null)
+		{
+			if (aClass.isAssignableFrom(aException.getClass())) return (T) aException;
+			aException = aException.getCause();
+		}
+		return null;
+	}
+
+	/**
 	 * Computes the MD5 digest of a block of data.
 	 */
 	public static byte[] md5(byte[] aData)
@@ -783,4 +798,5 @@ public final class Utils
 		theStream.close();
 		return theObject;
 	}
+	
 }
