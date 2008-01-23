@@ -24,7 +24,8 @@ public class ListMap<K, V> extends HashMap<K, List<V>>
 {
 	/**
 	 * Returns the element at the specified index of the list
-	 * that corresponds to the given key.
+	 * that corresponds to the given key. 
+	 * If no element is found an exception is thrown.
 	 */
 	public V get (K aKey, int aIndex)
 	{

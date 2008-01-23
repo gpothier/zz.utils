@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Abstract class to help implementing editable list models.
  * The only method left to implement is {@link #newElement()}.
- * The elements are backed in an regular list.
+ * The elements are backed in a regular list.
  * @author gpothier
  */
 public abstract class AbstractJavaCRMListModel<E> extends AbstractCRMListModel<E>

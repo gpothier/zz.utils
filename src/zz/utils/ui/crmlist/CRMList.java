@@ -91,10 +91,15 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 	{
 		setPreferredSize(new Dimension (200, 300));
 
-		itsCreateAction = new MyAction ("+", CREATE);
-		itsRemoveAction = new MyAction ("-", REMOVE);
-		itsMoveUpAction = new MyAction ("up", MOVE_UP);
-		itsMoveDownAction = new MyAction ("dn", MOVE_DOWN);
+		String theAddLabel = getAddLabel();
+		String theRemoveLabel = getRemoveLabel();
+		String theUpLabel = getUpLabel();
+		String theDownLabel = getDownLabel();
+		
+		itsCreateAction = new MyAction (theAddLabel, CREATE);
+		itsRemoveAction = new MyAction (theRemoveLabel, REMOVE);
+		itsMoveUpAction = new MyAction (theUpLabel, MOVE_UP);
+		itsMoveDownAction = new MyAction (theDownLabel, MOVE_DOWN);
 		
 		setLayout(new BorderLayout ());
 		JPanel theButtonsPanel = new JPanel (new GridStackLayout (1));
@@ -113,10 +118,10 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 		itsMoveDownButton.setMargin(UIUtils.NULL_INSETS);
 		itsMoveUpButton.setMargin(UIUtils.NULL_INSETS);
 
-		theButtonsPanel.add (itsCreateButton);
-		theButtonsPanel.add (itsRemoveButton);
-		theButtonsPanel.add (itsMoveUpButton);
-		theButtonsPanel.add (itsMoveDownButton);
+		if (theAddLabel != null) theButtonsPanel.add (itsCreateButton);
+		if (theRemoveLabel != null) theButtonsPanel.add (itsRemoveButton);
+		if (theUpLabel != null) theButtonsPanel.add (itsMoveUpButton);
+		if (theDownLabel != null) theButtonsPanel.add (itsMoveDownButton);
 		
 		getSelectionModel ().addListSelectionListener(new ListSelectionListener ()
 				{
@@ -127,6 +132,43 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 			
 		});
 	}
+	
+	/**
+	 * Returns the label to use for the add button.
+	 * If null, no button will be shown.
+	 */
+	protected String getAddLabel()
+	{
+		return "+";
+	}
+	
+	/**
+	 * Returns the label to use for the remove button.
+	 * If null, no button will be shown.
+	 */
+	protected String getRemoveLabel()
+	{
+		return "-";
+	}
+	
+	/**
+	 * Returns the label to use for the move up button.
+	 * If null, no button will be shown.
+	 */
+	protected String getUpLabel()
+	{
+		return "up";
+	}
+	
+	/**
+	 * Returns the label to use for the move down button.
+	 * If null, no button will be shown.
+	 */
+	protected String getDownLabel()
+	{
+		return "dn";
+	}
+	
 	
 	public ListSelectionModel getSelectionModel()
 	{
