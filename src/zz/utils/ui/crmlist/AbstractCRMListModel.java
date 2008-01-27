@@ -63,8 +63,7 @@ implements CRMListModel
 		E theElement = newElement();
 		if (theElement == null) return -1;
 		
-		addElement0(getSize(), theElement);
-		fireIntervalAdded(this, getSize()-1, getSize()-1);
+		addElement(theElement);
 		
 		return getSize()-1;
 	}
@@ -74,6 +73,12 @@ implements CRMListModel
 		E theElement = removeElement0(aSourceIndex);
 		addElement0 (aTargetIndex, theElement);
 		fireContentsChanged(this, aSourceIndex, aTargetIndex);
+	}
+	
+	public void addElement(E aElement)
+	{
+		addElement0(getSize(), aElement);
+		fireIntervalAdded(this, getSize()-1, getSize()-1);		
 	}
 
 	public void removeElement(int aIndex)

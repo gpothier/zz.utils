@@ -7,8 +7,6 @@
 package zz.utils.ui.popup;
 
 import java.awt.*;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -26,6 +24,7 @@ import javax.swing.JRootPane;
 import javax.swing.JWindow;
 
 import zz.utils.ui.TransparentPanel;
+import zz.utils.ui.UIUtils;
 
 
 /**
@@ -124,9 +123,9 @@ public abstract class AbstractPopup
 
 	private void prepare ()
 	{
-		JFrame theOwner = getOwnerFrame();
+		JRootPane theRootPane = getRootPane();
 		
-		theOwner.addComponentListener(new ComponentAdapter ()
+		theRootPane.addComponentListener(new ComponentAdapter ()
 		{
 			public void componentHidden (ComponentEvent e)
 			{
@@ -143,7 +142,9 @@ public abstract class AbstractPopup
 				repositionPopup();
 			}
 		});
-		theOwner.addWindowListener(new WindowAdapter ()
+
+		Frame theOwner = getOwnerFrame();	
+		if (theOwner != null) theOwner.addWindowListener(new WindowAdapter ()
 		{
 			public void windowClosed (WindowEvent e)
 			{
@@ -154,8 +155,6 @@ public abstract class AbstractPopup
 			{
 				hide();
 			}
-			
-			
 		});
 
 		itsPopupWindow = new PopupWindow (theOwner, this);
@@ -220,8 +219,18 @@ public abstract class AbstractPopup
 	
 	/**
 	 * Returns the frame that contains the popup.
+	 * Might return null (eg. with SWT_AWT). In this case, {@link #getRootPane()} should
+	 * be overridden.
 	 */
-	protected abstract JFrame getOwnerFrame ();
+	protected Frame getOwnerFrame ()
+	{
+		return UIUtils.getFrame(getRootPane());
+	}
+	
+	/**
+	 * Returns the root pane of the popup's main component
+	 */
+	protected abstract JRootPane getRootPane();
 
 	/**
 	 * Repositions the popup and the screen.
@@ -237,7 +246,7 @@ public abstract class AbstractPopup
 		
 		if (itsScreen != null)
 		{
-			JLayeredPane lp = getOwnerFrame().getLayeredPane ();
+			JLayeredPane lp = getRootPane().getLayeredPane ();
 			itsScreen.setBounds(0, 0, lp.getWidth(), lp.getHeight());
 		}
 		itsPopupWindow.toFront();
@@ -261,7 +270,7 @@ public abstract class AbstractPopup
 		if (itsShown) return;
 		if (getContent () == null) return;
 
-		JRootPane theRootPane = getOwnerFrame().getRootPane();
+		JRootPane theRootPane = getRootPane();
 
 		if (itsPopupWindow == null) prepare();
 
@@ -269,7 +278,7 @@ public abstract class AbstractPopup
 
 		itsPopupWindow.setContentPane (getContent());
 		itsPopupWindow.setBounds(getPopupBounds());
-		itsPopupWindow.show ();
+		itsPopupWindow.setVisible(true);
 
 		if (itsAutoHide)
 		{
@@ -330,10 +339,9 @@ public abstract class AbstractPopup
 		if (! itsShown) return;
 		if (itsAutoHide)
 		{
-			JFrame theOwner = getOwnerFrame();
-			theOwner.getLayeredPane().remove (itsScreen);
+			getRootPane().getLayeredPane().remove (itsScreen);
 		}
-		itsPopupWindow.hide();
+		itsPopupWindow.setVisible(false);
 		itsShown = false;
 
 		if (aNotify) firePopupHidden();

@@ -13,10 +13,7 @@ import java.awt.Rectangle;
 import java.awt.event.AWTEventListener;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-
-import zz.utils.Utils;
-import zz.utils.ui.UIUtils;
+import javax.swing.JRootPane;
 
 
 /**
@@ -59,9 +56,10 @@ public class RelativePopup extends AbstractPopup implements AWTEventListener
 		return new Rectangle (theX, theY, theW, theH);
 	}
 
-	protected JFrame getOwnerFrame()
+	@Override
+	protected JRootPane getRootPane()
 	{
-		return (JFrame) UIUtils.getFrame(itsParent);
+		return itsParent.getRootPane();
 	}
 
 	public void eventDispatched(AWTEvent arg0)

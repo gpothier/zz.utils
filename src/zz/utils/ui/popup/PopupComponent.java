@@ -123,6 +123,14 @@ public class PopupComponent extends TransparentPanel implements PopupListener
 		if (aContent != null) add (aContent, BorderLayout.CENTER);
 		itsPopup.setTriggerComponent(aContent);
 	}
+	
+	/**
+	 * Returns the component that is always visible.
+	 */
+	public JComponent getContent()
+	{
+		return (JComponent) getComponent(0);
+	}
 
 	public boolean isPopupShown ()
 	{

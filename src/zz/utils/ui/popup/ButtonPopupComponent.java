@@ -35,7 +35,6 @@ public class ButtonPopupComponent extends PopupComponent implements ActionListen
 	public ButtonPopupComponent (JComponent popup, JButton aButton)
 	{
 		super (popup, aButton);
-		aButton.setMargin(UIUtils.NULL_INSETS);
 		aButton.addActionListener(this);
 	}
 
@@ -48,5 +47,11 @@ public class ButtonPopupComponent extends PopupComponent implements ActionListen
 	public void actionPerformed (ActionEvent e)
 	{
 		togglePopup();
+	}
+	
+	@Override
+	public void setEnabled(boolean aEnabled)
+	{
+		getContent().setEnabled(aEnabled);
 	}
 }

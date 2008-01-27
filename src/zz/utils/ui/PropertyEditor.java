@@ -3,7 +3,13 @@
  */
 package zz.utils.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+
 import javax.swing.JCheckBox;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -40,6 +46,21 @@ public class PropertyEditor
 		if (aLabel != null) theCheckBox.setText(aLabel);
 		if (aTooltip != null) theCheckBox.setToolTipText(aTooltip);
 		return theCheckBox;
+	}
+	
+	public static JTextField createTextField(IRWProperty<String> aProperty)
+	{
+		return createTextField(aProperty, null);
+	}
+	
+	/**
+	 * Creates a {@link JTextField} that edits the given property.
+	 */
+	public static JTextField createTextField(IRWProperty<String> aProperty, String aTooltip)
+	{
+		JTextField theTextField = new TextFieldPropertyEditor(aProperty);
+		if (aTooltip != null) theTextField.setToolTipText(aTooltip);
+		return theTextField;
 	}
 	
 	private static class CheckBoxPropertyEditor extends JCheckBox
@@ -80,6 +101,57 @@ public class PropertyEditor
 		public void stateChanged(ChangeEvent aE)
 		{
 			itsProperty.set(isSelected());
+		}
+	}
+	
+	private static class TextFieldPropertyEditor extends JTextField
+	implements IPropertyListener<String>, ActionListener, FocusListener
+	{
+		private final IRWProperty<String> itsProperty;
+		
+		public TextFieldPropertyEditor(IRWProperty<String> aProperty)
+		{
+			itsProperty = aProperty;
+			setText(itsProperty.get());
+			addActionListener(this);
+			addFocusListener(this);
+		}
+		
+		@Override
+		public void addNotify()
+		{
+			super.addNotify();
+			itsProperty.addHardListener(this);
+		}
+		
+		@Override
+		public void removeNotify()
+		{
+			super.removeNotify();
+			itsProperty.removeListener(this);
+		}
+		
+		public void propertyChanged(IProperty<String> aProperty, String aOldValue, String aNewValue)
+		{
+			setText(aNewValue);
+		}
+		
+		public void propertyValueChanged(IProperty<String> aProperty)
+		{
+		}
+
+		public void focusGained(FocusEvent aE)
+		{
+		}
+
+		public void focusLost(FocusEvent aE)
+		{
+			itsProperty.set(getText());
+		}
+
+		public void actionPerformed(ActionEvent aE)
+		{
+			itsProperty.set(getText());
 		}
 	}
 }

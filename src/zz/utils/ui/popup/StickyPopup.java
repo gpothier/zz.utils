@@ -13,6 +13,7 @@ import java.awt.event.AWTEventListener;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JRootPane;
 
 import zz.utils.Utils;
 import zz.utils.ui.UIUtils;
@@ -67,13 +68,14 @@ public class StickyPopup extends AbstractPopup
 
 	protected Rectangle getPopupBounds ()
 	{
-		return PopupUtils.computePopupBounds(getOwnerFrame(), itsTriggerComponent, 
+		return PopupUtils.computePopupBounds(getRootPane(), itsTriggerComponent, 
 				itsPreferredDirection, getContent().getPreferredSize());
 	}
-
-	protected JFrame getOwnerFrame()
+	
+	@Override
+	protected JRootPane getRootPane()
 	{
-		return (JFrame) UIUtils.getFrame(itsTriggerComponent);
+		return itsTriggerComponent.getRootPane();
 	}
 
 }

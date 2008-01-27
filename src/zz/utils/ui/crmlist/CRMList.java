@@ -8,6 +8,7 @@ package zz.utils.ui.crmlist;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -102,12 +103,10 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 		itsMoveDownAction = new MyAction (theDownLabel, MOVE_DOWN);
 		
 		setLayout(new BorderLayout ());
-		JPanel theButtonsPanel = new JPanel (new GridStackLayout (1));
+		JPanel theButtonsPanel = new JPanel (new FlowLayout (FlowLayout.LEFT));
 		
 		add (new JScrollPane (itsList), BorderLayout.CENTER);
-		JPanel theButtonsBuffer = new JPanel (new BorderLayout ());
-		theButtonsBuffer.add (theButtonsPanel, BorderLayout.NORTH);
-		add (theButtonsBuffer, BorderLayout.EAST);
+		add (theButtonsPanel, BorderLayout.NORTH);
 		
 		itsCreateButton = new JButton (itsCreateAction);
 		itsRemoveButton = new JButton (itsRemoveAction);
@@ -139,7 +138,7 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 	 */
 	protected String getAddLabel()
 	{
-		return "+";
+		return "Add";
 	}
 	
 	/**
@@ -148,7 +147,7 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 	 */
 	protected String getRemoveLabel()
 	{
-		return "-";
+		return "Remove";
 	}
 	
 	/**
