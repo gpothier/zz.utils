@@ -121,7 +121,7 @@ public abstract class Server extends Thread
 	/**
 	 * Stops accepting connections
 	 */
-	public void disconnect()
+	public void close()
 	{
 		try
 		{
