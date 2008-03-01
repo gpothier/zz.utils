@@ -37,4 +37,14 @@ public enum Orientation {
 	
 	public abstract int getU(int aX, int aY);
 	public abstract int getV(int aX, int aY);
+	
+	public int getX(int aU, int aV)
+	{
+		return getU(aU, aV);
+	}
+	
+	public int getY(int aU, int aV)
+	{
+		return getV(aU, aV);
+	}
 }

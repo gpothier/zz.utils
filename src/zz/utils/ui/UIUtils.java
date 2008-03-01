@@ -12,6 +12,7 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Frame;
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -24,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import javax.swing.ImageIcon;
@@ -178,6 +180,17 @@ public class UIUtils
 		return getLighterColor (aColor, 0.3f);
 	}
 
+	/**
+	 * Returns the same color but with a different alpha value.
+	 */
+	public static Color getAlphaColor(Color aColor, float aAlpha)
+	{
+		if (aAlpha < 0f) aAlpha = 0f;
+		if (aAlpha > 1f) aAlpha = 1f;
+		int theAlpha = (int) (255*aAlpha);
+		return new Color((aColor.getRGB() & 0xffffff) | (theAlpha << 24), true);
+	}
+	
 	public static void simulateKeyTyped (Component target, char c)
 	{
 		EventQueue q = target.getToolkit ().getSystemEventQueue ();
@@ -290,5 +303,15 @@ public class UIUtils
 		});
 	}
 
-
+	
+	/**
+	 * Draws a rectangle with a fat line, but faster than using a wide stroke.
+	 */
+	public static void drawFatRect(Graphics2D g2, Rectangle2D r, float t)
+	{
+		g2.fill(new Rectangle2D.Double(r.getMinX()-(t/2), r.getMinY()-(t/2), r.getWidth()+t, t));
+		g2.fill(new Rectangle2D.Double(r.getMinX()-(t/2), r.getMaxY()-(t/2), r.getWidth()+t, t));
+		g2.fill(new Rectangle2D.Double(r.getMinX()-(t/2), r.getMinY()+(t/2), t, r.getHeight()-t));
+		g2.fill(new Rectangle2D.Double(r.getMaxX()-(t/2), r.getMinY()+(t/2), t, r.getHeight()-t));
+	}
 }
