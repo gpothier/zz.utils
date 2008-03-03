@@ -356,7 +356,8 @@ public class PropertyEditor
 		{
 			super(new SpinnerNumberModel());
 			itsProperty = aProperty;
-			setValue(itsProperty.get());
+			Integer theValue = itsProperty.get();
+			setValue(theValue != null ? theValue : "");
 			addChangeListener(this);
 			addFocusListener(this);
 		}

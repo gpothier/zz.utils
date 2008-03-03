@@ -9,33 +9,33 @@ import javax.swing.AbstractListModel;
  * Wraps an {@link zz.utils.list.IList} into an {@link javax.swing.ListModel}
  * @author gpothier
  */
-public class SwingListModel extends AbstractListModel
+public class SwingListModel<T> extends AbstractListModel
 {
-	private IList<Object> itsList;
+	private IList<T> itsList;
 	
 	public SwingListModel()
 	{
 	}
 
-	public SwingListModel(IList<Object> itsList)
+	public SwingListModel(IList<T> itsList)
 	{
 		this.itsList = itsList;
 	}
 
-	protected IList<Object> getList()
+	protected IList<T> getList()
 	{
 		return itsList;
 	}
 	
 
-	protected void setList(IList<Object> aList)
+	protected void setList(IList<T> aList)
 	{
 		itsList = aList;
 		fireContentsChanged();
 	}
 	
 
-	public Object getElementAt(int aIndex)
+	public T getElementAt(int aIndex)
 	{
 		return itsList.get(aIndex);
 	}

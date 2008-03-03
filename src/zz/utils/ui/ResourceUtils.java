@@ -6,6 +6,7 @@ package zz.utils.ui;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -53,7 +54,12 @@ public class ResourceUtils
 	/**
 	 * Loads an image stored as a resource of the given class.
 	 */
-	public static BufferedImage loadImageResource (Class aReferenceClass, String aName)
+	public static ImageResource loadImageResource(Class aReferenceClass, String aName)
+	{
+		return new ImageResource(loadBufferedImage(aReferenceClass, aName));
+	}
+	
+	public static BufferedImage loadBufferedImage(Class aReferenceClass, String aName)
 	{
 		InputStream theStream = aReferenceClass.getResourceAsStream (aName);
 		if (theStream == null) throw new RuntimeException("Cannot find resource: "+aName);
@@ -74,7 +80,88 @@ public class ResourceUtils
 	
 	public static ImageIcon loadIconResource (Class aReferenceClass, String aName)
 	{
-		return new ImageIcon (loadImageResource(aReferenceClass, aName));
+		return new ImageIcon (loadBufferedImage(aReferenceClass, aName));
+	}
+
+	public static class ImageResource
+	{
+		private BufferedImage itsImage;
+		private ImageIcon itsIcon;
+
+		public ImageResource(BufferedImage aImage)
+		{
+			itsImage = aImage;
+		}
+		
+		public ImageIcon asIcon()
+		{
+			if (itsIcon == null) itsIcon = new ImageIcon(itsImage);
+			return itsIcon;
+		}
+		
+		public ImageIcon asIcon(int aSize)
+		{
+			int theWidth = itsImage.getWidth();
+			int theHeight = itsImage.getHeight();
+			int theSide = Math.max(theWidth, theHeight);
+			
+			if (theSide != aSize)
+			{
+				float theRatio = 1f * aSize / theSide;
+				
+				Image theImage = itsImage.getScaledInstance(
+						(int) (theWidth*theRatio), 
+						(int) (theHeight*theRatio), 
+						Image.SCALE_SMOOTH);
+				
+				return new ImageIcon(theImage);
+			}
+			else return new ImageIcon(itsImage);
+		}
+		
+		/**
+		 * Returns an icon of the specified height.
+		 */
+		public ImageIcon asIconH(int aHeight)
+		{
+			int theWidth = itsImage.getWidth();
+			int theHeight = itsImage.getHeight();
+			
+			if (theHeight != aHeight)
+			{
+				float theRatio = 1f * aHeight / theHeight;
+				
+				Image theImage = itsImage.getScaledInstance(
+						(int) (theWidth*theRatio), 
+						(int) (theHeight*theRatio), 
+						Image.SCALE_SMOOTH);
+				
+				return new ImageIcon(theImage);
+			}
+			else return new ImageIcon(itsImage);
+		}
+		
+		/**
+		 * Returns an icon of the specified width.
+		 */
+		public ImageIcon asIconW(int aWidth)
+		{
+			int theWidth = itsImage.getWidth();
+			int theHeight = itsImage.getHeight();
+			
+			if (theWidth != aWidth)
+			{
+				float theRatio = 1f * aWidth / theWidth;
+				
+				Image theImage = itsImage.getScaledInstance(
+						(int) (theWidth*theRatio), 
+						(int) (theHeight*theRatio), 
+						Image.SCALE_SMOOTH);
+				
+				return new ImageIcon(theImage);
+			}
+			else return new ImageIcon(itsImage);
+		}
 	}
 
 

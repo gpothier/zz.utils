@@ -66,6 +66,14 @@ implements IProperty<T>, Observer
 	}
 
 	/**
+	 * Indicates if two values are equal.
+	 */
+	protected boolean equalValues(T aValue1, T aValue2)
+	{
+		return aValue1 == aValue2;
+	}
+	
+	/**
 	 * Internal setter for the property.
 	 * It first checks if a veto rejects the new value. If not, it
 	 * sets the current value and fires notifications.
@@ -74,7 +82,7 @@ implements IProperty<T>, Observer
 	protected final void set0(T aValue)
 	{
 		T theOldValue = get0();
-		if (theOldValue != aValue && canChangeProperty(theOldValue, aValue))
+		if (! equalValues(theOldValue, aValue) && canChangeProperty(theOldValue, aValue))
 		{
 			if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
 			itsValue = aValue;
@@ -90,7 +98,7 @@ implements IProperty<T>, Observer
 	}
 
 
-	public IProperty<T> cloneForOwner(Object aOwner,boolean aCloneValue)
+	public IProperty<T> cloneForOwner(Object aOwner, boolean aCloneValue)
 	{
 		SimpleProperty<T> theClone = 
 			(SimpleProperty) super.cloneForOwner(aOwner, aCloneValue);
