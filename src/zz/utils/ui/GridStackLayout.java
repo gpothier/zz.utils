@@ -25,7 +25,6 @@ import zz.utils.Utils;
  */
 public class GridStackLayout implements LayoutManager2
 {
-
 	private int itsNColumns;
 	private int itsHGap;
 	private int itsVGap;
