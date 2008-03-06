@@ -82,14 +82,17 @@ implements IProperty<T>, Observer
 	protected final void set0(T aValue)
 	{
 		T theOldValue = get0();
-		if (! equalValues(theOldValue, aValue) && canChangeProperty(theOldValue, aValue))
-		{
-			if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
-			itsValue = aValue;
-			if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
-			
-			firePropertyChanged(theOldValue, aValue);
-		}
+		if (equalValues(theOldValue, aValue)) return;
+		
+		Object theCanChange = canChangeProperty(theOldValue, aValue);
+		if (theCanChange == REJECT) return;
+		if (theCanChange != ACCEPT) aValue = (T) theCanChange;
+
+		if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
+		itsValue = aValue;
+		if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
+		
+		firePropertyChanged(theOldValue, aValue);
 	}
 	
 	public void observe(Object aObservable, Object aData)

@@ -26,6 +26,9 @@ import zz.utils.references.WeakRef;
  */
 public abstract class AbstractProperty<T> extends PublicCloneable implements IProperty<T>
 {
+	protected static Object ACCEPT = new Object();
+	protected static Object REJECT = new Object();
+	
 	/**
 	 * The object that contains the property.
 	 * If present, this object will be the source of an
@@ -121,33 +124,38 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	}
 	
 	/**
-	 * This method is called before the property is changed.
-	 * If it returns false, the change is rejected.
+	 * This method is called before the property is changed and gives
+	 * the property the opportunity to refuse or adapt a change request.
+	 * @return {@link #ACCEPT} if the new value should be accepted (if 
+	 * also accepted by veto listeners),
+	 * {@link #REJECT} if the new value should be rejected. 
+	 * Another value will set the property to that value instead of the 
+	 * requested value, bypassing the veto listeners.
 	 */
-	protected boolean beforeChange (T aOldValue, T aNewValue)
+	protected Object canChange (T aOldValue, T aNewValue)
 	{
-		return true;
+		return ACCEPT;
 	}
 	
-	protected boolean canChangeProperty (T aOldValue, T aNewValue)
+	protected Object canChangeProperty (T aOldValue, T aNewValue)
 	{
-		if (! beforeChange(aOldValue, aNewValue)) return false;
+		Object theCanChange = canChange(aOldValue, aNewValue);
+		if (theCanChange == REJECT) return REJECT;
+		if (theCanChange != ACCEPT) return theCanChange;
 		
-		if (itsVetoCount <= 0) return true;
+		if (itsVetoCount <= 0) return ACCEPT;
 		List<IPropertyListener<? super T>> theListeners = RefUtils.dereference(itsListeners);
 
-		boolean theFoundVeto = false;
 		for (IPropertyListener<? super T> theListener : theListeners)
 		{
 			if (theListener instanceof IPropertyVeto)
 			{
-				theFoundVeto = true;
 				IPropertyVeto<? super T> theVeto = (IPropertyVeto<? super T>) theListener;
-				if (! theVeto.canChangeProperty((IProperty) this, aOldValue, aNewValue)) return false;
+				if (! theVeto.canChangeProperty((IProperty) this, aOldValue, aNewValue)) return REJECT;
 			}
 		}
 		
-		return true;
+		return ACCEPT;
 	}
 	
 	public void addListener (IPropertyListener<? super T> aListener)

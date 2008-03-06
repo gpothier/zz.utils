@@ -286,6 +286,9 @@ public class PropertyUtils
 		protected void forward(IRWProperty<T> aSource, IRWProperty<T> aTarget)
 		{
 			aTarget.set(aSource.get());
+			
+			// If the target has adapted the change, process that.
+			if (aTarget.get() != aSource.get()) aSource.set(aTarget.get());
 		}
 	}
 	
