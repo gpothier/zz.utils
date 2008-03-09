@@ -799,4 +799,11 @@ public final class Utils
 		return theObject;
 	}
 	
+	/**
+	 * Helper method for throwing a formatted {@link RuntimeException}.
+	 */
+	public static void rtex(String aText, Object... aArgs)
+	{
+		throw new RuntimeException(String.format(aText, aArgs));
+	}
 }
