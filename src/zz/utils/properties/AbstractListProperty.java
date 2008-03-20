@@ -7,10 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
-import zz.utils.FailsafeLinkedList;
 import zz.utils.IPublicCloneable;
-import zz.utils.ReverseIteratorWrapper;
 import zz.utils.list.ICollectionListener;
 import zz.utils.list.IListListener;
 import zz.utils.notification.ObservationCenter;
@@ -71,9 +70,9 @@ implements IListProperty<E>
 		return addAll ((Iterable<? extends E>) aCollection);
 	}
 	
-	public void set(int aIndex, E aElement)
+	public E set(int aIndex, E aElement)
 	{
-		E theElement = get().set(aIndex, aElement);
+		return get().set(aIndex, aElement);
 	}
 	
 	public boolean remove(Object aElement)
@@ -126,7 +125,7 @@ implements IListProperty<E>
 		return get().get (aIndex);
 	}
 
-	public int indexOf(E aElement)
+	public int indexOf(Object aElement)
 	{
 		return get().indexOf(aElement);
 	}
@@ -313,6 +312,32 @@ implements IListProperty<E>
 		theClone.itsListListeners = null;
 		
 		return theClone;
+	}
+
+	
+	public boolean addAll(int aIndex, Collection< ? extends E> aC)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public int lastIndexOf(Object aO)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public ListIterator<E> listIterator()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public ListIterator<E> listIterator(int aIndex)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public List<E> subList(int aFromIndex, int aToIndex)
+	{
+		throw new UnsupportedOperationException();
 	}
 
 

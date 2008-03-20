@@ -93,6 +93,11 @@ public class ResourceUtils
 			itsImage = aImage;
 		}
 		
+		public BufferedImage getImage()
+		{
+			return itsImage;
+		}
+		
 		public ImageIcon asIcon()
 		{
 			if (itsIcon == null) itsIcon = new ImageIcon(itsImage);

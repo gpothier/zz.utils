@@ -43,9 +43,9 @@ public abstract class WrapperList<E, E0> extends AbstractList<E>
 		return cachedWrap(theElement);
 	}
 
-	public int indexOf(E aElement)
+	public int indexOf(Object aElement)
 	{
-		E0 theUnwrappedElement = unwrap(aElement);
+		E0 theUnwrappedElement = unwrap((E) aElement);
 		return itsList.indexOf(theUnwrappedElement);
 	}
 
@@ -59,9 +59,9 @@ public abstract class WrapperList<E, E0> extends AbstractList<E>
 		return new WrappedIterator(itsList.reverseIterator());
 	}
 
-	public void set(int aIndex, E aElement)
+	public E set(int aIndex, E aElement)
 	{
-		itsList.set (aIndex, cachedUnwrap(aElement));
+		return cachedWrap(itsList.set (aIndex, cachedUnwrap(aElement)));
 	}
 
 	public void clear()

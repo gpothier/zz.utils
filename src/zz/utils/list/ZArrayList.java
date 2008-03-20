@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 import zz.utils.ReverseIteratorWrapper;
 
@@ -48,9 +49,9 @@ public class ZArrayList<E> extends AbstractList<E>
 		get().add (aIndex, aElement);
 	}
 
-	public void set(int aIndex, E aElement)
+	public E set(int aIndex, E aElement)
 	{
-		E theElement = get().set(aIndex, aElement);
+		return get().set(aIndex, aElement);
 	}
 	
 	public boolean remove(Object aElement)
@@ -80,7 +81,7 @@ public class ZArrayList<E> extends AbstractList<E>
 		return get().get (aIndex);
 	}
 
-	public int indexOf(E aElement)
+	public int indexOf(Object aElement)
 	{
 		return get().indexOf(aElement);
 	}
@@ -110,6 +111,9 @@ public class ZArrayList<E> extends AbstractList<E>
 		return new ReverseIteratorWrapper (get());
 	}
 	
+	
+
+
 	/**
 	 * This is our implementation of List, which override some methods in
 	 * order to send notifications. 

@@ -26,6 +26,7 @@ implements Runnable, IPropertyListener, ICollectionListener
 {
 	private boolean itsDirty = false;
 	private boolean itsScheduled = false;
+	private long itsDirtyMarkTime;
 
 	/**
 	 * Schedules this cleaner for execution.
@@ -35,12 +36,23 @@ implements Runnable, IPropertyListener, ICollectionListener
 		if (! itsDirty)
 		{
 			itsDirty = true;
+			itsDirtyMarkTime = System.currentTimeMillis();
 			if (! itsScheduled)
 			{
 				itsScheduled = true;
 				SwingUtilities.invokeLater(this);
 			}
 		}
+	}
+	
+	/**
+	 * Number of milliseconds elapsed since this cleaner was
+	 * marked dirty. 
+	 */
+	public long dirtyTime()
+	{
+		if (itsDirty) return System.currentTimeMillis()-itsDirtyMarkTime;
+		else return 0;
 	}
 	
 	/**

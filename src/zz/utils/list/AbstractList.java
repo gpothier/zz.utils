@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
-import zz.utils.ReverseIteratorWrapper;
-import zz.utils.list.IListListener;
 import zz.utils.references.HardRef;
 import zz.utils.references.IRef;
 import zz.utils.references.RefUtils;
@@ -193,4 +192,32 @@ implements IList<E>
 			}
 		}
 	}
+	
+	
+	public boolean addAll(int aIndex, Collection< ? extends E> aC)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public int lastIndexOf(Object aO)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public ListIterator<E> listIterator()
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public ListIterator<E> listIterator(int aIndex)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+	public List<E> subList(int aFromIndex, int aToIndex)
+	{
+		throw new UnsupportedOperationException();
+	}
+
+
 }

@@ -6,12 +6,14 @@ package zz.utils.list;
 import java.util.Iterator;
 import java.util.List;
 
+import zz.utils.properties.IPropertyListener;
+
 /**
  * Models a list. This is similar to Java's lists, but 
  * it additionally supports listeners
  * @author gpothier
  */
-public interface IList<E> extends ICollection<E>
+public interface IList<E> extends ICollection<E>, List<E>
 {
 	/**
 	 * Returns the element at the specified index.
@@ -19,7 +21,7 @@ public interface IList<E> extends ICollection<E>
 	public E get (int aIndex);
 	
 	public void add (int aIndex, E aElement);
-	public void set (int aIndex, E aElement);
+	public E set (int aIndex, E aElement);
 	
 	/**
 	 * Adds all the elements from the specified iterable into this list.
@@ -30,7 +32,7 @@ public interface IList<E> extends ICollection<E>
 	 * Returns the index of the specified element,
 	 * or -1 if it is not present in the list.
 	 */
-	public int indexOf (E aElement);
+	public int indexOf (Object aElement);
 	
 	/**
 	 * Removes the element at the specified index.
