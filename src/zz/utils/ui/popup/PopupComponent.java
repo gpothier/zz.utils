@@ -90,15 +90,6 @@ public class PopupComponent extends TransparentPanel implements PopupListener
 		itsPopup.setPreferredDirection(aPreferredDirection);
 	}
 
-	/**
-	 * If set to true, the popup will be hidden when the mouse is clicked outside
-	 * the popup.
-	 */
-	public void setAutoHide (boolean aAutoDisappear)
-	{
-		itsPopup.setAutoHide(aAutoDisappear);
-	}
-
 	public void setPopupComponent (JComponent aPopup)
 	{
 		itsPopup.setContent(aPopup);

@@ -20,8 +20,11 @@ import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.JWindow;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import zz.utils.ui.TransparentPanel;
 import zz.utils.ui.UIUtils;
@@ -38,29 +41,6 @@ public abstract class AbstractPopup
 	private JComponent itsContent;
 
 	private boolean itsShown = false;
-
-	/**
-	 * Whether the popup should be automatically hidden
-	 * when the user clicks outside of it.
-	 * It is possible to limit the autohide sensitive zone
-	 * to a particular component.
-	 */
-	private boolean itsAutoHide = true;
-	
-	/**
-	 * The component which is sensitive to autohide,
-	 * ie. a click in this component closes the popup.
-	 * If this component is null and autohide is true,
-	 * the whole frame is sensitive.
-	 */
-	private JComponent itsAutohideComponent;
-
-	private PopupWindow itsPopupWindow;
-
-	/**
-	 * Permits to implement the auto-hide feature.
-	 */
-	private JComponent itsScreen;
 
 	private List itsPopupListeners = new ArrayList ();
 
@@ -121,65 +101,6 @@ public abstract class AbstractPopup
 		}
 	}
 
-	private void prepare ()
-	{
-		JRootPane theRootPane = getRootPane();
-		
-		theRootPane.addComponentListener(new ComponentAdapter ()
-		{
-			public void componentHidden (ComponentEvent e)
-			{
-				hide();
-			}
-
-			public void componentResized (ComponentEvent e)
-			{
-				repositionPopup();
-			}
-
-			public void componentMoved (ComponentEvent e)
-			{
-				repositionPopup();
-			}
-		});
-
-		Frame theOwner = getOwnerFrame();	
-		if (theOwner != null) theOwner.addWindowListener(new WindowAdapter ()
-		{
-			public void windowClosed (WindowEvent e)
-			{
-				hide();
-			}
-
-			public void windowDeactivated(WindowEvent aE)
-			{
-				hide();
-			}
-		});
-
-		itsPopupWindow = new PopupWindow (theOwner, this);
-//		itsPopupWindow.setFocusable(false);
-	}
-
-	/**
-	 * If set to true, the popup will be hidden when the mouse is clicked outside
-	 * the popup.
-	 */
-	public void setAutoHide (boolean aAutoHide)
-	{
-		itsAutoHide = aAutoHide;
-	}
-
-	public JComponent getAutohideComponent()
-	{
-		return itsAutohideComponent;
-	}
-	
-	public void setAutohideComponent(JComponent aAutohideComponent)
-	{
-		itsAutohideComponent = aAutohideComponent;
-	}
-	
 	public void setContent (JComponent aContent)
 	{
 		if (itsContent != aContent)
@@ -233,26 +154,6 @@ public abstract class AbstractPopup
 	protected abstract JRootPane getRootPane();
 
 	/**
-	 * Repositions the popup and the screen.
-	 * Called when the owner frame changes bounds, or when the
-	 * popup needs to be revalidated.
-	 */
-	private void repositionPopup ()
-	{
-		if (! itsShown) return;
-
-		Rectangle thePopupBounds = getPopupBounds();
-		itsPopupWindow.setBounds (thePopupBounds);
-		
-		if (itsScreen != null)
-		{
-			JLayeredPane lp = getRootPane().getLayeredPane ();
-			itsScreen.setBounds(0, 0, lp.getWidth(), lp.getHeight());
-		}
-		itsPopupWindow.toFront();
-	}
-
-	/**
 	 * Displays the popup window on the screen, next to the trigger component.
 	 * Tries to respect the preferred direction.
 	 */
@@ -270,52 +171,38 @@ public abstract class AbstractPopup
 		if (itsShown) return;
 		if (getContent () == null) return;
 
-		JRootPane theRootPane = getRootPane();
-
-		if (itsPopupWindow == null) prepare();
-
-		JLayeredPane lp = theRootPane.getLayeredPane ();
-
-		itsPopupWindow.setContentPane (getContent());
-		itsPopupWindow.setBounds(getPopupBounds());
-		itsPopupWindow.setVisible(true);
-
-		if (itsAutoHide)
+		JPopupMenu thePopupMenu = new JPopupMenu()
 		{
-			Rectangle theSensitiveZone;
-			if (itsAutohideComponent != null)
+			@Override
+			public void menuSelectionChanged(boolean aIsIncluded)
 			{
-				Point theZoneLocation = itsAutohideComponent.getLocationOnScreen();
-				Point theFrameLocation = lp.getLocationOnScreen();
-				
-				int theX = theZoneLocation.x - theFrameLocation.x;
-				int theY = theZoneLocation.y - theFrameLocation.y;
-				int theW = itsAutohideComponent.getWidth();
-				int theH = itsAutohideComponent.getHeight();
-				
-				theSensitiveZone = new Rectangle (theX, theY, theW, theH);
+				// Avoid cancelling the menu
+				super.menuSelectionChanged(aIsIncluded);
 			}
-			else
+		};
+		thePopupMenu.add(getContent());
+		
+		thePopupMenu.addPopupMenuListener(new PopupMenuListener()
+		{
+			public void popupMenuCanceled(PopupMenuEvent aE)
 			{
-				theSensitiveZone = new Rectangle (0, 0, lp.getWidth(), lp.getHeight());
+			}
+
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent aE)
+			{
+				itsShown = false;
+				firePopupHidden();
+			}
+
+			public void popupMenuWillBecomeVisible(PopupMenuEvent aE)
+			{
 			}
 			
-			itsScreen = new TransparentPanel (null);
-			lp.add (itsScreen, JLayeredPane.POPUP_LAYER);
-			lp.moveToFront(itsScreen);
-			itsScreen.setBounds(theSensitiveZone);
-			itsScreen.addMouseListener(new MouseAdapter ()
-			{
-				public void mousePressed(MouseEvent aE)
-				{
-					hide ();
-				}
-			});
-		}
-		else
-		{
-			itsScreen = null;
-		}
+		});
+		
+		Rectangle thePopupBounds = getPopupBounds();
+		Point theLocationOnScreen = getOwner().getLocationOnScreen();
+		thePopupMenu.show(getOwner(), thePopupBounds.x-theLocationOnScreen.x, thePopupBounds.y-theLocationOnScreen.y);
 
 		itsShown = true;
 
@@ -337,39 +224,14 @@ public abstract class AbstractPopup
 	public void hide (boolean aNotify)
 	{
 		if (! itsShown) return;
-		if (itsAutoHide)
-		{
-			getRootPane().getLayeredPane().remove (itsScreen);
-		}
-		itsPopupWindow.setVisible(false);
+//		if (itsAutoHide)
+//		{
+//			getRootPane().getLayeredPane().remove (itsScreen);
+//		}
+//		itsPopupWindow.setVisible(false);
 		itsShown = false;
 
 		if (aNotify) firePopupHidden();
-	}
-
-	public void revalidatePopup ()
-	{
-		itsContent.revalidate();
-		repositionPopup();
-		itsPopupWindow.validate();
-		itsContent.repaint();
-	}
-	
-	public static class PopupWindow extends JWindow
-	{
-		private AbstractPopup itsPopup;
-		
-		
-		public PopupWindow(Frame aOwner, AbstractPopup aPopup)
-		{
-			super(aOwner);
-			itsPopup = aPopup;
-		}
-		
-		public AbstractPopup getPopup()
-		{
-			return itsPopup;
-		}
 	}
 
 }

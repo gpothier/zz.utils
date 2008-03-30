@@ -134,6 +134,14 @@ public class JTreeTable extends JTable
 		return tree;
 	}
 
+	@Override
+	public TransferHandler getTransferHandler()
+	{
+		// This is a workaround for avoiding hiding the popup menu this tree table is
+		// part of (if any). 
+		return null; 
+	}
+	
 	/**
 	 * A TreeCellRenderer that displays a JTree.
 	 */
@@ -259,7 +267,7 @@ public class JTreeTable extends JTable
 					if (getColumnClass(counter) == TreeTableModel.class)
 					{
 						MouseEvent me = (MouseEvent) e;
-						MouseEvent newME = new MouseEvent(tree, me.getID(), me.getWhen(), me.getModifiers(), me.getX()
+						MouseEvent newME = new MouseEvent(JTreeTable.this, me.getID(), me.getWhen(), me.getModifiers(), me.getX()
 								- getCellRect(0, counter, true).x, me.getY(), me.getClickCount(), me.isPopupTrigger());
 						tree.dispatchEvent(newME);
 						break;

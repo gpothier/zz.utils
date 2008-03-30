@@ -148,49 +148,4 @@ public class PopupUtils
 		aPopupMenu.show(aPopupTriggerComponent, x, y);
 	}
 	
-	/**
-	 * Finds the popup that contains this component.
-	 * @return The container popup, or null if not found.
-	 */
-	public static AbstractPopup findPopup (Component aComponent)
-	{
-		do
-		{
-			if (aComponent instanceof AbstractPopup.PopupWindow)
-			{
-				AbstractPopup.PopupWindow thePopupWindow = (AbstractPopup.PopupWindow) aComponent;
-				return thePopupWindow.getPopup();
-			}
-			
-			aComponent = aComponent.getParent();
-		}
-		while (aComponent != null);
-		
-		return null;
-	}
-
-	/**
-	 * Closes the popup that contains this component, if any.
-	 * @return Returns true if a popup was found and successfully hidden
-	 */
-	public static boolean hidePopup (Component aComponent)
-	{
-		AbstractPopup thePopup = findPopup(aComponent);
-		if (thePopup != null) thePopup.hide();
-		return thePopup != null;
-	}
-
-	/**
-	 * Revalidates the popup that contains this component, if any.
-	 * @return Returns true if a popup was found and successfully revalidated
-	 */
-	public static boolean revalidatePopup (Component aComponent)
-	{
-		AbstractPopup thePopup = findPopup(aComponent);
-		if (thePopup != null) thePopup.revalidatePopup();
-		return thePopup != null;
-	}
-
-	
-
 }

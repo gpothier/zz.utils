@@ -104,7 +104,8 @@ public class TreeTableModelAdapter extends AbstractTableModel
 
 	public Class getColumnClass(int column)
 	{
-		return treeTableModel.getColumnClass(column);
+		// We assume that the tree is always displayed in the first column
+		return column == 0 ? TreeTableModel.class : treeTableModel.getColumnClass(column);
 	}
 
 	public int getRowCount()
@@ -125,7 +126,8 @@ public class TreeTableModelAdapter extends AbstractTableModel
 
 	public boolean isCellEditable(int row, int column)
 	{
-		return treeTableModel.isCellEditable(nodeForRow(row), column);
+		// same as in getColumnClass
+		return column == 0 ? true : treeTableModel.isCellEditable(nodeForRow(row), column);
 	}
 
 	public void setValueAt(Object value, int row, int column)

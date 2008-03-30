@@ -431,11 +431,6 @@ public class PropertyEditor
 			itsProperty.removeListener(this);
 		}
 
-		private JButton getButton()
-		{
-			return (JButton) getContent();
-		}
-
 		public void propertyChanged(IProperty<Color> aProperty, Color aOldValue, Color aNewValue)
 		{
 			getButton().setBackground(aNewValue);

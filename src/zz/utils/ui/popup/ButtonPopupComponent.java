@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import zz.utils.Utils;
+import zz.utils.ui.StackLayout;
 import zz.utils.ui.UIUtils;
 
 
@@ -22,6 +23,9 @@ import zz.utils.ui.UIUtils;
  */
 public class ButtonPopupComponent extends PopupComponent implements ActionListener
 {
+	private final JButton itsButton;
+	private long itsHiddenTime;
+	
 	public ButtonPopupComponent (JComponent popup, String aTitle)
 	{
 		this (popup, aTitle, null);
@@ -35,17 +39,24 @@ public class ButtonPopupComponent extends PopupComponent implements ActionListen
 	public ButtonPopupComponent (JComponent popup, JButton aButton)
 	{
 		super (popup, aButton);
-		aButton.addActionListener(this);
+		setLayout(new StackLayout());
+		if (aButton != null) aButton.addActionListener(this);
+		itsButton = aButton;
 	}
 
 	public ButtonPopupComponent (JButton aButton)
 	{
-		super (null, aButton);
-		aButton.addActionListener (this);
+		this(null, aButton);
 	}
 
 	public void actionPerformed (ActionEvent e)
 	{
+		if (! isPopupShown())
+		{
+			// This is a hack to avoid reshowing the popup after it was hidden by
+			// clicking on the button.
+			if (System.currentTimeMillis()-itsHiddenTime < 300) return;
+		}
 		togglePopup();
 	}
 	
@@ -53,5 +64,17 @@ public class ButtonPopupComponent extends PopupComponent implements ActionListen
 	public void setEnabled(boolean aEnabled)
 	{
 		getContent().setEnabled(aEnabled);
+	}
+	
+	public JButton getButton()
+	{
+		return itsButton;
+	}
+	
+	@Override
+	public void popupHidden()
+	{
+		super.popupHidden();
+		itsHiddenTime = System.currentTimeMillis();
 	}
 }
