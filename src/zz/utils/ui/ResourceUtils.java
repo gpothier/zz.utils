@@ -82,6 +82,35 @@ public class ResourceUtils
 	{
 		return new ImageIcon (loadBufferedImage(aReferenceClass, aName));
 	}
+	
+	/**
+	 * Returns an overlay of all given images.
+	 */
+	public static ImageResource overlay(ImageResource... aLayers)
+	{
+		int theMaxWidth = 0;
+		int theMaxHeight = 0;
+		
+		for (ImageResource theResource : aLayers)
+		{
+			theMaxWidth = Math.max(theMaxWidth, theResource.getImage().getWidth());
+			theMaxHeight = Math.max(theMaxHeight, theResource.getImage().getHeight());
+		}
+		
+		BufferedImage theResult = CONFIG.createCompatibleImage(
+				theMaxWidth, 
+				theMaxHeight, 
+				Transparency.TRANSLUCENT);
+		
+		Graphics2D theGraphics = theResult.createGraphics();
+		
+		for (ImageResource theResource : aLayers)
+		{
+			theGraphics.drawImage(theResource.getImage(), 0, 0, null);
+		}
+		
+		return new ImageResource(theResult);
+	}
 
 	public static class ImageResource
 	{
