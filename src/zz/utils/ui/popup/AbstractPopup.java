@@ -44,6 +44,8 @@ public abstract class AbstractPopup
 
 	private List itsPopupListeners = new ArrayList ();
 
+	private JPopupMenu itsPopupMenu;
+
 	/**
 	 * Creates a popup object.
 	 *
@@ -171,7 +173,7 @@ public abstract class AbstractPopup
 		if (itsShown) return;
 		if (getContent () == null) return;
 
-		JPopupMenu thePopupMenu = new JPopupMenu()
+		itsPopupMenu = new JPopupMenu()
 		{
 			@Override
 			public void menuSelectionChanged(boolean aIsIncluded)
@@ -180,9 +182,9 @@ public abstract class AbstractPopup
 				super.menuSelectionChanged(aIsIncluded);
 			}
 		};
-		thePopupMenu.add(getContent());
+		itsPopupMenu.add(getContent());
 		
-		thePopupMenu.addPopupMenuListener(new PopupMenuListener()
+		itsPopupMenu.addPopupMenuListener(new PopupMenuListener()
 		{
 			public void popupMenuCanceled(PopupMenuEvent aE)
 			{
@@ -202,7 +204,7 @@ public abstract class AbstractPopup
 		
 		Rectangle thePopupBounds = getPopupBounds();
 		Point theLocationOnScreen = getOwner().getLocationOnScreen();
-		thePopupMenu.show(getOwner(), thePopupBounds.x-theLocationOnScreen.x, thePopupBounds.y-theLocationOnScreen.y);
+		itsPopupMenu.show(getOwner(), thePopupBounds.x-theLocationOnScreen.x, thePopupBounds.y-theLocationOnScreen.y);
 
 		itsShown = true;
 
@@ -229,6 +231,7 @@ public abstract class AbstractPopup
 //			getRootPane().getLayeredPane().remove (itsScreen);
 //		}
 //		itsPopupWindow.setVisible(false);
+		itsPopupMenu.setVisible(false);
 		itsShown = false;
 
 		if (aNotify) firePopupHidden();
