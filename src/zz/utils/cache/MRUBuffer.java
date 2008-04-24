@@ -76,7 +76,7 @@ public abstract class MRUBuffer<K, V>
 				itsItemsList.remove(theFirst);
 
 				V theValue = theFirst.getValue();
-				if (itsCache != null && theValue != null) itsCache.remove(getKey(theValue));
+				if (itsCache != null) itsCache.remove(getKey(theValue));
 				dropped(theValue);
 			}
 		}
