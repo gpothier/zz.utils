@@ -33,9 +33,9 @@ public class SimpleRWProperty<T> extends SimpleProperty<T> implements IRWPropert
 		super(aOwner, aValue);
 	}
 
-	public void set (T aValue)
+	public T set (T aValue)
 	{
-		set0(aValue);
+		return set0(aValue);
 	}
 	
 	/**

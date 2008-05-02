@@ -3,8 +3,6 @@
  */
 package zz.utils.properties;
 
-import java.awt.geom.Rectangle2D;
-
 import zz.utils.IPublicCloneable;
 import zz.utils.notification.ObservationCenter;
 import zz.utils.notification.Observer;
@@ -79,20 +77,26 @@ implements IProperty<T>, Observer
 	 * sets the current value and fires notifications.
 	 * @param aValue The new value of the property.
 	 */
-	protected final void set0(T aValue)
+	protected final T set0(T aValue)
 	{
 		T theOldValue = get0();
-		if (equalValues(theOldValue, aValue)) return;
+		if (equalValues(theOldValue, aValue)) return aValue;
 		
 		Object theCanChange = canChangeProperty(theOldValue, aValue);
-		if (theCanChange == REJECT) return;
-		if (theCanChange != ACCEPT) aValue = (T) theCanChange;
+		if (theCanChange == REJECT) return theOldValue;
+		if (theCanChange != ACCEPT) 
+		{
+			aValue = (T) theCanChange;
+			if (equalValues(theOldValue, aValue)) return aValue;
+		}
 
 		if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
 		itsValue = aValue;
 		if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
 		
 		firePropertyChanged(theOldValue, aValue);
+		
+		return itsValue;
 	}
 	
 	public void observe(Object aObservable, Object aData)

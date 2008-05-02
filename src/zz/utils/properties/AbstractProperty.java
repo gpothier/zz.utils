@@ -137,7 +137,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		return ACCEPT;
 	}
 	
-	protected Object canChangeProperty (T aOldValue, T aNewValue)
+	protected final Object canChangeProperty (T aOldValue, T aNewValue)
 	{
 		Object theCanChange = canChange(aOldValue, aNewValue);
 		if (theCanChange == REJECT) return REJECT;

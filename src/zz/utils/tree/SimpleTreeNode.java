@@ -25,18 +25,17 @@ public class SimpleTreeNode<V>
 	
 	private boolean itsInitialized = false;	
 	
-	private final IRWProperty<V> pValue =
-		new SimpleRWProperty<V>(this)
+	private final IRWProperty<V> pValue = new SimpleRWProperty<V>(this)
 		{
-			public void set(V aValue)
+			@Override
+			protected void changed(V aOldValue, V aNewValue)
 			{
-				super.set(aValue); 
 				//TODO: cast for compilation problem
 				if (itsInitialized)
 				{
 					// Do not send notifications while we are initializing.
 					// Otherwise this causes problems in SwingTreeModel
-					getTree().fireValueChanged((SimpleTreeNode<V>) SimpleTreeNode.this, aValue);
+					getTree().fireValueChanged((SimpleTreeNode<V>) SimpleTreeNode.this, aNewValue);
 				}
 			}
 		};
