@@ -27,7 +27,13 @@ public abstract class Server extends Thread
 	 */
 	public Server(int aPort)
 	{
+		this(aPort, false);
+	}
+	
+	public Server(int aPort, boolean aDaemon)
+	{
 		super("Server-"+aPort);
+		setDaemon(aDaemon);
 		itsPort = aPort;
 		try
 		{
