@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -28,6 +27,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import zz.utils.ArrayStack;
+import zz.utils.PipedInputStream2;
+import zz.utils.PipedOutputStream2;
 import zz.utils.Stack;
 import zz.utils.Utils;
 
@@ -53,6 +54,11 @@ public class MultiplexingManager
 
 	};
 
+	/**
+	 * The logical host name assigned to this manager.
+	 */
+	private final String itsHostName;
+	
 	private int itsNextFreePort = 0x10000;
 
 	private Stack<Integer> itsFreedPorts = new ArrayStack<Integer>();
@@ -68,6 +74,20 @@ public class MultiplexingManager
 	private final Map<Integer, VirtualSocket> itsBoundSockets = new HashMap<Integer, VirtualSocket>();
 
 	private final Map<Integer, VirtualServerSocket> itsListeningSockets = new HashMap<Integer, VirtualServerSocket>();
+
+	public MultiplexingManager(String aHostName)
+	{
+		itsHostName = aHostName;
+	}
+	
+	/**
+	 * The logical name assigned to this host.
+	 */
+	public String getLocalHostName()
+	{
+		return itsHostName;
+	}
+	
 
 	public void addSocket(String aHostName, Socket aSocket) throws IOException
 	{
@@ -85,6 +105,24 @@ public class MultiplexingManager
 	 */
 	public Socket createSocket(String aHostName, int aPort) throws IOException
 	{
+		if (itsHostName.equals(aHostName) 
+				|| "localhost".equals(aHostName) 
+				|| aHostName == null 
+				|| aHostName.length() == 0)
+		{
+			// For local connections, we create VirtualLocalSockets
+			
+			VirtualServerSocket theServerSocket = itsListeningSockets.get(aHostName);
+			if (theServerSocket == null) throw new IOException("Connection refused on port "+aPort);
+			
+			VirtualLocalSocket theLocal = new VirtualLocalSocket(0, 0);
+			VirtualLocalSocket theRemote = new VirtualLocalSocket(0, 0);
+			theLocal.connect(theRemote);
+			
+			theServerSocket.connected(theRemote);
+			return theLocal;
+		}
+		
 		SocketManager theSocketManager = itsHostsMap.get(aHostName);
 		if (theSocketManager == null) throw new UnknownHostException(aHostName);
 		VirtualSocket theSocket = theSocketManager.connect(aPort);
@@ -732,11 +770,285 @@ public class MultiplexingManager
 		}
 	}
 
+	private class VirtualLocalSocket extends Socket
+	{
+		private final int itsLocalPort;
+		private final int itsRemotePort;
+		private final InetAddress itsRemoteAddress;
+		
+		private final PipedInputStream2 itsInputStream = new PipedInputStream2();
+		private final PipedOutputStream2 itsOutputStream = new PipedOutputStream2();
+		
+		private boolean itsClosed = false;
+		
+		public VirtualLocalSocket(int aLocalPort, int aRemotePort) throws IOException
+		{
+			itsLocalPort = aLocalPort;
+			itsRemotePort = aRemotePort;
+			itsRemoteAddress = InetAddress.getByAddress(
+					null, 
+					new byte[] { 0, 0, 0, 0 });
+		}
+		
+		public void connect(VirtualLocalSocket aPeer) throws IOException
+		{
+			itsInputStream.connect(aPeer.itsOutputStream);
+			itsOutputStream.connect(aPeer.itsInputStream);
+		}
+		
+		public int getRemotePort()
+		{
+			return itsRemotePort;
+		}
+		
+		@Override
+		public InputStream getInputStream() throws IOException
+		{
+			return itsInputStream;
+		}
+		
+		@Override
+		public OutputStream getOutputStream() throws IOException
+		{
+			return itsOutputStream;
+		}
+		
+		@Override
+		public synchronized void close() throws IOException
+		{
+			itsOutputStream.close();
+			itsInputStream.close();
+			itsClosed = true;
+		}
+		
+		@Override
+		public boolean isBound()
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public boolean isClosed()
+		{
+			return itsClosed;
+		}
+		
+		@Override
+		public void bind(SocketAddress aBindpoint) throws IOException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void connect(SocketAddress aEndpoint, int aTimeout) throws IOException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void connect(SocketAddress aEndpoint) throws IOException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public SocketChannel getChannel()
+		{
+			return null;
+		}
+		
+		@Override
+		public InetAddress getInetAddress()
+		{
+			return itsRemoteAddress;
+		}
+		
+		@Override
+		public boolean getKeepAlive() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public InetAddress getLocalAddress()
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public int getLocalPort()
+		{
+			return itsLocalPort;
+		}
+		
+		@Override
+		public SocketAddress getLocalSocketAddress()
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public boolean getOOBInline() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public int getPort()
+		{
+			return getRemotePort();
+		}
+		
+		@Override
+		public synchronized int getReceiveBufferSize() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public SocketAddress getRemoteSocketAddress()
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public boolean getReuseAddress() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public synchronized int getSendBufferSize() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public int getSoLinger() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public synchronized int getSoTimeout() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public boolean getTcpNoDelay() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public int getTrafficClass() throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public boolean isConnected()
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public boolean isInputShutdown()
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public boolean isOutputShutdown()
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void sendUrgentData(int aData) throws IOException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void setKeepAlive(boolean aOn) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void setOOBInline(boolean aOn) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void setPerformancePreferences(int aConnectionTime, int aLatency, int aBandwidth)
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public synchronized void setReceiveBufferSize(int aSize) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void setReuseAddress(boolean aOn) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public synchronized void setSendBufferSize(int aSize) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void setSoLinger(boolean aOn, int aLinger) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public synchronized void setSoTimeout(int aTimeout) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void setTcpNoDelay(boolean aOn) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void setTrafficClass(int aTc) throws SocketException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void shutdownInput() throws IOException
+		{
+			throw new UnsupportedOperationException();
+		}
+		
+		@Override
+		public void shutdownOutput() throws IOException
+		{
+			throw new UnsupportedOperationException();
+		}
+	}
+	
 	private class VirtualServerSocket extends ServerSocket
 	{
 		private final int itsPort;
 
-		private final BlockingQueue<VirtualSocket> itsAcceptQueue = new LinkedBlockingQueue<VirtualSocket>();
+		private final BlockingQueue<Socket> itsAcceptQueue = new LinkedBlockingQueue<Socket>();
 
 		public VirtualServerSocket(int aPort) throws IOException
 		{
@@ -759,7 +1071,7 @@ public class MultiplexingManager
 		/**
 		 * This method is called when a client connects to this server socket.
 		 */
-		private void connected(VirtualSocket aSocket)
+		private void connected(Socket aSocket)
 		{
 			itsAcceptQueue.offer(aSocket);
 		}

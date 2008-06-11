@@ -56,7 +56,7 @@ public class MultiplexRMISocketFactory extends RMISocketFactory
 	public static MultiplexRMISocketFactory createServer(final String aLocalHostname, int aPort) throws IOException
 	{
 		System.setProperty("java.rmi.server.hostname", aLocalHostname);
-		final MultiplexingManager theManager = new MultiplexingManager();
+		final MultiplexingManager theManager = new MultiplexingManager(aLocalHostname);
 		Server theServer = new Server(aPort, true)
 		{
 			@Override
@@ -79,6 +79,9 @@ public class MultiplexRMISocketFactory extends RMISocketFactory
 					}
 					
 					String theRemoteHostname = theIn.readUTF();
+					
+					System.out.println(String.format("Accepted connection - local: %s, remote: %s", aLocalHostname, theRemoteHostname));
+					
 					theManager.addSocket(theRemoteHostname, aSocket);
 				}
 				catch (IOException e)
@@ -118,7 +121,9 @@ public class MultiplexRMISocketFactory extends RMISocketFactory
 			
 			String theRemoteHostname = theIn.readUTF();
 			
-			MultiplexingManager theManager = new MultiplexingManager();
+			System.out.println(String.format("Connected to %s as %s; remote name is: %s.", aHostName, aLocalHostname, theRemoteHostname));
+			
+			MultiplexingManager theManager = new MultiplexingManager(aLocalHostname);
 			theManager.addSocket(theRemoteHostname, theSocket);
 
 			return new MultiplexRMISocketFactory(theManager);
@@ -145,4 +150,20 @@ public class MultiplexRMISocketFactory extends RMISocketFactory
 		return itsManager.createSocket(aHost, aPort);
 	}
 
+	@Override
+	public boolean equals(Object aObj)
+	{
+		if (aObj instanceof MultiplexRMISocketFactory)
+		{
+			MultiplexRMISocketFactory theOther = (MultiplexRMISocketFactory) aObj;
+			return theOther.itsManager.getLocalHostName().equals(itsManager.getLocalHostName());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return itsManager.getLocalHostName().hashCode()*122;
+	}
 }
