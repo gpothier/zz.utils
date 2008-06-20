@@ -24,13 +24,4 @@ public class SimpleOptionPanel extends AbstractOptionPanel
 	{
 		return null;
 	}
-
-	/* (non-Javadoc)
-	 * @see zz.utils.ui.AbstractOptionPanel#getPrototype()
-	 */
-	public AbstractOptionPanel getPrototype()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

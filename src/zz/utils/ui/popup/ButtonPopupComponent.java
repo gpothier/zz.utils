@@ -19,7 +19,7 @@ import zz.utils.ui.UIUtils;
 
 
 /**
- * A popup componenet that automatically handles click on a button to toggle the popup.
+ * A popup component that automatically handles click on a button to toggle the popup.
  */
 public class ButtonPopupComponent extends PopupComponent implements ActionListener
 {
