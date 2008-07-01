@@ -29,7 +29,8 @@
 	
 	<target name="compile" depends="init">
 		<mkdir dir="${path.classes}"/>
-		<javac srcdir="${path.src.java}"
+		<javac compiler="javac1.5" source="1.5" target="1.5" 
+			srcdir="${path.src.java}"
 			nowarn="true"
 			destdir="${path.classes}"
 			encoding="${encoding}"
