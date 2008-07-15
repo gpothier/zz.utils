@@ -6,27 +6,19 @@
  */
 package zz.utils.ui.popup;
 
-import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.awt.Frame;
+import java.awt.Point;
+import java.awt.Rectangle;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLayeredPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
-import javax.swing.JWindow;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import zz.utils.ui.TransparentPanel;
+import zz.utils.notification.IEvent;
+import zz.utils.notification.IFireableEvent;
+import zz.utils.notification.SimpleEvent;
 import zz.utils.ui.UIUtils;
 
 
@@ -39,12 +31,12 @@ import zz.utils.ui.UIUtils;
 public abstract class AbstractPopup 
 {
 	private JComponent itsContent;
-
 	private boolean itsShown = false;
-
-	private List itsPopupListeners = new ArrayList ();
-
 	private JPopupMenu itsPopupMenu;
+	
+	private final IFireableEvent<Void> ePopupShowing = new SimpleEvent<Void>();
+	private final IFireableEvent<Void> ePopupShown = new SimpleEvent<Void>();
+	private final IFireableEvent<Void> ePopupHidden = new SimpleEvent<Void>();
 
 	/**
 	 * Creates a popup object.
@@ -56,6 +48,21 @@ public abstract class AbstractPopup
 		setContent (aContent);
 		PopupManager.getInstance().registerPopup(this);
 	}
+	
+	public IEvent<Void> ePopupShowing()
+	{
+		return ePopupShowing;
+	}
+
+	public IEvent<Void> ePopupShown()
+	{
+		return ePopupShown;
+	}
+
+	public IEvent<Void> ePopupHidden()
+	{
+		return ePopupHidden;
+	}
 
 	/**
 	 * Returns the component that owns this popup. When the owner component is 
@@ -63,46 +70,6 @@ public abstract class AbstractPopup
 	 */
 	public abstract JComponent getOwner ();
 	
-	public void addPopupListener (PopupListener aListener)
-	{
-		itsPopupListeners.add (aListener);
-	}
-
-	public void removePopupListener (PopupListener aListener)
-	{
-		itsPopupListeners.remove (aListener);
-	}
-
-	void firePopupShown ()
-	{
-		if (itsContent instanceof PopupListener)
-		{
-			PopupListener thePopupListener = (PopupListener) itsContent;
-			thePopupListener.popupShown ();
-		}
-
-		for (Iterator theIterator = itsPopupListeners.iterator (); theIterator.hasNext ();)
-		{
-			PopupListener theListener = (PopupListener) theIterator.next ();
-			theListener.popupShown();
-		}
-	}
-
-	void firePopupHidden ()
-	{
-		if (itsContent instanceof PopupListener)
-		{
-			PopupListener thePopupListener = (PopupListener) itsContent;
-			thePopupListener.popupHidden ();
-		}
-
-		for (Iterator theIterator = itsPopupListeners.iterator (); theIterator.hasNext ();)
-		{
-			PopupListener theListener = (PopupListener) theIterator.next ();
-			theListener.popupHidden();
-		}
-	}
-
 	public void setContent (JComponent aContent)
 	{
 		if (itsContent != aContent)
@@ -193,7 +160,7 @@ public abstract class AbstractPopup
 			public void popupMenuWillBecomeInvisible(PopupMenuEvent aE)
 			{
 				itsShown = false;
-				firePopupHidden();
+				ePopupHidden.fire(null);
 			}
 
 			public void popupMenuWillBecomeVisible(PopupMenuEvent aE)
@@ -201,6 +168,8 @@ public abstract class AbstractPopup
 			}
 			
 		});
+
+		if (aNotify) ePopupShowing.fire(null);
 		
 		Rectangle thePopupBounds = getPopupBounds();
 		Point theLocationOnScreen = getOwner().getLocationOnScreen();
@@ -208,7 +177,7 @@ public abstract class AbstractPopup
 
 		itsShown = true;
 
-		if (aNotify) firePopupShown();
+		if (aNotify) ePopupShown.fire(null);
 	}
 
 	/**
@@ -234,7 +203,7 @@ public abstract class AbstractPopup
 		itsPopupMenu.setVisible(false);
 		itsShown = false;
 
-		if (aNotify) firePopupHidden();
+		if (aNotify) ePopupHidden.fire(null);
 	}
 
 }

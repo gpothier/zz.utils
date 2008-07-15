@@ -7,12 +7,10 @@
 package zz.utils.ui.popup;
 
 import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.JComponent;
 
+import zz.utils.notification.IEvent;
 import zz.utils.ui.TransparentPanel;
 
 /**
@@ -23,10 +21,8 @@ import zz.utils.ui.TransparentPanel;
  * If it implements the interface {@link PopupListener}, it is automatically notified
  * when the popup is shown/hidden.
  */
-public class PopupComponent extends TransparentPanel implements PopupListener
+public class PopupComponent extends TransparentPanel 
 {
-	private List itsPopupListeners = new ArrayList ();
-
 	private StickyPopup itsPopup;
 
 	public PopupComponent ()
@@ -42,47 +38,23 @@ public class PopupComponent extends TransparentPanel implements PopupListener
 	public PopupComponent (JComponent popup, JComponent content)
 	{
 		itsPopup = new StickyPopup (popup, content);
-		itsPopup.addPopupListener(this);
 		setLayout (new BorderLayout ());
 		setContent (content);
 	}
 
-	public void addPopupListener (PopupListener aListener)
+	public IEvent<Void> ePopupShowing()
 	{
-		itsPopupListeners.add (aListener);
+		return itsPopup.ePopupShowing();
 	}
 
-	public void removePopupListener (PopupListener aListener)
+	public IEvent<Void> ePopupShown()
 	{
-		itsPopupListeners.remove (aListener);
+		return itsPopup.ePopupShown();
 	}
 
-	private void firePopupShown ()
+	public IEvent<Void> ePopupHidden()
 	{
-		for (Iterator theIterator = itsPopupListeners.iterator (); theIterator.hasNext ();)
-		{
-			PopupListener theListener = (PopupListener) theIterator.next ();
-			theListener.popupShown();
-		}
-	}
-
-	private void firePopupHidden ()
-	{
-		for (Iterator theIterator = itsPopupListeners.iterator (); theIterator.hasNext ();)
-		{
-			PopupListener theListener = (PopupListener) theIterator.next ();
-			theListener.popupHidden();
-		}
-	}
-
-	public void popupHidden ()
-	{
-		firePopupHidden();
-	}
-
-	public void popupShown ()
-	{
-		firePopupShown();
+		return itsPopup.ePopupHidden();
 	}
 
 	public void setPreferredDirection (int aPreferredDirection)

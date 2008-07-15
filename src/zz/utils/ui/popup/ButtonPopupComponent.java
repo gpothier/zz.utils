@@ -14,6 +14,8 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 
 import zz.utils.Utils;
+import zz.utils.notification.IEvent;
+import zz.utils.notification.IEventListener;
 import zz.utils.ui.StackLayout;
 import zz.utils.ui.UIUtils;
 
@@ -25,6 +27,14 @@ public class ButtonPopupComponent extends PopupComponent implements ActionListen
 {
 	private final JButton itsButton;
 	private long itsHiddenTime;
+	
+	private final IEventListener<Void> itsHiddenListener = new IEventListener<Void>()
+	{
+		public void fired(IEvent< ? extends Void> aEvent, Void aData)
+		{
+			itsHiddenTime = System.currentTimeMillis();
+		}
+	};
 	
 	public ButtonPopupComponent (JComponent popup, String aTitle)
 	{
@@ -48,6 +58,20 @@ public class ButtonPopupComponent extends PopupComponent implements ActionListen
 	{
 		this(null, aButton);
 	}
+	
+	@Override
+	public void addNotify()
+	{
+		super.addNotify();
+		ePopupHidden().addListener(itsHiddenListener);
+	}
+	
+	@Override
+	public void removeNotify()
+	{
+		super.removeNotify();
+		ePopupHidden().removeListener(itsHiddenListener);
+	}
 
 	public void actionPerformed (ActionEvent e)
 	{
@@ -69,12 +93,5 @@ public class ButtonPopupComponent extends PopupComponent implements ActionListen
 	public JButton getButton()
 	{
 		return itsButton;
-	}
-	
-	@Override
-	public void popupHidden()
-	{
-		super.popupHidden();
-		itsHiddenTime = System.currentTimeMillis();
 	}
 }
