@@ -21,7 +21,7 @@ public class ReverseIteratorWrapper<T> implements Iterator<T>
 
 	/**
 	 * Creates a reverse iterator based on the specified list iterator,
-	 * which must initially be position at the end of the list.
+	 * which must initially be positioned at the end of the list.
 	 * @param aListIterator
 	 */
 	public ReverseIteratorWrapper (ListIterator<T> aListIterator)
