@@ -5,13 +5,12 @@ package zz.utils.ui;
 
 import java.awt.Color;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import zz.utils.ui.text.XFont;
 
 public abstract class ZHyperlink extends ZLabel
-implements MouseListener, MouseMotionListener
+implements MouseMotionListener
 {
 	private static final boolean WITH_CTRL = false;
 	private boolean itsMouseOver = false;
@@ -19,7 +18,6 @@ implements MouseListener, MouseMotionListener
 	public ZHyperlink(String aText, XFont aFont, Color aColor)
 	{
 		super(aText, aFont, aColor);
-		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
 	
@@ -33,11 +31,13 @@ implements MouseListener, MouseMotionListener
 		return (aEvent.getModifiersEx() & MouseEvent.CTRL_DOWN_MASK) != 0;
 	}
 	
+	@Override
 	public void mouseEntered(MouseEvent aE)
 	{
 		setMouseOver(! WITH_CTRL || hasCtrl(aE));
 	}
 	
+	@Override
 	public void mouseExited(MouseEvent aE)
 	{
 		setMouseOver(false);
@@ -59,6 +59,7 @@ implements MouseListener, MouseMotionListener
 		}
 	}
 	
+	@Override
 	public void mousePressed(MouseEvent aE)
 	{
 		if (! WITH_CTRL || MouseModifiers.hasCtrl(aE))
@@ -66,14 +67,6 @@ implements MouseListener, MouseMotionListener
 			traverse();
 			aE.consume();
 		}
-	}
-
-	public void mouseClicked(MouseEvent aE)
-	{
-	}
-
-	public void mouseReleased(MouseEvent aE)
-	{
 	}
 
 	public void mouseDragged(MouseEvent aE)

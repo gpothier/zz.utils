@@ -33,10 +33,6 @@ public class ZLabel extends JComponent implements MouseListener
 {
 	private String itsText;
 	private XFont itsFont;
-	/**
-	 * set to true (default is false) if this component send mouse events to the listeners of its parent component  
-	 */
-	private boolean isDelegatingToParent = false;  
 	
 	private HorizontalAlignment itsHorizontalAlignment =
 		HorizontalAlignment.LEFT;
@@ -60,10 +56,6 @@ public class ZLabel extends JComponent implements MouseListener
 	{
 		itsHorizontalAlignment = aHorizontalAlignment;
 		itsVerticalAlignment = aVerticalAlignment;
-	}
-	
-	public void setDelagatingToParent(boolean aBool){
-		isDelegatingToParent=aBool;
 	}
 	
 	private void updateSize()
@@ -156,26 +148,21 @@ public class ZLabel extends JComponent implements MouseListener
 
 	public void mouseClicked(MouseEvent e)
 	{
-		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
 	public void mouseEntered(MouseEvent e)
 	{
-		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
 	public void mouseExited(MouseEvent e)
 	{
-		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
 	public void mousePressed(MouseEvent e)
 	{
-		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 
 	public void mouseReleased(MouseEvent e)
 	{
-		if (isDelegatingToParent) getParent().dispatchEvent(e);
 	}
 }
