@@ -15,15 +15,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.math.BigInteger;
-import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,8 +32,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.swing.ImageIcon;
-
-import zz.utils.NamedObject;
 
 /**
  * Contains useful methods. <p>
@@ -805,5 +802,84 @@ public final class Utils
 	public static void rtex(String aText, Object... aArgs)
 	{
 		throw new RuntimeException(String.format(aText, aArgs));
+	}
+	
+	/**
+	 * Tests the equality of two objects by comparing the value of all their fields.
+	 * The objects must be of the same class.
+	 * @param aRecursive If true, field values are compared using this method; 
+	 * otherwise they are compared with equals.
+	 */
+	public static boolean fieldsEqual(Object o1, Object o2, boolean aRecursive)
+	{
+		if (o1 == null && o2 == null) return true;
+		if (o1 == null || o2 == null) return false;
+		if (! o1.getClass().equals(o2.getClass())) return false;
+		
+		try
+		{
+			Class theClass = o1.getClass();
+			while(theClass != null)
+			{
+				Field[] theFields = theClass.getDeclaredFields();
+				for (Field theField : theFields)
+				{
+					if (Modifier.isStatic(theField.getModifiers())) continue;
+					theField.setAccessible(true);
+					Object v1 = theField.get(o1);
+					Object v2 = theField.get(o2);
+					
+					if (v1 == null && v2 == null) continue;
+					if (v1 == null || v2 == null) return false;
+
+					if (theField.getType().getComponentType() != null)
+					{
+						// It is an array
+						if (! arraysEqual(v1, v2, aRecursive)) return false;
+					}
+					else
+					{
+						if (aRecursive && ! isPrimitiveType(v1) && ! isPrimitiveType(v2))
+						{
+							if (! fieldsEqual(v1, v2, true)) return false;
+						}
+						else
+						{
+							if (! v1.equals(v2)) return false;
+						}
+					}
+				}
+				
+				theClass = theClass.getSuperclass();
+			}
+			
+			return true;
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static boolean arraysEqual(Object a1, Object a2, boolean aRecursive)
+	{
+		int l1 = Array.getLength(a1);
+		int l2 = Array.getLength(a2);
+		if (l1 != l2) return false;
+		
+		if (aRecursive)
+		{
+			for(int i=0;i<l1;i++) if (! fieldsEqual(Array.get(a1, i), Array.get(a2, i), true)) return false;
+		}
+		else
+		{
+			for(int i=0;i<l1;i++) if (! equalOrBothNull(Array.get(a1, i), Array.get(a2, i))) return false;
+		}
+		return true;
+	}
+	
+	public static boolean isPrimitiveType(Object aObject)
+	{
+		return (aObject instanceof Number) || (aObject instanceof String);
 	}
 }
