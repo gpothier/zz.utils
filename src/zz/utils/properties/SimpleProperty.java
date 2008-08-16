@@ -4,7 +4,6 @@
 package zz.utils.properties;
 
 import zz.utils.IPublicCloneable;
-import zz.utils.notification.ObservationCenter;
 import zz.utils.notification.Observer;
 
 /**
@@ -90,9 +89,9 @@ implements IProperty<T>, Observer
 			if (equalValues(theOldValue, aValue)) return aValue;
 		}
 
-		if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
+//		if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
 		itsValue = aValue;
-		if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
+//		if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
 		
 		firePropertyChanged(theOldValue, aValue);
 		

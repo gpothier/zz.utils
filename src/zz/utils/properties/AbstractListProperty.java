@@ -12,7 +12,6 @@ import java.util.ListIterator;
 import zz.utils.IPublicCloneable;
 import zz.utils.list.ICollectionListener;
 import zz.utils.list.IListListener;
-import zz.utils.notification.ObservationCenter;
 import zz.utils.references.HardRef;
 import zz.utils.references.IRef;
 import zz.utils.references.RefUtils;
@@ -233,7 +232,7 @@ implements IListProperty<E>
 		elementAdded(aIndex, aElement);
 		contentChanged();
 	
-		ObservationCenter.getInstance().requestObservation(getOwner(), this);
+//		ObservationCenter.getInstance().requestObservation(getOwner(), this);
 		
 		if (itsListListeners == null) return;
 		List<Object> theListeners = RefUtils.dereference(itsListListeners);
@@ -260,7 +259,7 @@ implements IListProperty<E>
 		elementRemoved(aIndex, aElement);
 		contentChanged();
 
-		ObservationCenter.getInstance().requestObservation(getOwner(), this);
+//		ObservationCenter.getInstance().requestObservation(getOwner(), this);
 		
 		if (itsListListeners == null) return;
 		List<Object> theListeners = RefUtils.dereference(itsListListeners);

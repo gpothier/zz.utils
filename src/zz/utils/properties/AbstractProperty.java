@@ -3,16 +3,10 @@
  */
 package zz.utils.properties;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
-import zz.utils.FailsafeLinkedList;
 import zz.utils.PublicCloneable;
-import zz.utils.notification.ObservationCenter;
-import zz.utils.notification.Observer;
 import zz.utils.references.HardRef;
 import zz.utils.references.IRef;
 import zz.utils.references.RefUtils;
@@ -106,7 +100,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 				theListener.propertyChanged((IProperty) this, aOldValue, aNewValue);
 		}
 		
-		ObservationCenter.getInstance().requestObservation(getOwner(), this);
+//		ObservationCenter.getInstance().requestObservation(getOwner(), this);
 	}
 	
 	protected void firePropertyValueChanged ()
