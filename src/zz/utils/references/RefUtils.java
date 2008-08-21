@@ -4,6 +4,7 @@
 package zz.utils.references;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import zz.utils.properties.IPropertyListener;
 
@@ -35,9 +36,10 @@ public class RefUtils
 	
 	/**
 	 * Removes an element from a reference list.
+	 * Elements are removed through the iterator.
 	 * @return Whether the element was found
 	 */
-	public static <E> boolean remove (List<IRef<E>> aList, E aElement)
+	public static <E> boolean remove (Iterable<IRef<E>> aList, E aElement)
 	{
 		for (Iterator<IRef<E>> theIterator = aList.iterator();theIterator.hasNext();)
 		{
@@ -48,6 +50,27 @@ public class RefUtils
 				theIterator.remove();
 				return true;
 			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Same as {@link #remove(Iterable, Object)} but doesn't use the iterator to
+	 * remove the elements (useful for {@link CopyOnWriteArrayList}).
+	 */
+	public static <E> boolean removeFromList (List<IRef<E>> aList, E aElement)
+	{
+		int i=0;
+		for (Iterator<IRef<E>> theIterator = aList.iterator();theIterator.hasNext();)
+		{
+			IRef<E> theRef = theIterator.next();
+			E theListener = theRef.get();
+			if (theListener == null || theListener == aElement) 
+			{
+				aList.remove(i);
+				return true;
+			}
+			i++;
 		}
 		return false;
 	}

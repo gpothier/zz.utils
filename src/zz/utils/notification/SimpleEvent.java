@@ -3,9 +3,8 @@
  */
 package zz.utils.notification;
 
-import java.beans.PropertyChangeEvent;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import zz.utils.properties.IProperty;
 import zz.utils.properties.IPropertyListener;
@@ -20,7 +19,7 @@ public class SimpleEvent<T> extends AbstractEvent<T>
 
 	public void addListener(IEventListener< ? super T> aListener)
 	{
-		if (itsListeners == null) itsListeners = new ArrayList<IEventListener<? super T>>(3);
+		if (itsListeners == null) itsListeners = new CopyOnWriteArrayList<IEventListener<? super T>>();
 		itsListeners.add (aListener);
 	}
 

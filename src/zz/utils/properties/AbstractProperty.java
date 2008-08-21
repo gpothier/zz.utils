@@ -3,8 +3,8 @@
  */
 package zz.utils.properties;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import zz.utils.PublicCloneable;
 import zz.utils.references.HardRef;
@@ -154,14 +154,14 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 	public void addListener (IPropertyListener<? super T> aListener)
 	{
-		if (itsListeners == null) itsListeners = new ArrayList(3);
+		if (itsListeners == null) itsListeners = new CopyOnWriteArrayList<IRef<IPropertyListener<? super T>>>();
 		if (aListener instanceof IPropertyVeto) itsVetoCount++;
 		itsListeners.add (new WeakRef<IPropertyListener<? super T>>(aListener));
 	}
 
 	public void addHardListener (IPropertyListener<? super T> aListener)
 	{
-		if (itsListeners == null) itsListeners = new ArrayList(3);
+		if (itsListeners == null) itsListeners = new CopyOnWriteArrayList<IRef<IPropertyListener<? super T>>>();
 		if (aListener instanceof IPropertyVeto) itsVetoCount++;
 		itsListeners.add (new HardRef<IPropertyListener<? super T>>(aListener));
 	}
@@ -176,7 +176,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	{
 		if (itsListeners != null) 
 		{
-			if (RefUtils.remove(itsListeners, aListener))
+			if (RefUtils.removeFromList(itsListeners, aListener))
 			{
 				if (itsListeners.size() == 0) itsListeners = null;
 				if (aListener instanceof IPropertyVeto) itsVetoCount--;				
