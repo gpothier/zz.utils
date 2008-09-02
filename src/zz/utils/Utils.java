@@ -805,6 +805,14 @@ public final class Utils
 	}
 	
 	/**
+	 * Formated System.out.println
+	 */
+	public static void println(String aText, Object... aArgs)
+	{
+		System.out.println(String.format(aText, aArgs));
+	}
+	
+	/**
 	 * Tests the equality of two objects by comparing the value of all their fields.
 	 * The objects must be of the same class.
 	 * @param aRecursive If true, field values are compared using this method; 
