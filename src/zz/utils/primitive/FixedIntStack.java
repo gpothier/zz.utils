@@ -3,6 +3,8 @@
  */
 package zz.utils.primitive;
 
+import java.util.NoSuchElementException;
+
 /**
  * Implements a fixed-size stack of primitive integers.
  * @author gpothier
@@ -28,10 +30,22 @@ public class FixedIntStack
 		return itsData[--itsHeight];
 	}
 	
+	public int peek()
+	{
+		if (itsHeight == 0) throw new NoSuchElementException();
+		return itsData[itsHeight-1];
+	}
+	
 	public boolean isEmpty()
 	{
 		return itsHeight == 0;
 	}
+	
+	public boolean isFull()
+	{
+		return itsHeight == itsData.length;
+	}
+	
 	
 	public void clear()
 	{

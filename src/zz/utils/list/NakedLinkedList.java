@@ -164,7 +164,7 @@ public class NakedLinkedList<E>
 			itsValue = aValue;
 		}
 
-		Entry<E> getNext()
+		public Entry<E> getNext()
 		{
 			return itsNext;
 		}
@@ -174,7 +174,7 @@ public class NakedLinkedList<E>
 			itsNext = aNext;
 		}
 		
-		Entry<E> getPrev()
+		public Entry<E> getPrev()
 		{
 			return itsPrev;
 		}
