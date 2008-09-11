@@ -118,6 +118,18 @@ public class NakedLinkedList<E>
 		addAfter(itsRoot, aEntry);
 	}
 	
+	public Entry<E> getNextEntry(Entry<E> aEntry)
+	{
+		Entry<E> theNext = aEntry.getNext();
+		return theNext != itsRoot ? theNext : null;
+	}
+	
+	public Entry<E> getPrevEntry(Entry<E> aEntry)
+	{
+		Entry<E> thePrev = aEntry.getPrev();
+		return thePrev != itsRoot ? thePrev : null;
+	}
+	
 	public void remove(Entry<E> aEntry)
 	{
 		aEntry.getPrev().setNext(aEntry.getNext());
@@ -164,7 +176,7 @@ public class NakedLinkedList<E>
 			itsValue = aValue;
 		}
 
-		public Entry<E> getNext()
+		Entry<E> getNext()
 		{
 			return itsNext;
 		}
@@ -174,7 +186,7 @@ public class NakedLinkedList<E>
 			itsNext = aNext;
 		}
 		
-		public Entry<E> getPrev()
+		Entry<E> getPrev()
 		{
 			return itsPrev;
 		}
