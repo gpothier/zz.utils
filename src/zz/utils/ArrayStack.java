@@ -73,4 +73,9 @@ public class ArrayStack<T> extends ArrayList<T> implements LimitableStack<T>
 			while (size() > itsMaximumSize)
 				remove(0);
 	}
+	
+	public boolean isFull()
+	{
+		return itsMaximumSize > 0 && size() >= itsMaximumSize;
+	}
 }

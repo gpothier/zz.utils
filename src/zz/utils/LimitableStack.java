@@ -15,4 +15,5 @@ public interface LimitableStack<T> extends Stack<T>
 {
 	public int getMaximumSize ();
 	public void setMaximumSize (int aMaximumSize);
+	public boolean isFull();
 }
