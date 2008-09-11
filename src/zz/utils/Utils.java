@@ -890,4 +890,20 @@ public final class Utils
 	{
 		return (aObject instanceof Number) || (aObject instanceof String);
 	}
+	
+	/**
+	 * Same as {@link Thread#sleep(long)} but catches the {@link InterruptedException}
+	 * and throws a {@link RuntimeException} instead.
+	 */
+	public static void sleep(long millis)
+	{
+		try
+		{
+			Thread.sleep(millis);
+		}
+		catch (InterruptedException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
 }

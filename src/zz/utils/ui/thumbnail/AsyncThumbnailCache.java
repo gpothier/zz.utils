@@ -4,12 +4,11 @@
 package zz.utils.ui.thumbnail;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 
+import zz.utils.Utils;
 import zz.utils.notification.IEvent;
 import zz.utils.notification.SimpleEvent;
 
@@ -128,38 +127,31 @@ public abstract class AsyncThumbnailCache<T> extends ThumbnailCache<T> implement
 
 	public void run()
 	{
-		try
+		while (true)
 		{
-			while (true)
-			{
-				Key<T> theRequest;
+			Key<T> theRequest;
 
-				while ((theRequest = popRequest()) != null)
+			while ((theRequest = popRequest()) != null)
+			{
+				System.out.println("Processing: "+theRequest.getId());
+				try
 				{
-					System.out.println("Processing: "+theRequest.getId());
-					try
-					{
-						BufferedImage theImage = createThumbnail(theRequest);
-		                if (theImage == null) itsIgnoredKeys.add(theRequest);
-		                else
-		                {
-							cache(theRequest, theImage);
-							itsThumbnailLoadedEvent.fire(theRequest.getId());
-		                }
-					}
-					catch (Exception e)
-					{
-						e.printStackTrace();
-		                itsIgnoredKeys.add(theRequest);
-					}
+					BufferedImage theImage = createThumbnail(theRequest);
+	                if (theImage == null) itsIgnoredKeys.add(theRequest);
+	                else
+	                {
+						cache(theRequest, theImage);
+						itsThumbnailLoadedEvent.fire(theRequest.getId());
+	                }
 				}
-				
-				Thread.sleep(100);
+				catch (Exception e)
+				{
+					e.printStackTrace();
+	                itsIgnoredKeys.add(theRequest);
+				}
 			}
-		}
-		catch (InterruptedException e)
-		{
-			e.printStackTrace();
+			
+			Utils.sleep(100);
 		}
 	}
 
