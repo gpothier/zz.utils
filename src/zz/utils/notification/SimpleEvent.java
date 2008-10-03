@@ -10,7 +10,9 @@ import zz.utils.properties.IProperty;
 import zz.utils.properties.IPropertyListener;
 
 /**
- * A basic implementation of {@link zz.utils.notification.IEvent}
+ * A basic implementation of {@link zz.utils.notification.IEvent}.
+ * The event itself is an event listener that refires events it receives,
+ * thus forwarding events is easy.
  * @author gpothier
  */
 public class SimpleEvent<T> extends AbstractEvent<T>
@@ -34,6 +36,7 @@ public class SimpleEvent<T> extends AbstractEvent<T>
 	 */
 	public final void fire (T aData)
 	{
+		fired(aData);
 		if (itsListeners != null) for (IEventListener<? super T> theListener : itsListeners)
 		{
 			theListener.fired(this, aData);
@@ -48,6 +51,11 @@ public class SimpleEvent<T> extends AbstractEvent<T>
 	{
 	}
 	
+	public void fired(IEvent< ? extends T> aEvent, T aData)
+	{
+		fire(aData);
+	}
+
 	/**
 	 * Returns an event object that is fired whenever the specified property changes.
 	 */

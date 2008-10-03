@@ -41,5 +41,11 @@ public class GroupedEvent<T> extends AbstractEvent<T>
 	{
 		itsGroup.removeListener(this, aListener);
 	}
+
+	public void fired(IEvent< ? extends T> aEvent, T aData)
+	{
+		fire(aData);
+	}
+	
 	
 }
