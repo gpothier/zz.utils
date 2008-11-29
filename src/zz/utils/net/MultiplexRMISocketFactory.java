@@ -33,28 +33,65 @@ package zz.utils.net;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.Externalizable;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.rmi.server.RMISocketFactory;
 
 public class MultiplexRMISocketFactory extends RMISocketFactory
+implements Externalizable
 {
 	private static final int HANDSHAKE = 0xECEAC;
-	private MultiplexingManager itsManager;
+	private final MultiplexingManager itsManager;
+	
+	private static MultiplexRMISocketFactory INSTANCE;
+	
+	public static MultiplexRMISocketFactory get()
+	{
+		if (INSTANCE == null) throw new RuntimeException("Factory not created");
+		return INSTANCE;
+	}
 
-	public MultiplexRMISocketFactory(MultiplexingManager aManager)
+	/**
+	 * Default constructor for serialization
+	 */
+	public MultiplexRMISocketFactory()
+	{
+		itsManager = null;
+	}
+	
+	private MultiplexRMISocketFactory(MultiplexingManager aManager)
 	{
 		itsManager = aManager;
+	}
+
+	public Object readResolve() throws ObjectStreamException
+	{
+		assert INSTANCE != null;
+		return INSTANCE;
+	}
+
+	public void readExternal(ObjectInput aIn) throws IOException, ClassNotFoundException
+	{
+	}
+
+	public void writeExternal(ObjectOutput aOut) 
+	{
 	}
 
 	/**
 	 * Creates the server end of the multiplexing connection.
 	 * @param aLocalHostname The name of this host (needs not be a valid network name). 
 	 */
-	public static MultiplexRMISocketFactory createServer(final String aLocalHostname, int aPort) throws IOException
+	public static void createServer(final String aLocalHostname, int aPort) throws IOException
 	{
+		if (INSTANCE != null) throw new RuntimeException("Factory already created");
 		System.setProperty("java.rmi.server.hostname", aLocalHostname);
 		final MultiplexingManager theManager = new MultiplexingManager(aLocalHostname);
 		Server theServer = new Server(aPort, true)
@@ -91,7 +128,7 @@ public class MultiplexRMISocketFactory extends RMISocketFactory
 			}
 		};
 		
-		return new MultiplexRMISocketFactory(theManager);
+		INSTANCE = new MultiplexRMISocketFactory(theManager);
 	}
 	
 	/**
@@ -100,8 +137,9 @@ public class MultiplexRMISocketFactory extends RMISocketFactory
 	 * @param aHostName The resolvable network name of the host to connect to. 
 	 * @param aLocalHostname The name of this host (needs not be a valid network name). 
 	 */
-	public static MultiplexRMISocketFactory createClient(String aLocalHostname, String aHostName, int aPort)
+	public static void createClient(String aLocalHostname, String aHostName, int aPort)
 	{
+		if (INSTANCE != null) throw new RuntimeException("Factory already created");
 		System.setProperty("java.rmi.server.hostname", aLocalHostname);
 		try
 		{
@@ -126,7 +164,7 @@ public class MultiplexRMISocketFactory extends RMISocketFactory
 			MultiplexingManager theManager = new MultiplexingManager(aLocalHostname);
 			theManager.addSocket(theRemoteHostname, theSocket);
 
-			return new MultiplexRMISocketFactory(theManager);
+			INSTANCE = new MultiplexRMISocketFactory(theManager);
 		}
 		catch (UnknownHostException e)
 		{
