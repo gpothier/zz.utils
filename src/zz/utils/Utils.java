@@ -797,6 +797,28 @@ public final class Utils
 	}
 	
 	/**
+	 * Serializes the given object into an array of bytes so that
+	 * it can be stored.
+	 */
+	public static byte[] encode(Object aObject)
+	{
+		try
+		{
+			ByteArrayOutputStream theStream = new ByteArrayOutputStream();
+			ObjectOutputStream theOOStream = new ObjectOutputStream(theStream);
+			theOOStream.writeObject(aObject);
+			theOOStream.flush();
+			return theStream.toByteArray();
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+
+	
+	/**
 	 * Helper method for throwing a formatted {@link RuntimeException}.
 	 */
 	public static void rtex(String aText, Object... aArgs)
