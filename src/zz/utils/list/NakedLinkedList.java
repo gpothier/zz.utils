@@ -211,5 +211,11 @@ public class NakedLinkedList<E>
 			assert (getNext() == null) == (getPrev() == null);
 			return getNext() != null;
 		}
+		
+		@Override
+		public String toString()
+		{
+			return "NLL.Entry: "+itsValue;
+		}
 	}
 }
