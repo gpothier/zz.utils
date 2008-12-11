@@ -82,12 +82,17 @@ implements TreeTableModel
 		return itsTree.getIndexOfChild((N) aParent, (N) aChild);
 	}
 	
-	/**
-	 * Subclasses shold override this method to provide the values for different columns
-	 */
-	public Object getValueAt(Object aNode, int aColumn)
+	public final Object getValueAt(Object aNode, int aColumn)
 	{
-		return itsTree.getValue((N) aNode);
+		return getValueFor((N) aNode, itsTree.getValue((N) aNode), aColumn);
+	}
+	
+	/**
+	 * Subclasses should override this method to provide the values for different columns
+	 */
+	public Object getValueFor(N aNode, V aValue, int aColumn)
+	{
+		return aValue;
 	}
 	
 	public boolean isCellEditable(Object aNode, int aColumn)
