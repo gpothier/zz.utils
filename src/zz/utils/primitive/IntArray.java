@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A primitive int array that grows as needed
+ * A primitive int array that grows as needed.
  * @author gpothier
  */
 public class IntArray

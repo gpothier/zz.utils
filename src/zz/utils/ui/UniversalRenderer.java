@@ -106,7 +106,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 
 		JLabel theLabel = (JLabel) itsListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 
-		if (value != null) setupLabel(theLabel, value);
+		if (value != null) setupLabel(theLabel, (V) value);
 
 		return theLabel;
 	}
@@ -123,7 +123,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 
 		JLabel theLabel = (JLabel) itsTableCellRenderer.getTableCellRendererComponent(aTable, aValue, aIsSelected, aHasFocus, aRow, aColumn);
 
-		setupLabel(theLabel, aValue);
+		setupLabel(theLabel, (V) aValue);
 
 		return theLabel;
 	}
@@ -141,7 +141,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 			DefaultMutableTreeNode theNode = (DefaultMutableTreeNode) value;
 			value = theNode.getUserObject();
 		}
-		if (value != null) setupLabel(theLabel, value);
+		if (value != null) setupLabel(theLabel, (V) value);
 
 		return theLabel;
 	}
@@ -150,7 +150,10 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 	 * Returns the text to display in the control.
 	 * @param aObject The object that is being rendered
 	 */
-	protected abstract String getName (V aObject);
+	protected String getName (V aObject)
+	{
+		throw new UnsupportedOperationException("This method must be overridden if setupLabel is not overridden");
+	}
 
 	/**
 	 * Returns an optional tooltip text
@@ -193,23 +196,21 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 	 * This method sets up the specified label so that it renders properly the specified object.
 	 * @param aLabel A label to set up.
 	 */
-	protected void setupLabel (JLabel aLabel, Object aObject)
+	protected void setupLabel (JLabel aLabel, V aValue)
 	{
-		V theObject = (V) aObject;
-		
-		String theName = getName(theObject);
+		String theName = getName(aValue);
 		aLabel.setText(theName != null ? theName : "");
 
-		String theToolTipText = getToolTipText(theObject);
+		String theToolTipText = getToolTipText(aValue);
 		aLabel.setToolTipText(theToolTipText);
 
-		Icon theIcon = getIcon(theObject);
+		Icon theIcon = getIcon(aValue);
 		aLabel.setIcon(theIcon);
 
-		Color theTextColor = getTextColor (theObject);
+		Color theTextColor = getTextColor (aValue);
 		if (theTextColor != null) aLabel.setForeground(theTextColor);
 		
-		Color theBackgroundColor = getBackgroundColor(theObject);
+		Color theBackgroundColor = getBackgroundColor(aValue);
 		if (theBackgroundColor != null) aLabel.setBackground(theBackgroundColor);
 	}
 }
