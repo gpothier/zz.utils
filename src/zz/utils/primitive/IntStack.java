@@ -9,6 +9,15 @@ package zz.utils.primitive;
  */
 public class IntStack extends IntArray
 {
+	public IntStack()
+	{
+	}
+
+	public IntStack(int aInitialSize)
+	{
+		super(aInitialSize);
+	}
+
 	public void push(int aValue)
 	{
 		set(size(), aValue);
@@ -21,7 +30,7 @@ public class IntStack extends IntArray
 		return theValue;
 	}
 	
-	public int poll()
+	public int peek()
 	{
 		return get(size()-1);
 	}

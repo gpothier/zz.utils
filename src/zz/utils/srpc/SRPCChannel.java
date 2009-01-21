@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 
 import zz.utils.ArrayStack;
 import zz.utils.Stack;
+import zz.utils.Utils;
 
 /**
  * Represents an bidirectional communication channel between two processed.
@@ -34,8 +35,9 @@ import zz.utils.Stack;
 public class SRPCChannel extends Thread
 {
 	private static final byte CMD_CALL = 40;
-	private static final byte CMD_RETURN = 41;
-	private static final byte CMD_GC = 42;
+	private static final byte CMD_ACKCALL = 41;
+	private static final byte CMD_RETURN = 42;
+	private static final byte CMD_GC = 43;
 	
 	private Socket itsSocket;
 	private SRPCObjectInputStream itsIn;
@@ -192,6 +194,12 @@ public class SRPCChannel extends Thread
 		theWaiter.setData(aData);
 	}
 	
+	private void acknowledge(long aCommandId)
+	{
+		Waiter theWaiter = itsWaitersMap.get(aCommandId);
+		theWaiter.acknowledged();
+	}
+	
 	@Override
 	public void run()
 	{
@@ -213,6 +221,7 @@ public class SRPCChannel extends Thread
 				switch(theCmd)
 				{
 				case CMD_CALL: processCall(); break;
+				case CMD_ACKCALL: processAckCall(); break;
 				case CMD_RETURN: processReturn(); break;
 				case CMD_GC: processGC(); break;
 				default: throw new RuntimeException("Not handled: "+theCmd);
@@ -271,8 +280,14 @@ public class SRPCChannel extends Thread
 	private void processCall(long aCommandId, int aPort, long aEndpointId, int aMethod, Object[] aArgs)
 	{
 		EndpointInfo theEndpointInfo = itsEndpointsMap.get(aPort);
+
+		if (theEndpointInfo == null) 
+			Utils.rtex("No such endpoint: %d", aEndpointId);
+		
 		if (theEndpointInfo.id != aEndpointId) 
-			throw new RuntimeException(String.format("Bad endpoint (expected %d, got %d)", aEndpointId, theEndpointInfo.id));
+			Utils.rtex("Bad endpoint (expected %d, got %d)", aEndpointId, theEndpointInfo.id);
+		
+		sendAckCall(aCommandId);
 		
 		IRemote theRemote = theEndpointInfo.remote;
 		Method[] theMethods = getMethods(SRPCUtils.getRemoteInterface(theRemote));
@@ -294,6 +309,39 @@ public class SRPCChannel extends Thread
 		}
 		
 		sendReturn(aCommandId, theResult, theThrown);
+	}
+	
+	private synchronized void sendAckCall(long aCommandId) 
+	{
+		try
+		{
+			itsOut.writeByte(CMD_ACKCALL);
+			itsOut.writeLong(aCommandId);
+			itsOut.reset();
+			itsOut.flush();
+		}
+		catch (IOException e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void processAckCall()
+	{
+		try
+		{
+			final long theCommandId = itsIn.readLong();
+			processAckCall(theCommandId);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void processAckCall(long aCommandId)
+	{
+		acknowledge(aCommandId);
 	}
 	
 	private synchronized void sendReturn(long aCommandId, Object aValue, boolean aThrown)
@@ -385,6 +433,7 @@ public class SRPCChannel extends Thread
 	private static class Waiter
 	{
 		private final long itsCommandId;
+		private boolean itsAcknowledged = false;
 		private boolean itsReady = false;
 		private Object itsData = null;
 		
@@ -405,11 +454,30 @@ public class SRPCChannel extends Thread
 			notifyAll();
 		}
 		
+		public synchronized void acknowledged()
+		{
+			itsAcknowledged = true;
+		}
+		
+		/**
+		 * Waits until the result of a call is available.
+		 * There is a timeout of 10s if the call is not acknowledged.
+		 * @return
+		 */
 		public synchronized Object waitReady()
 		{
 			try
 			{
-				while (! itsReady) wait();
+				long t0 = System.currentTimeMillis();
+				while (! itsReady) 
+				{
+					wait(10);
+					if (! itsAcknowledged)
+					{
+						long t1 = System.currentTimeMillis();
+						if (t1-t0 > 10000) throw new SRPCRemoteException("Call not acknowledged");
+					}
+				}
 				return itsData;
 			}
 			catch (InterruptedException e)
