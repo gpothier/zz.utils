@@ -53,6 +53,11 @@ public class IntArray
 		itsSize = Math.max(itsSize, aIndex+1);
 	}
 	
+	public void add(int aValue)
+	{
+		set(size(), aValue);
+	}
+	
 	public void clear()
 	{
 		itsSize = 0;
