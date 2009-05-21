@@ -834,6 +834,11 @@ public final class Utils
 		System.out.println(String.format(aText, aArgs));
 	}
 	
+	public static void errprintln(String aText, Object... aArgs)
+	{
+		System.err.println(String.format(aText, aArgs));
+	}
+	
 	/**
 	 * Tests the equality of two objects by comparing the value of all their fields.
 	 * The objects must be of the same class.
