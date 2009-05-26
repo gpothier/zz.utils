@@ -22,6 +22,11 @@ public interface Stack<T>
 	public void push (T aObject);
 	
 	/**
+	 * Pushes all the elements provided by the iterable.
+	 */
+	public void pushAll(Iterable<T> aSource);
+	
+	/**
 	 * Retrieves the element at the top of the stack and removes it.
 	 * If the stack is empty throws an exception.
 	 */

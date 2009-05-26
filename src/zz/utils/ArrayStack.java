@@ -74,6 +74,11 @@ public class ArrayStack<T> extends ArrayList<T> implements LimitableStack<T>
 				remove(0);
 	}
 	
+	public void pushAll(Iterable<T> aSource)
+	{
+		for(T theItem : aSource) push(theItem);
+	}
+
 	public boolean isFull()
 	{
 		return itsMaximumSize > 0 && size() >= itsMaximumSize;
