@@ -827,6 +827,14 @@ public final class Utils
 	}
 	
 	/**
+	 * Helper method for throwing a formatted {@link RuntimeException}.
+	 */
+	public static void rtex(Throwable aCause, String aText, Object... aArgs)
+	{
+		throw new RuntimeException(String.format(aText, aArgs), aCause);
+	}
+	
+	/**
 	 * Formated System.out.println
 	 */
 	public static void println(String aText, Object... aArgs)
