@@ -444,6 +444,14 @@ public final class Utils
 		for (int i=0;i<aIndent;i++) aBuilder.append(' ');
 	}
 	
+	public static void printlnIndented(int aIndent, String aText, Object... aArgs)
+	{
+		StringBuilder theBuilder = new StringBuilder();
+		indent(theBuilder, aIndent);
+		theBuilder.append(String.format(aText, aArgs));
+		System.out.println(theBuilder.toString());
+	}
+	
 	/**
 	 * Merges two arrays in one. 
 	 */
