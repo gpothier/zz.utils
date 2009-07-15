@@ -3,6 +3,7 @@
  */
 package zz.utils.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Hashtable;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -22,9 +24,9 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -32,7 +34,6 @@ import javax.swing.event.ChangeListener;
 import zz.utils.properties.IProperty;
 import zz.utils.properties.IPropertyListener;
 import zz.utils.properties.IRWProperty;
-import zz.utils.ui.OptionListener.Option;
 import zz.utils.ui.popup.ButtonPopupComponent;
 
 /**
@@ -103,6 +104,11 @@ public class PropertyEditor
 	public static <T> JSpinner createNumberSpinner(IRWProperty<Integer> aProperty)
 	{
 		return new NumberSpinnerPropertyEditor(aProperty);
+	}
+	
+	public static <T> JComponent createLogSlider(IRWProperty<Float> aProperty)
+	{
+		return new LogSliderPropertyEditor(aProperty);
 	}
 	
 	public static JComponent createColorChooser(IRWProperty<Color> aProperty)
@@ -397,6 +403,107 @@ public class PropertyEditor
 		public void stateChanged(ChangeEvent aE)
 		{
 			itsProperty.set((Integer) getValue());
+		}
+	}
+	
+	public static final int LOGSLIDER_RANGE = 1000;
+	
+	private static class LogSliderPropertyEditor extends JComponent
+	implements IPropertyListener<Float>, ChangeListener, FocusListener
+	{
+		private static final double K = LOGSLIDER_RANGE*LOGSLIDER_RANGE;
+		private static final double LN_K = Math.log(K);
+		
+		private final IRWProperty<Float> itsProperty;
+		private boolean itsChanging = false;
+		
+		private final JSlider itsSlider;
+		private final JLabel itsValueLabel;
+		
+		public LogSliderPropertyEditor(IRWProperty<Float> aProperty)
+		{
+			itsSlider = new JSlider();
+			itsValueLabel = new JLabel();
+			
+			itsProperty = aProperty;
+			itsSlider.setMinimum(0);
+			itsSlider.setMaximum(LOGSLIDER_RANGE);
+			setValue0(itsProperty.get());
+			itsSlider.addChangeListener(this);
+			itsSlider.addFocusListener(this);
+			
+			Hashtable<Integer, JLabel> theLabels = new Hashtable<Integer, JLabel>();
+			for(int p=0;p<LOGSLIDER_RANGE;p+=LOGSLIDER_RANGE/5)
+			{
+				theLabels.put(p, new JLabel(""+getValue0(p)));
+			}
+			itsSlider.setLabelTable(theLabels);
+			
+			setLayout(new BorderLayout());
+			add(itsSlider, BorderLayout.CENTER);
+			add(itsValueLabel, BorderLayout.SOUTH);
+		}
+		
+		private void setValue0(Float aValue)
+		{
+			float v = aValue != null ? aValue : 1f;
+			double p0 = (Math.log(v)/LN_K) + 0.5;
+			int p = (int) (p0*LOGSLIDER_RANGE);
+//			System.out.println("SET - p: "+p0+", v: "+v);
+			itsChanging = true;
+			itsSlider.setValue(p);
+			itsValueLabel.setText(""+aValue);
+			itsChanging = false;
+		}
+		
+		private float getValue0()
+		{
+			int p = itsSlider.getValue();
+			return getValue0(p);
+		}
+		
+		private float getValue0(int p)
+		{
+			double v = Math.pow(K, (1.0*p/LOGSLIDER_RANGE)-0.5);
+//			System.out.println("GET - p: "+p+", v: "+v);
+			return (float) v;
+		}
+		
+		@Override
+		public void addNotify()
+		{
+			super.addNotify();
+			itsProperty.addHardListener(this);
+		}
+		
+		@Override
+		public void removeNotify()
+		{
+			super.removeNotify();
+			itsProperty.removeListener(this);
+		}
+		
+		public void propertyChanged(IProperty<Float> aProperty, Float aOldValue, Float aNewValue)
+		{
+			setValue0(aNewValue);
+		}
+		
+		public void propertyValueChanged(IProperty<Float> aProperty)
+		{
+		}
+		
+		public void focusGained(FocusEvent aE)
+		{
+		}
+		
+		public void focusLost(FocusEvent aE)
+		{
+			itsProperty.set(getValue0());
+		}
+		
+		public void stateChanged(ChangeEvent aE)
+		{
+			if (! itsChanging) itsProperty.set(getValue0());
 		}
 	}
 	

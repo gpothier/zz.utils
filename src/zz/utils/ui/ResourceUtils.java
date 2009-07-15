@@ -50,6 +50,14 @@ public class ResourceUtils
 		return theImage;
 	}
 	
+	/**
+	 * Creates an image in an efficient format
+	 */
+	public static BufferedImage createCompatibleImage (int aWidth, int aHeight)
+	{
+		return CONFIG.createCompatibleImage(aWidth, aHeight, Transparency.TRANSLUCENT);
+	}
+	
 	
 	/**
 	 * Loads an image stored as a resource of the given class.
