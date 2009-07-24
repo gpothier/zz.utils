@@ -66,6 +66,11 @@ public class GridStackLayout implements LayoutManager2
 		itsFitToWidth = aFitToWidth;
 		itsFitToHeight = aFitToHeight;
 	}
+	
+	public void setNColumns(int aColumns)
+	{
+		itsNColumns = aColumns;
+	}
 
 	public void addLayoutComponent (Component aComponent, Object aConstraints)
 	{
@@ -137,7 +142,7 @@ public class GridStackLayout implements LayoutManager2
 	{
 		Component[] theChildren = aTarget.getComponents();
 		int theNChildren = theChildren.length;
-		int theNRows = (int)Math.ceil (theNChildren/itsNColumns);
+		int theNRows = (int)Math.ceil (1f*theNChildren/itsNColumns);
 
 		itsColumnsWidths = new int[itsNColumns];
 		for (int i = 0; i < itsNColumns; i++) itsColumnsWidths[i] = aType != UIUtils.MAXIMUM_SIZE ? 0 : Integer.MAX_VALUE;

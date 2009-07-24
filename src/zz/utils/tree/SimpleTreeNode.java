@@ -25,7 +25,7 @@ public class SimpleTreeNode<V>
 	
 	private boolean itsInitialized = false;	
 	
-	private final IRWProperty<V> pValue = new SimpleRWProperty<V>(this)
+	private final IRWProperty<V> pValue = new SimpleRWProperty<V>()
 		{
 			@Override
 			protected void changed(V aOldValue, V aNewValue)
@@ -47,7 +47,7 @@ public class SimpleTreeNode<V>
 		if (! aLeaf)
 		{
 			pChildren = 
-				new ArrayListProperty<SimpleTreeNode<V>>(this)
+				new ArrayListProperty<SimpleTreeNode<V>>()
 				{
 					protected void elementAdded(int aIndex, SimpleTreeNode<V> aElement)
 					{

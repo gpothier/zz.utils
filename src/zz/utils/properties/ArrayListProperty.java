@@ -17,16 +17,6 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 {
 	private List<E> itsList;
 	
-	public ArrayListProperty(Object aOwner)
-	{
-		super(aOwner);
-	}
-	
-	public ArrayListProperty(Object aOwner, PropertyId<List<E>> aPropertyId)
-	{
-		super(aOwner, aPropertyId);
-	}
-	
 	public List<E> get()
 	{
 		if (itsList == null)
@@ -77,30 +67,6 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	public Iterator<E> reverseIterator()
 	{
 		return new ReverseIteratorWrapper (get());
-	}
-	
-	
-	public IListProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue)
-	{
-		// Note: we don't tell super to clone value, we handle it ourselves.
-		ArrayListProperty<E> theClone = 
-			(ArrayListProperty) super.cloneForOwner(aOwner, false);
-		
-		if (aCloneValue)
-		{
-			theClone.itsList = theClone.new MyList();
-			for (E theElement : itsList)
-			{
-				E theClonedElement = theClone.cloneValue(theElement);
-				theClone.itsList.add (theClonedElement);
-			}
-		}
-		else
-		{
-			theClone.itsList = itsList != null ? theClone.new MyList(itsList) : null;
-		}
-		
-		return theClone;
 	}
 	
 	

@@ -13,24 +13,9 @@ public class SimpleRWProperty<T> extends SimpleProperty<T> implements IRWPropert
 	{
 	}
 	
-	public SimpleRWProperty(Object aOwner, PropertyId<T> aPropertyId)
+	public SimpleRWProperty(T aValue)
 	{
-		super(aOwner, aPropertyId);
-	}
-
-	public SimpleRWProperty(Object aOwner, PropertyId<T> aPropertyId, T aValue)
-	{
-		super(aOwner, aPropertyId, aValue);
-	}
-
-	public SimpleRWProperty(Object aOwner)
-	{
-		super(aOwner);
-	}
-
-	public SimpleRWProperty(Object aOwner, T aValue)
-	{
-		super(aOwner, aValue);
+		super(aValue);
 	}
 
 	public T set (T aValue)

@@ -12,8 +12,8 @@ import zz.utils.properties.SimpleRWProperty;
  */
 public class ProgressModel<T>
 {
-	public final IRWProperty<T> pCurrent = new SimpleRWProperty<T>(this); 
-	public final IRWProperty<T> pTotal = new SimpleRWProperty<T>(this);
+	public final IRWProperty<T> pCurrent = new SimpleRWProperty<T>(); 
+	public final IRWProperty<T> pTotal = new SimpleRWProperty<T>();
 	
 	public ProgressModel ()
 	{

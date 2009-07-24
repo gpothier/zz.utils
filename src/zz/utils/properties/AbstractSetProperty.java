@@ -29,16 +29,6 @@ implements ISetProperty<E>
 	 */
 	private List<IRef<ICollectionListener<E>>> itsListListeners;
 	
-	public AbstractSetProperty(Object aOwner)
-	{
-		super(aOwner);
-	}
-	
-	public AbstractSetProperty(Object aOwner, PropertyId<Set<E>> aPropertyId)
-	{
-		super(aOwner, aPropertyId);
-	}
-	
 	public boolean add(E aElement)
 	{
 		return get().add (aElement);
@@ -208,16 +198,4 @@ implements ISetProperty<E>
 		}
 	}
 	
-	public ISetProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue)
-	{
-		// Note: we don't tell super to clone value, we handle it ourselves.
-		// As we are an abstract class, we don't do anything special.
-		AbstractSetProperty<E> theClone = 
-			(AbstractSetProperty<E>) super.cloneForOwner(aOwner, false); 
-		
-		theClone.itsListListeners = null;
-		
-		return theClone;
-
-	}
 }

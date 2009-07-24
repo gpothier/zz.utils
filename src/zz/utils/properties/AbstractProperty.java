@@ -24,52 +24,12 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	protected static Object REJECT = new Object();
 	
 	/**
-	 * The object that contains the property.
-	 * If present, this object will be the source of an
-	 * observation through the {@link ObservationCenter}
-	 */
-	private Object itsOwner;
-	
-	/**
-	 * The id of this property.
-	 */
-	private PropertyId<T> itsPropertyId;
-	
-	/**
 	 * We maintain the number of veto listeners for optimization purposes.
 	 * This is an approximation, as weakly referenced veto listsners can be garbage collected.
 	 */
 	private int itsVetoCount = 0;
 	
 	private List<IRef<IPropertyListener<? super T>>> itsListeners; 
-	
-	public AbstractProperty()
-	{
-	}
-	
-	public AbstractProperty(Object aOwner)
-	{
-		itsOwner = aOwner;
-	}
-	
-	public AbstractProperty(Object aOwner, PropertyId<T> aPropertyId)
-	{
-		itsOwner = aOwner;
-		itsPropertyId = aPropertyId;
-	}
-	
-	public Object getOwner()
-	{
-		return itsOwner;
-	}
-	
-	/**
-	 * Returns the id of this property, if it exists.
-	 */
-	public PropertyId<T> getId()
-	{
-		return itsPropertyId;
-	}
 	
 	/**
 	 * This method is called whenever the value of this property changes.
@@ -79,15 +39,6 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	{
 	}
 
-	/**
-	 * This method is called whenever the value of the property internally
-	 * changes.
-	 */
-	protected void valueChanged()
-	{
-	}
-
-	
 	protected void firePropertyChanged (T aOldValue, T aNewValue)
 	{
 		changed(aOldValue, aNewValue);
@@ -98,20 +49,6 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	
 			for (IPropertyListener<? super T> theListener : theListeners)
 				theListener.propertyChanged((IProperty) this, aOldValue, aNewValue);
-		}
-		
-//		ObservationCenter.getInstance().requestObservation(getOwner(), this);
-	}
-	
-	protected void firePropertyValueChanged ()
-	{
-		valueChanged();
-		if (itsListeners != null)
-		{
-			List<IPropertyListener<? super T>> theListeners = RefUtils.dereference(itsListeners); 
-	
-			for (IPropertyListener<? super T> theListener : theListeners)
-				theListener.propertyValueChanged((IProperty) this);
 		}
 		
 //		ObservationCenter.getInstance().requestObservation(getOwner(), this);
@@ -184,24 +121,9 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		}
 	}
 
-	public IProperty<T> cloneForOwner(Object aOwner, boolean aCloneValue)
-	{
-		AbstractProperty<T> theClone = (AbstractProperty<T>) super.clone();
-		
-		theClone.itsOwner = aOwner;
-		theClone.itsListeners = null;
-		theClone.itsVetoCount = 0;
-		
-		return theClone;
-	}
-
 	public String toString()
 	{
-		return String.format (
-				"Property (id: %s, value: %s, owner: %s)",
-				itsPropertyId,
-				get(),
-				getOwner());
+		return String.format ("Property (value: %s)", get());
 	}
 	
 }

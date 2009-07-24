@@ -16,11 +16,4 @@ public interface IPropertyListener<T>
 	 * @param aNewValue The new value of the property.
 	 */
 	public void propertyChanged (IProperty<T> aProperty, T aOldValue, T aNewValue);
-	
-	/**
-	 * This method is called when the property's value itself changes 
-	 * (ie. some of its internal state changes)
-	 * @param aProperty The property whose value changed.
-	 */
-	public void propertyValueChanged (IProperty<T> aProperty);
 }

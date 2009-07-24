@@ -3,7 +3,6 @@
  */
 package zz.utils.properties;
 
-import zz.utils.IPublicCloneable;
 
 
 /**
@@ -17,17 +16,6 @@ import zz.utils.IPublicCloneable;
  */
 public interface IProperty<T> 
 {
-	/**
-	 * Returns the id of this property, if it exists.
-	 */
-	public PropertyId<T> getId();
-	
-	/**
-	 * Returns the object that owns this property, if any.
-	 */
-	public Object getOwner();
-
-	
 	/**
 	 * Standard getter for this property.
 	 */
@@ -76,13 +64,5 @@ public interface IProperty<T>
 	 * Removes a previously added listener.
 	 */
 	public void removeListener (IPropertyListener<? super T> aListener);
-
-	/**
-	 * Creates a clone of this property, giving the cloned property the specified
-	 * container.
-	 * The clone has no listeners or vetoers.
-	 * @param aCloneValue Whether to clone the value of the property.
-	 */
-	public IProperty<T> cloneForOwner (Object aOwner, boolean aCloneValue);
 
 }

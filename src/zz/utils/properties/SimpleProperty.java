@@ -3,15 +3,13 @@
  */
 package zz.utils.properties;
 
-import zz.utils.IPublicCloneable;
-import zz.utils.notification.Observer;
 
 /**
  * Default implementation of {@link zz.utils.properties.IProperty} for simple values.
  * @author gpothier
  */
 public class SimpleProperty<T> extends AbstractProperty<T> 
-implements IProperty<T>, Observer
+implements IProperty<T>
 {
 	
 	/**
@@ -23,28 +21,11 @@ implements IProperty<T>, Observer
 	{
 	}
 	
-	public SimpleProperty(Object aOwner)
+	public SimpleProperty(T aValue)
 	{
-		super (aOwner);
-	}
-	
-	public SimpleProperty(Object aOwner, T aValue)
-	{
-		super (aOwner);
 		itsValue = aValue;
 	}
 	
-	public SimpleProperty(Object aOwner, PropertyId<T> aPropertyId)
-	{
-		super (aOwner, aPropertyId);
-	}
-	
-	public SimpleProperty(Object aOwner, PropertyId<T> aPropertyId, T aValue)
-	{
-		super (aOwner, aPropertyId);
-		itsValue = aValue;
-	}
-
 	/**
 	 * Standard getter for this property.
 	 */
@@ -96,25 +77,5 @@ implements IProperty<T>, Observer
 		firePropertyChanged(theOldValue, aValue);
 		
 		return itsValue;
-	}
-	
-	public void observe(Object aObservable, Object aData)
-	{
-		if (aObservable == itsValue) firePropertyValueChanged();
-	}
-
-
-	public IProperty<T> cloneForOwner(Object aOwner, boolean aCloneValue)
-	{
-		SimpleProperty<T> theClone = 
-			(SimpleProperty) super.cloneForOwner(aOwner, aCloneValue);
-		
-		if (aCloneValue) 
-		{
-			IPublicCloneable theValue = (IPublicCloneable) itsValue;
-			theClone.itsValue = theValue != null ? (T) theValue.clone() : null;
-		}
-		
-		return theClone;
 	}
 }

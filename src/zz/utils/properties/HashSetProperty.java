@@ -17,16 +17,6 @@ public class HashSetProperty<E> extends AbstractSetProperty<E>
 {
 	private Set<E> itsSet = new MySet ();
 	
-	public HashSetProperty(Object aOwner)
-	{
-		super(aOwner);
-	}
-	
-	public HashSetProperty(Object aOwner, PropertyId<Set<E>> aPropertyId)
-	{
-		super(aOwner, aPropertyId);
-	}
-	
 	public Set<E> get()
 	{
 		return itsSet;
@@ -80,32 +70,6 @@ public class HashSetProperty<E> extends AbstractSetProperty<E>
 	{
 		return get().iterator();
 	}
-	
-	public ISetProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue)
-	{
-		// Note: we don't tell super to clone value, we handle it ourselves.
-		HashSetProperty<E> theClone = 
-			(HashSetProperty) super.cloneForOwner(aOwner, false);
-		
-		if (aCloneValue)
-		{
-			theClone.itsSet = new MySet();
-			for (E theElement : itsSet)
-			{
-				IPublicCloneable theClonable = (IPublicCloneable) theElement;
-				E theClonedElement = (E) theClonable.clone();
-				theClone.itsSet.add (theClonedElement);
-			}
-		}
-		else
-		{
-			theClone.itsSet = new MySet(itsSet);
-		}
-		
-		return theClone;
-	}
-	
-
 	
 	/**
 	 * This is our implementation of List, which override some methods in

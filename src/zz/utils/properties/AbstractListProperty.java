@@ -31,17 +31,7 @@ implements IListProperty<E>
 	 * list listeners
 	 */
 	private List<IRef<Object>> itsListListeners;
-	
-	public AbstractListProperty(Object aOwner)
-	{
-		super(aOwner);
-	}
-	
-	public AbstractListProperty(Object aOwner, PropertyId<List<E>> aPropertyId)
-	{
-		super(aOwner, aPropertyId);
-	}
-	
+
 	public boolean add(E aElement)
 	{
 		return get().add (aElement);
@@ -300,19 +290,6 @@ implements IListProperty<E>
 		}
 		else throw new UnsupportedOperationException();
 	}
-	
-	public IListProperty<E> cloneForOwner(Object aOwner, boolean aCloneValue)
-	{
-		// Note: we don't tell super to clone value, we handle it ourselves.
-		// As we are an abstract class, we don't do anything special.
-		AbstractListProperty<E> theClone = 
-			(AbstractListProperty<E>) super.cloneForOwner(aOwner, false); 
-		
-		theClone.itsListListeners = null;
-		
-		return theClone;
-	}
-
 	
 	public boolean addAll(int aIndex, Collection< ? extends E> aC)
 	{
