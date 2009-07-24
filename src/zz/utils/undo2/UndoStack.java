@@ -33,14 +33,18 @@ public class UndoStack
 	public void commitOperation()
 	{
 		if (itsCurrentOperation == null) throw new IllegalStateException();
-		itsCurrentStack.set(this);
+		itsCurrentStack.set(null);
 		itsUndoStack.push(itsCurrentOperation);
+		itsCurrentOperation = null;
+		updateUndoActions();
 	}
 	
 	public void cancelOperation()
 	{
 		if (itsCurrentOperation == null) throw new IllegalStateException();
+		itsCurrentStack.set(null);
 		itsCurrentOperation.undo();
+		itsCurrentOperation = null;
 	}
 
 	public void setActions (Action aUndoAction, Action aRedoAction)

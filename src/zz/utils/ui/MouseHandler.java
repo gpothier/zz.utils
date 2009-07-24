@@ -40,6 +40,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	private Stack<T> itsPathToCurrentElement = new ArrayStack<T> ();
 	
 	private T itsCurrentElement;
+	private T itsPressedElement;
 
 	/**
 	 * X coordinate of last mouse pressed with left button.
@@ -94,8 +95,9 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	/**
 	 * Returns the deepest element at the specified point
 	 * @param aPoint A point in the root coordinate system.
+	 * @param aAction The kind of mouse action for which the element is requested
 	 */
-	protected abstract T getElementAt (Point2D aPoint);
+	protected abstract T getElementAt (Point2D aPoint, MouseAction aAction);
 
 	/**
 	 * Returns the parent element of the specified element.
@@ -127,7 +129,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	public void mouseMoved (MouseEvent e)
 	{
 		Point2D thePoint = pixelToRoot(e.getPoint());
-		itsCurrentElement = getElementAt(thePoint);
+		itsCurrentElement = getElementAt(thePoint, MouseAction.MOVE);
 		if (itsCurrentElement == null) popElements (e);
 		else 
 		{
@@ -219,7 +221,8 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 		if (itsComponent != null) itsComponent.grabFocus();
 		
 		Point2D thePoint = pixelToRoot(e.getPoint());
-		itsCurrentElement = getElementAt(thePoint);
+		itsCurrentElement = getElementAt(thePoint, MouseAction.PRESS);
+		itsPressedElement = itsCurrentElement;
 
 		itsPressX = e.getX();
 		itsPressY = e.getY();
@@ -231,39 +234,42 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 		Point2D thePoint = pixelToRoot(e.getPoint());
-		itsCurrentElement = getElementAt(thePoint);
+		itsCurrentElement = getElementAt(thePoint, MouseAction.WHEEL);
 
 		fireMouseWheelMoved(e, thePoint, itsCurrentElement);
 	}
 
 	public void mouseReleased (MouseEvent e)
 	{
-		IMouseAware theMouseAware = getMouseAware(itsCurrentElement);
-		if (SwingUtilities.isLeftMouseButton(e) && theMouseAware != null)
+		IMouseAware theMouseAware = getMouseAware(itsPressedElement);
+		if (SwingUtilities.isLeftMouseButton(e))
 		{
-			Point2D theRootPoint = pixelToRoot(e.getPoint());
-			Point2D theTransformedPoint = rootToLocal(itsCurrentElement, theRootPoint);
-			if (itsDragging)
+			if (theMouseAware != null)
 			{
-				theMouseAware.commitDrag(theTransformedPoint);
-				itsDragging = false;
+				Point2D theRootPoint = pixelToRoot(e.getPoint());
+				Point2D theTransformedPoint = rootToLocal(itsPressedElement, theRootPoint);
+				if (itsDragging)
+				{
+					theMouseAware.commitDrag(theTransformedPoint);
+					itsDragging = false;
+				}
+				else
+				{
+					fireMouseClicked(e, theRootPoint, itsPressedElement);
+				}
+				fireMouseReleased(e, theRootPoint, itsPressedElement);
 			}
-			else
-			{
-				fireMouseClicked(e, theRootPoint, itsCurrentElement);
-			}
-			fireMouseReleased(e, theRootPoint, itsCurrentElement);
 		}
 	}
 
 	public void mouseDragged (MouseEvent e)
 	{
-		IMouseAware theMouseAware = getMouseAware(itsCurrentElement);
+		IMouseAware theMouseAware = getMouseAware(itsPressedElement);
 		if (SwingUtilities.isLeftMouseButton(e) && theMouseAware != null)
 		{
 			if (itsDragging)
 			{
-				Point2D theTransformedPoint = pixelToLocal(itsCurrentElement, e.getPoint());
+				Point2D theTransformedPoint = pixelToLocal(itsPressedElement, e.getPoint());
 				theMouseAware.drag (theTransformedPoint);
 			}
 			else
@@ -275,7 +281,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 				if (theDist > 4 || theTime > 300) 
 				{
 					itsDragging = true;
-					Point2D theTransformedPoint = pixelToLocal(itsCurrentElement, new Point (itsPressX, itsPressY));
+					Point2D theTransformedPoint = pixelToLocal(itsPressedElement, new Point (itsPressX, itsPressY));
 					theMouseAware.startDrag(e, theTransformedPoint);
 				}
 			}
@@ -364,5 +370,10 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 			}
 			aElement = getParent(aElement);
 		}
+	}
+	
+	public static enum MouseAction
+	{
+		PRESS, MOVE, WHEEL;
 	}
 }
