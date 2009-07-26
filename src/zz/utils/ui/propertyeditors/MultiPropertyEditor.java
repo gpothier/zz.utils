@@ -92,7 +92,6 @@ public class MultiPropertyEditor<T> extends JPanel
 				break;
 			}
 		}
-		pEnabled.set(theSameValue);
 
 		// add checkbox only if there is more than one property
 		if (itsProperties.size() > 1)
@@ -115,6 +114,8 @@ public class MultiPropertyEditor<T> extends JPanel
 				itsConnectors.add(new SimpleValueConnector<T>(itsMasterProperty, theProperty, false, true));
 			}
 		}
+
+		pEnabled.set(theSameValue);
 	}
 	
 	public Field getField()
@@ -178,7 +179,7 @@ public class MultiPropertyEditor<T> extends JPanel
 	/**
 	 * Returns the available properties in the given collection of objects.
 	 */
-	public static Set<Field> getAvailableProperties(Collection<Object> aObjects)
+	public static Set<Field> getAvailableProperties(Collection<?> aObjects)
 	{
 		Set<Field> theResult = new HashSet<Field>();
 		for (Object o : aObjects) theResult.addAll(getAvailableProperties(o));
@@ -190,7 +191,7 @@ public class MultiPropertyEditor<T> extends JPanel
 	 * objects, if available.
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<IRWProperty> getProperties(Field aProperty, Collection<Object> aObjects)
+	public static List<IRWProperty> getProperties(Field aProperty, Collection<?> aObjects)
 	{
 		List<IRWProperty> theResult = new ArrayList<IRWProperty>();
 		for (Object o : aObjects)
@@ -210,7 +211,7 @@ public class MultiPropertyEditor<T> extends JPanel
 	 * Creates a {@link MultiPropertyEditor} for each available property in the provided collection
 	 * of objects.
 	 */
-	public static List<MultiPropertyEditor> createEditors(Collection<Object> aObjects)
+	public static List<MultiPropertyEditor> createEditors(Collection<?> aObjects)
 	{
 		List<MultiPropertyEditor> theResult = new ArrayList<MultiPropertyEditor>();
 		Set<Field> theProperties = getAvailableProperties(aObjects);

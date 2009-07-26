@@ -179,6 +179,19 @@ public class UIUtils
 	{
 		return getLighterColor (aColor, 0.3f);
 	}
+	
+	public static Color getLighterColor(Color aColor, float aRedCoefficient, float aGreenCoefficient, float aBlueCoefficient)
+	{
+		Color theResultColor = null;
+		if (aColor != null)
+		{
+			int r = (int) (255 - (255 - aColor.getRed ()) * aRedCoefficient);
+			int g = (int) (255 - (255 - aColor.getGreen ()) * aGreenCoefficient);
+			int b = (int) (255 - (255 - aColor.getBlue ()) * aBlueCoefficient);
+			theResultColor = new Color (r, g, b);
+		}
+		return theResultColor;
+	}
 
 	/**
 	 * Returns the same color but with a different alpha value.

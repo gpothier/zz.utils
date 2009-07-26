@@ -123,13 +123,27 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 		return rootToLocal(aElement, pixelToRoot(aPoint));
 	}
 	
+	private void setCurrentElement(T aElement)
+	{
+		if (itsCurrentElement != aElement)
+		{
+			T theOld = itsCurrentElement;
+			itsCurrentElement = aElement;
+			currentElementChanged(theOld, itsCurrentElement);
+		}
+	}
+	
+	protected void currentElementChanged(T aOld, T aNew)
+	{
+	}
+	
 	/**
 	 * Sends appropriate mouse enter/exit events to elements.
 	 */
 	public void mouseMoved (MouseEvent e)
 	{
 		Point2D thePoint = pixelToRoot(e.getPoint());
-		itsCurrentElement = getElementAt(thePoint, MouseAction.MOVE);
+		setCurrentElement(getElementAt(thePoint, MouseAction.MOVE));
 		if (itsCurrentElement == null) popElements (e);
 		else 
 		{
@@ -221,7 +235,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 		if (itsComponent != null) itsComponent.grabFocus();
 		
 		Point2D thePoint = pixelToRoot(e.getPoint());
-		itsCurrentElement = getElementAt(thePoint, MouseAction.PRESS);
+		setCurrentElement(getElementAt(thePoint, MouseAction.PRESS));
 		itsPressedElement = itsCurrentElement;
 
 		itsPressX = e.getX();
@@ -234,7 +248,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
 		Point2D thePoint = pixelToRoot(e.getPoint());
-		itsCurrentElement = getElementAt(thePoint, MouseAction.WHEEL);
+		setCurrentElement(getElementAt(thePoint, MouseAction.WHEEL));
 
 		fireMouseWheelMoved(e, thePoint, itsCurrentElement);
 	}
@@ -306,9 +320,10 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	{
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE && itsDragging)
 		{
-			IMouseAware theMouseAware = getMouseAware(itsCurrentElement);
+			IMouseAware theMouseAware = getMouseAware(itsPressedElement);
 			theMouseAware.cancelDrag();
 			itsDragging = false;
+			itsPressedElement = null;
 		}
 	}
 

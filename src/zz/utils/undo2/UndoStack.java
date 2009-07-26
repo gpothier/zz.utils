@@ -35,6 +35,7 @@ public class UndoStack
 		if (itsCurrentOperation == null) throw new IllegalStateException();
 		itsCurrentStack.set(null);
 		itsUndoStack.push(itsCurrentOperation);
+		itsRedoStack.clear();
 		itsCurrentOperation = null;
 		updateUndoActions();
 	}

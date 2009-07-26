@@ -3,8 +3,8 @@
  */
 package zz.utils.properties;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import zz.utils.PublicCloneable;
 import zz.utils.references.HardRef;
@@ -39,13 +39,17 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	{
 	}
 
-	protected void firePropertyChanged (T aOldValue, T aNewValue)
+	private synchronized List<IPropertyListener<? super T>> dereferenceListeners()
+	{
+		return RefUtils.dereference(itsListeners);
+	}
+	
+	protected synchronized void firePropertyChanged (T aOldValue, T aNewValue)
 	{
 		changed(aOldValue, aNewValue);
 		if (itsListeners != null)
 		{
-			List<IPropertyListener<? super T>> theListeners = 
-				RefUtils.dereference(itsListeners); 
+			List<IPropertyListener<? super T>> theListeners = dereferenceListeners(); 
 	
 			for (IPropertyListener<? super T> theListener : theListeners)
 				theListener.propertyChanged((IProperty) this, aOldValue, aNewValue);
@@ -75,7 +79,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		if (theCanChange != ACCEPT) return theCanChange;
 		
 		if (itsVetoCount <= 0) return ACCEPT;
-		List<IPropertyListener<? super T>> theListeners = RefUtils.dereference(itsListeners);
+		List<IPropertyListener<? super T>> theListeners = dereferenceListeners();
 
 		for (IPropertyListener<? super T> theListener : theListeners)
 		{
@@ -89,16 +93,16 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		return ACCEPT;
 	}
 	
-	public void addListener (IPropertyListener<? super T> aListener)
+	public synchronized void addListener (IPropertyListener<? super T> aListener)
 	{
-		if (itsListeners == null) itsListeners = new CopyOnWriteArrayList<IRef<IPropertyListener<? super T>>>();
+		if (itsListeners == null) itsListeners = new ArrayList<IRef<IPropertyListener<? super T>>>();
 		if (aListener instanceof IPropertyVeto) itsVetoCount++;
 		itsListeners.add (new WeakRef<IPropertyListener<? super T>>(aListener));
 	}
 
-	public void addHardListener (IPropertyListener<? super T> aListener)
+	public synchronized void addHardListener (IPropertyListener<? super T> aListener)
 	{
-		if (itsListeners == null) itsListeners = new CopyOnWriteArrayList<IRef<IPropertyListener<? super T>>>();
+		if (itsListeners == null) itsListeners = new ArrayList<IRef<IPropertyListener<? super T>>>();
 		if (aListener instanceof IPropertyVeto) itsVetoCount++;
 		itsListeners.add (new HardRef<IPropertyListener<? super T>>(aListener));
 	}
@@ -109,7 +113,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		else addListener(aListener);
 	}
 
-	public void removeListener (IPropertyListener<? super T> aListener)
+	public synchronized void removeListener (IPropertyListener<? super T> aListener)
 	{
 		if (itsListeners != null) 
 		{
