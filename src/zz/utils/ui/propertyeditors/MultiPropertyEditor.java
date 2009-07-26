@@ -119,7 +119,7 @@ public class MultiPropertyEditor<T> extends JPanel
 			while(theIterator.hasNext())
 			{
 				IRWProperty<T> theProperty = theIterator.next();
-				itsConnectors.add(new SimpleValueConnector<T>(itsMasterProperty, theProperty, false, true));
+				itsConnectors.add(new SimpleValueConnector<T>(itsMasterProperty, theProperty, true, true));
 			}
 		}
 
