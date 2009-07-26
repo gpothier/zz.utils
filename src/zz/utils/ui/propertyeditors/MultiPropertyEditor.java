@@ -42,13 +42,19 @@ public class MultiPropertyEditor<T> extends JPanel
 		{
 			if (aNewValue)
 			{
-				itsMasterEditor.setEnabled(true);
-				connect();
+				if (itsMasterEditor != null) 
+				{
+					itsMasterEditor.setEnabled(true);
+					connect();
+				}
 			}
 			else
 			{
-				itsMasterEditor.setEnabled(false);
-				disconnect();
+				if (itsMasterEditor != null) 
+				{
+					itsMasterEditor.setEnabled(false);
+					disconnect();
+				}
 			}
 		}
 	};
@@ -92,6 +98,8 @@ public class MultiPropertyEditor<T> extends JPanel
 				break;
 			}
 		}
+		
+		pEnabled.set(theSameValue);
 
 		// add checkbox only if there is more than one property
 		if (itsProperties.size() > 1)
@@ -115,7 +123,8 @@ public class MultiPropertyEditor<T> extends JPanel
 			}
 		}
 
-		pEnabled.set(theSameValue);
+		itsMasterEditor.setEnabled(theSameValue);
+		if (theSameValue) connect();
 	}
 	
 	public Field getField()

@@ -3,10 +3,13 @@
  */
 package zz.utils.ui;
 
+import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -119,6 +122,17 @@ public class ResourceUtils
 		
 		return new ImageResource(theResult);
 	}
+	
+	public static Cursor createCursor(ImageResource aImage, int aX, int aY)
+	{
+		return Toolkit.getDefaultToolkit().createCustomCursor(aImage.getImage(), new Point(aX, aY), "");
+	}
+	
+	public static Cursor createCursor(Class aReferenceClass, String aName, int aX, int aY)
+	{
+		return createCursor(loadImageResource(aReferenceClass, aName), aX, aY);
+	}
+
 
 	public static class ImageResource
 	{

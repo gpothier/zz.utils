@@ -12,7 +12,7 @@ import zz.utils.ui.StackLayout;
 public class BooleanPropertyEditor extends SimplePropertyEditor<Boolean>
 implements IPropertyListener<Boolean>, ChangeListener
 {
-	private JCheckBox itsCheckBox;
+	private JCheckBox itsCheckBox = new JCheckBox();
 	
 	public BooleanPropertyEditor(IRWProperty<Boolean> aProperty)
 	{
