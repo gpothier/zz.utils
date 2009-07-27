@@ -55,7 +55,6 @@ implements IPropertyListener<Float>, ChangeListener, FocusListener
 		float v = aValue != null ? aValue : 1f;
 		double p0 = (Math.log(v)/LN_K) + 0.5;
 		int p = (int) (p0*LOGSLIDER_RANGE);
-//		System.out.println("SET - p: "+p0+", v: "+v);
 		itsChanging = true;
 		itsSlider.setValue(p);
 		itsValueLabel.setText(""+aValue);
@@ -70,8 +69,8 @@ implements IPropertyListener<Float>, ChangeListener, FocusListener
 	
 	private float getValue0(int p)
 	{
+		if (p == 0) return 0;
 		double v = Math.pow(K, (1.0*p/LOGSLIDER_RANGE)-0.5);
-//		System.out.println("GET - p: "+p+", v: "+v);
 		return (float) v;
 	}
 	
