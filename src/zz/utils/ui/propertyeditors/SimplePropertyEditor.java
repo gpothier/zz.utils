@@ -22,6 +22,7 @@ public class SimplePropertyEditor<T> extends JPanel
 	{
 		if (aClass == Float.class) return (SimplePropertyEditor<T>) new FloatPropertyEditor((IRWProperty<Float>) aProperty);
 		else if (aClass == Boolean.class) return (SimplePropertyEditor<T>) new BooleanPropertyEditor((IRWProperty<Boolean>) aProperty);
+		else if (aClass == String.class) return (SimplePropertyEditor<T>) new StringPropertyEditor((IRWProperty<String>) aProperty);
 		else throw new EditorNotFoundException(aClass);
 	}
 	
