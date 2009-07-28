@@ -1,5 +1,7 @@
 package zz.utils.ui.propertyeditors;
 
+import java.lang.reflect.Constructor;
+
 import javax.swing.JPanel;
 
 import zz.utils.properties.IRWProperty;
@@ -18,11 +20,24 @@ public class SimplePropertyEditor<T> extends JPanel
 		return mProperty;
 	}
 	
-	public static <T> SimplePropertyEditor<T> createEditor(Class<T> aClass, IRWProperty<T> aProperty)
+	public static <T> SimplePropertyEditor<T> createEditor(Class<? extends SimplePropertyEditor<T>> aEditorClass, IRWProperty<T> aProperty)
 	{
-		if (aClass == Float.class) return (SimplePropertyEditor<T>) new FloatPropertyEditor((IRWProperty<Float>) aProperty);
-		else if (aClass == Boolean.class) return (SimplePropertyEditor<T>) new BooleanPropertyEditor((IRWProperty<Boolean>) aProperty);
-		else if (aClass == String.class) return (SimplePropertyEditor<T>) new StringPropertyEditor((IRWProperty<String>) aProperty);
+		try
+		{
+			Constructor<? extends SimplePropertyEditor<T>> theConstructor = aEditorClass.getConstructor(IRWProperty.class);
+			return theConstructor.newInstance(aProperty);
+		}
+		catch (Exception e)
+		{
+			throw new RuntimeException(e);
+		}
+	}
+	
+	public static <T> Class<? extends SimplePropertyEditor<T>> getDefaultEditorClass(Class<T> aClass)
+	{
+		if (aClass == Float.class) return (Class) FloatPropertyEditor.LogSlider.class;
+		else if (aClass == Boolean.class) return (Class) BooleanPropertyEditor.CheckBox.class;
+		else if (aClass == String.class) return (Class) StringPropertyEditor.TextField.class;
 		else throw new EditorNotFoundException(aClass);
 	}
 	

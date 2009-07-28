@@ -61,11 +61,18 @@ public class MultiPropertyEditor<T> extends JPanel
 	
 	public MultiPropertyEditor(Field aField, List<IRWProperty<T>> aProperties)
 	{
-		this(getPropertyClass(aField), aProperties);
+		this(getEditorClass(aField), aProperties);
 		itsField = aField;
 	}
 	
-	private static Class getPropertyClass(Field aField)
+	private static Class getEditorClass(Field aField)
+	{
+		PropertyEditor theAnnotation = aField.getAnnotation(PropertyEditor.class);
+		if (theAnnotation != null) return theAnnotation.value();
+		else return SimplePropertyEditor.getDefaultEditorClass(getValueClass(aField));
+	}
+	
+	private static Class getValueClass(Field aField)
 	{
 		Type theType = aField.getGenericType();
 		if (theType instanceof ParameterizedType)
@@ -81,7 +88,7 @@ public class MultiPropertyEditor<T> extends JPanel
 		throw new IllegalArgumentException("Not a property");
 	}
 	
-	public MultiPropertyEditor(Class<T> aClass, List<IRWProperty<T>> aProperties)
+	private MultiPropertyEditor(Class<? extends SimplePropertyEditor<T>> aEditorClass, List<IRWProperty<T>> aProperties)
 	{
 		setLayout(new GridStackLayout(1));
 		itsProperties = aProperties;
@@ -104,7 +111,9 @@ public class MultiPropertyEditor<T> extends JPanel
 		// add checkbox only if there is more than one property
 		if (itsProperties.size() > 1)
 		{
-			add(new BooleanPropertyEditor(pEnabled));
+			BooleanPropertyEditor.CheckBox enableEditor = new BooleanPropertyEditor.CheckBox(pEnabled);
+			add(enableEditor);
+			enableEditor.setOpaque(false);
 		}
 
 		// setup editor and connectors
@@ -113,8 +122,9 @@ public class MultiPropertyEditor<T> extends JPanel
 			Iterator<IRWProperty<T>> theIterator = aProperties.iterator();
 			
 			itsMasterProperty = theIterator.next();
-			itsMasterEditor = SimplePropertyEditor.createEditor(aClass, itsMasterProperty);
+			itsMasterEditor = SimplePropertyEditor.createEditor(aEditorClass, itsMasterProperty);
 			add(itsMasterEditor);
+			itsMasterEditor.setOpaque(false);
 			
 			while(theIterator.hasNext())
 			{

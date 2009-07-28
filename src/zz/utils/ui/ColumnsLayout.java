@@ -172,7 +172,10 @@ public class ColumnsLayout implements LayoutManager2
 			theHeight = Math.max (theHeight, theSize.height);
 		}
 
-		return new Dimension(itsTotalWidth, theHeight+theInsets.top+theInsets.bottom);
+		return new Dimension(
+				itsTotalWidth+theInsets.left+theInsets.right, 
+				theHeight+theInsets.top+theInsets.bottom);
+		
 //		Insets theInsets = aTarget.getInsets();
 //
 //		int theHeight = 0;
