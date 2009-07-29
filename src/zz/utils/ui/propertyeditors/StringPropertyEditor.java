@@ -14,8 +14,9 @@ import zz.utils.properties.IRWProperty;
 
 public class StringPropertyEditor
 {
+	@SuppressWarnings("serial")
 	public static class TextField extends SimplePropertyEditor<String>
-	implements IPropertyListener<String>, ActionListener, FocusListener
+	implements ActionListener, FocusListener
 	{
 		private final JTextField itsTextField = new JTextField();
 		
@@ -24,44 +25,32 @@ public class StringPropertyEditor
 			super(aProperty);
 			setLayout(new BorderLayout());
 			add(itsTextField, BorderLayout.CENTER);
-			itsTextField.setText(getProperty().get());
 			itsTextField.addActionListener(this);
 			itsTextField.addFocusListener(this);
 		}
 		
 		@Override
-		public void addNotify()
+		protected void propertyToUi(String aValue)
 		{
-			super.addNotify();
-			getProperty().addHardListener(this);
+			itsTextField.setText(aValue);
 		}
 		
-		@Override
-		public void removeNotify()
-		{
-			super.removeNotify();
-			getProperty().removeListener(this);
-		}
-		
-		public void propertyChanged(IProperty<String> aProperty, String aOldValue, String aNewValue)
-		{
-			itsTextField.setText(aNewValue);
-		}
-		
-		public void propertyValueChanged(IProperty<String> aProperty)
-		{
-		}
-	
 		public void focusGained(FocusEvent aE)
 		{
 		}
 	
 		public void focusLost(FocusEvent aE)
 		{
-			getProperty().set(itsTextField.getText());
+			uiToProperty();
 		}
 	
 		public void actionPerformed(ActionEvent aE)
+		{
+			uiToProperty();
+		}
+		
+		@Override
+		protected void uiToProperty()
 		{
 			getProperty().set(itsTextField.getText());
 		}

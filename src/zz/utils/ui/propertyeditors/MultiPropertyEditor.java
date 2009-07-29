@@ -1,11 +1,10 @@
 package zz.utils.ui.propertyeditors;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +12,7 @@ import java.util.Set;
 import javax.swing.JPanel;
 
 import zz.utils.properties.IRWProperty;
+import zz.utils.properties.PropertyUtils;
 import zz.utils.properties.SimpleRWProperty;
 import zz.utils.properties.PropertyUtils.Connector;
 import zz.utils.properties.PropertyUtils.SimpleValueConnector;
@@ -69,24 +69,9 @@ public class MultiPropertyEditor<T> extends JPanel
 	{
 		PropertyEditor theAnnotation = aField.getAnnotation(PropertyEditor.class);
 		if (theAnnotation != null) return theAnnotation.value();
-		else return SimplePropertyEditor.getDefaultEditorClass(getValueClass(aField));
+		else return SimplePropertyEditor.getDefaultEditorClass(PropertyUtils.getValueClass(aField));
 	}
 	
-	private static Class getValueClass(Field aField)
-	{
-		Type theType = aField.getGenericType();
-		if (theType instanceof ParameterizedType)
-		{
-			ParameterizedType theParameterizedType = (ParameterizedType) theType;
-			Type theRawType = theParameterizedType.getRawType();
-			if ((theRawType instanceof Class) && (IRWProperty.class == theRawType))
-			{
-				Type[] theTypeArguments = theParameterizedType.getActualTypeArguments();
-				return (Class) theTypeArguments[0];
-			}
-		}
-		throw new IllegalArgumentException("Not a property");
-	}
 	
 	private MultiPropertyEditor(Class<? extends SimplePropertyEditor<T>> aEditorClass, List<IRWProperty<T>> aProperties)
 	{
@@ -170,61 +155,7 @@ public class MultiPropertyEditor<T> extends JPanel
 		itsConnected = false;
 	}
 	
-	/**
-	 * Returns all the fields that correspond to public properties of the given object
-	 */
-	public static List<Field> getAvailableProperties(Object aObject)
-	{
-		List<Field> theResult = new ArrayList<Field>();
-		Field[] theFields = aObject.getClass().getFields();
-		for (Field theField : theFields)
-		{
-			if (! theField.getName().startsWith("p")) continue;
-			Type theType = theField.getGenericType();
-			if (theType instanceof ParameterizedType)
-			{
-				ParameterizedType theParameterizedType = (ParameterizedType) theType;
-				Type theRawType = theParameterizedType.getRawType();
-				if (! (theRawType instanceof Class)) continue;
-				if (! (IRWProperty.class == theRawType)) continue;
-				
-				theResult.add(theField);
-			}
-		}
-		
-		return theResult;
-	}
 	
-	/**
-	 * Returns the available properties in the given collection of objects.
-	 */
-	public static Set<Field> getAvailableProperties(Collection<?> aObjects)
-	{
-		Set<Field> theResult = new HashSet<Field>();
-		for (Object o : aObjects) theResult.addAll(getAvailableProperties(o));
-		return theResult;
-	}
-	
-	/**
-	 * Returns the properties corresponding to the given property field in all the given
-	 * objects, if available.
-	 */
-	@SuppressWarnings("unchecked")
-	public static List<IRWProperty> getProperties(Field aProperty, Collection<?> aObjects)
-	{
-		List<IRWProperty> theResult = new ArrayList<IRWProperty>();
-		for (Object o : aObjects)
-		{
-			IRWProperty theProperty = null;
-			
-			try { theProperty = (IRWProperty) aProperty.get(o); }
-			catch (IllegalArgumentException e) { continue; }
-			catch (IllegalAccessException e) { throw new RuntimeException(e); }
-			
-			if (theProperty != null) theResult.add(theProperty);
-		}
-		return theResult;
-	}
 	
 	/**
 	 * Creates a {@link MultiPropertyEditor} for each available property in the provided collection
@@ -233,12 +164,15 @@ public class MultiPropertyEditor<T> extends JPanel
 	public static List<MultiPropertyEditor> createEditors(Collection<?> aObjects)
 	{
 		List<MultiPropertyEditor> theResult = new ArrayList<MultiPropertyEditor>();
-		Set<Field> theProperties = getAvailableProperties(aObjects);
+		List<Field> theProperties = new ArrayList<Field>();
+		theProperties.addAll(PropertyUtils.getAvailableProperties(aObjects));
+		Collections.sort(theProperties, new FieldComparator());
+		
 		for (Field theField : theProperties)
 		{
 			try
 			{
-				theResult.add(new MultiPropertyEditor(theField, getProperties(theField, aObjects)));
+				theResult.add(new MultiPropertyEditor(theField, PropertyUtils.getProperties(theField, aObjects)));
 			}
 			catch (EditorNotFoundException e)
 			{
@@ -246,5 +180,26 @@ public class MultiPropertyEditor<T> extends JPanel
 			}
 		}
 		return theResult;
+	}
+	
+	private static class FieldComparator implements Comparator<Field>
+	{
+		public int compare(Field aF1, Field aF2)
+		{
+			PropertyOrder theOrder1 = aF1.getAnnotation(PropertyOrder.class);
+			PropertyOrder theOrder2 = aF2.getAnnotation(PropertyOrder.class);
+			
+			if (theOrder1 == null && theOrder2 == null)
+			{
+				String theName1 = aF1.getName();
+				String theName2 = aF2.getName();
+				
+				return theName1.compareTo(theName2);
+			}
+			else if (theOrder1 != null) return -1;
+			else if (theOrder2 != null) return 1;
+			else return theOrder1.value() - theOrder2.value();
+		}
+		
 	}
 }

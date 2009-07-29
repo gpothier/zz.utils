@@ -4,21 +4,57 @@ import java.lang.reflect.Constructor;
 
 import javax.swing.JPanel;
 
+import zz.utils.properties.IProperty;
+import zz.utils.properties.IPropertyListener;
 import zz.utils.properties.IRWProperty;
 
-public class SimplePropertyEditor<T> extends JPanel
+@SuppressWarnings("serial")
+public abstract class SimplePropertyEditor<T> extends JPanel
+implements IPropertyListener<T>
 {
-	private IRWProperty<T> mProperty;
+	private IRWProperty<T> itsProperty;
 
 	public SimplePropertyEditor(IRWProperty<T> aProperty)
 	{
-		mProperty = aProperty;
+		itsProperty = aProperty;
 	}
 	
+	@Override
+	public void addNotify()
+	{
+		super.addNotify();
+		propertyToUi(itsProperty.get());
+		getProperty().addHardListener(this);
+	}
+	
+	@Override
+	public void removeNotify()
+	{
+		super.removeNotify();
+		getProperty().removeListener(this);
+	}
+
 	public IRWProperty<T> getProperty()
 	{
-		return mProperty;
+		return itsProperty;
 	}
+	
+	
+	
+	public void setProperty(IRWProperty<T> aProperty)
+	{
+		uiToProperty();
+		itsProperty = aProperty;
+		propertyToUi(aProperty.get());
+	}
+
+	public void propertyChanged(IProperty<T> aProperty, T aOldValue, T aNewValue)
+	{
+		propertyToUi(aNewValue);
+	}
+
+	protected abstract void propertyToUi(T aValue);
+	protected abstract void uiToProperty();
 	
 	public static <T> SimplePropertyEditor<T> createEditor(Class<? extends SimplePropertyEditor<T>> aEditorClass, IRWProperty<T> aProperty)
 	{

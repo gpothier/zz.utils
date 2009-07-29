@@ -100,6 +100,11 @@ public class SimpleTreeNode<V>
 		itsParent = aParent;
 	}
 	
+	public boolean isLeaf()
+	{
+		return pChildren == null;
+	}
+	
 	public IRWProperty<V> pValue()
 	{
 		return pValue;

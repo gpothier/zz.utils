@@ -6,8 +6,15 @@ package zz.utils.properties;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import zz.utils.IFilter;
 import zz.utils.list.ICollection;
 import zz.utils.list.ICollectionListener;
 
@@ -130,6 +137,112 @@ public class PropertyUtils
 		double theNH = theSourceRectangle.getHeight();
 		setSize(aTarget, theNW, theNH);
 	}
+
+	/**
+	 * Returns all the fields that correspond to public properties of the given object
+	 */
+	public static List<Field> getAvailableProperties(Object aObject)
+	{
+		return getAvailableProperties(aObject, new IFilter<Class>()
+				{
+					public boolean accept(Class aClass)
+					{
+						return aClass == IRWProperty.class;
+					}
+				});
+	}
+	
+	/**
+	 * Returns all the fields that correspond to public list properties of the given object
+	 */
+	public static List<Field> getAvailableProperties(Object aObject, IFilter<Class> aFilter)
+	{
+		List<Field> theResult = new ArrayList<Field>();
+		Field[] theFields = aObject.getClass().getFields();
+		for (Field theField : theFields)
+		{
+			if (! theField.getName().startsWith("p")) continue;
+			Type theType = theField.getGenericType();
+			if (theType instanceof ParameterizedType)
+			{
+				ParameterizedType theParameterizedType = (ParameterizedType) theType;
+				Type theRawType = theParameterizedType.getRawType();
+				if (! (theRawType instanceof Class)) continue;
+				if (! aFilter.accept((Class) theRawType)) continue;
+				
+				theResult.add(theField);
+			}
+		}
+		
+		return theResult;
+	}
+	
+	/**
+	 * Returns the available properties in the given collection of objects.
+	 */
+	public static Set<Field> getAvailableProperties(Collection<?> aObjects)
+	{
+		Set<Field> theResult = new HashSet<Field>();
+		for (Object o : aObjects) theResult.addAll(getAvailableProperties(o));
+		return theResult;
+	}
+	
+	/**
+	 * Returns the properties corresponding to the given property field in all the given
+	 * objects, if available.
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<IRWProperty> getProperties(Field aProperty, Collection<?> aObjects)
+	{
+		List<IRWProperty> theResult = new ArrayList<IRWProperty>();
+		for (Object o : aObjects)
+		{
+			IRWProperty theProperty = null;
+			
+			try { theProperty = (IRWProperty) aProperty.get(o); }
+			catch (IllegalArgumentException e) { continue; }
+			catch (IllegalAccessException e) { throw new RuntimeException(e); }
+			
+			if (theProperty != null) theResult.add(theProperty);
+		}
+		return theResult;
+	}
+	
+	/**
+	 * Returns the properties corresponding to the given property field in all the given
+	 * objects, if available.
+	 */
+	@SuppressWarnings("unchecked")
+	public static IProperty getProperty(Field aProperty, Object aObject)
+	{
+		IProperty theProperty = null;
+		
+		try { theProperty = (IProperty) aProperty.get(aObject); }
+		catch (IllegalAccessException e) { throw new RuntimeException(e); }
+		
+		return theProperty;
+	}
+	
+	/**
+	 * Returns the declared generic parameter of the given field.
+	 * The type of the field must be a subtype of {@link IProperty}
+	 */
+	public static Class getValueClass(Field aField)
+	{
+		Type theType = aField.getGenericType();
+		if (theType instanceof ParameterizedType)
+		{
+			ParameterizedType theParameterizedType = (ParameterizedType) theType;
+			Type theRawType = theParameterizedType.getRawType();
+			if ((theRawType instanceof Class) && (IProperty.class.isAssignableFrom((Class< ? >) theRawType)))
+			{
+				Type[] theTypeArguments = theParameterizedType.getActualTypeArguments();
+				return (Class) theTypeArguments[0];
+			}
+		}
+		throw new IllegalArgumentException("Not a property: "+aField);
+	}
+
 	
 	/**
 	 * A property listener that forwards property changes to a target property.

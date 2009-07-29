@@ -10,13 +10,12 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import zz.utils.properties.IProperty;
-import zz.utils.properties.IPropertyListener;
 import zz.utils.properties.IRWProperty;
 
 public class FloatPropertyEditor {
+	@SuppressWarnings("serial")
 	public static class LogSlider extends SimplePropertyEditor<Float>
-	implements IPropertyListener<Float>, ChangeListener, FocusListener
+	implements ChangeListener, FocusListener
 	{
 		public static final int LOGSLIDER_RANGE = 1000;
 		private static final double K = LOGSLIDER_RANGE*LOGSLIDER_RANGE;
@@ -37,7 +36,6 @@ public class FloatPropertyEditor {
 			
 			itsSlider.setMinimum(0);
 			itsSlider.setMaximum(LOGSLIDER_RANGE);
-			setValue0(getProperty().get());
 			itsSlider.addChangeListener(this);
 			itsSlider.addFocusListener(this);
 			
@@ -53,7 +51,9 @@ public class FloatPropertyEditor {
 			add(itsValueLabel, BorderLayout.SOUTH);
 		}
 		
-		private void setValue0(Float aValue)
+		
+		@Override
+		protected void propertyToUi(Float aValue)
 		{
 			float v = aValue != null ? aValue : 1f;
 			double p0 = (Math.log(v)/LN_K) + 0.5;
@@ -77,41 +77,24 @@ public class FloatPropertyEditor {
 			return (float) v;
 		}
 		
-		@Override
-		public void addNotify()
-		{
-			super.addNotify();
-			getProperty().addHardListener(this);
-		}
-		
-		@Override
-		public void removeNotify()
-		{
-			super.removeNotify();
-			getProperty().removeListener(this);
-		}
-		
-		public void propertyChanged(IProperty<Float> aProperty, Float aOldValue, Float aNewValue)
-		{
-			setValue0(aNewValue);
-		}
-		
-		public void propertyValueChanged(IProperty<Float> aProperty)
-		{
-		}
-		
 		public void focusGained(FocusEvent aE)
 		{
 		}
 		
 		public void focusLost(FocusEvent aE)
 		{
-			getProperty().set(getValue0());
+			uiToProperty();
 		}
 		
 		public void stateChanged(ChangeEvent aE)
 		{
-			if (! itsChanging) getProperty().set(getValue0());
+			if (! itsChanging) uiToProperty();
+		}
+		
+		@Override
+		protected void uiToProperty()
+		{
+			getProperty().set(getValue0());
 		}
 	}
 }

@@ -4,14 +4,13 @@ import javax.swing.JCheckBox;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import zz.utils.properties.IProperty;
-import zz.utils.properties.IPropertyListener;
 import zz.utils.properties.IRWProperty;
 import zz.utils.ui.StackLayout;
 
 public class BooleanPropertyEditor {
+	@SuppressWarnings("serial")
 	public static class CheckBox extends SimplePropertyEditor<Boolean>
-	implements IPropertyListener<Boolean>, ChangeListener
+	implements ChangeListener
 	{
 		private JCheckBox itsCheckBox = new JCheckBox();
 		
@@ -21,34 +20,21 @@ public class BooleanPropertyEditor {
 			setLayout(new StackLayout());
 			itsCheckBox.setOpaque(false);
 			add(itsCheckBox);
-			itsCheckBox.setSelected(getProperty().get());
 			itsCheckBox.addChangeListener(this);
 		}
 		
-		@Override
-		public void addNotify()
+		public void stateChanged(ChangeEvent aE)
 		{
-			super.addNotify();
-			getProperty().addHardListener(this);
+			uiToProperty();
 		}
 		
 		@Override
-		public void removeNotify()
+		protected void propertyToUi(Boolean aValue)
 		{
-			super.removeNotify();
-			getProperty().removeListener(this);
+			itsCheckBox.setSelected(aValue);
 		}
 	
-		public void propertyChanged(IProperty<Boolean> aProperty, Boolean aOldValue, Boolean aNewValue)
-		{
-			itsCheckBox.setSelected(aNewValue);
-		}
-	
-		public void propertyValueChanged(IProperty<Boolean> aProperty)
-		{
-		}
-	
-		public void stateChanged(ChangeEvent aE)
+		protected void uiToProperty()
 		{
 			getProperty().set(itsCheckBox.isSelected());
 		}
