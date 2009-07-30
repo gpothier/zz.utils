@@ -62,7 +62,7 @@ implements MouseMotionListener
 	@Override
 	public void mousePressed(MouseEvent aE)
 	{
-		if (! WITH_CTRL || MouseModifiers.hasCtrl(aE))
+		if (! WITH_CTRL || InputModifiers.hasCtrl(aE))
 		{
 			traverse();
 			aE.consume();
