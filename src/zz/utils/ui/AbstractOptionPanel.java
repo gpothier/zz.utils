@@ -32,8 +32,6 @@ public abstract class AbstractOptionPanel extends JPanel implements IPublicClone
 
 	private JComponent itsComponent;
 
-	
-	
 	public AbstractOptionPanel()
 	{
 		this (false);
@@ -88,6 +86,8 @@ public abstract class AbstractOptionPanel extends JPanel implements IPublicClone
 		itsButtonsPanel.add (itsCancelButton);
 
 		add (itsButtonsPanel, BorderLayout.SOUTH);
+		
+		updateEnabled();
 	}
 
 	protected void setComponent (JComponent aComponent)
@@ -133,6 +133,16 @@ public abstract class AbstractOptionPanel extends JPanel implements IPublicClone
 	protected void cancel ()
 	{
 		fireOptionSelected(OptionListener.Option.CANCEL);
+	}
+	
+	protected boolean isOkEnabled()
+	{
+		return true;
+	}
+	
+	public void updateEnabled()
+	{
+		itsOKButton.setEnabled(isOkEnabled());
 	}
 	
 	public Object clone ()

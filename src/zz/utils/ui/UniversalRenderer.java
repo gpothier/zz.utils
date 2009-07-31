@@ -105,9 +105,7 @@ public abstract class UniversalRenderer<V> implements ListCellRenderer, TreeCell
 		if (itsListCellRenderer == null) itsListCellRenderer = createListCellRenderer();
 
 		JLabel theLabel = (JLabel) itsListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-
-		if (value != null) setupLabel(theLabel, (V) value);
-
+		setupLabel(theLabel, (V) value);
 		return theLabel;
 	}
 	

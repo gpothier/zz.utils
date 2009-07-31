@@ -42,10 +42,7 @@ public class ResourceUtils
 		int theW = aImage.getWidth();
 		int theH = aImage.getHeight();
 		
-		BufferedImage theImage = CONFIG.createCompatibleImage(
-				theW, 
-				theH, 
-				Transparency.TRANSLUCENT);
+		BufferedImage theImage = createCompatibleImage(theW, theH);
 		
 		Graphics2D theImgGraphics = theImage.createGraphics();
 		theImgGraphics.drawImage(aImage, 0, 0, null);
@@ -94,6 +91,20 @@ public class ResourceUtils
 		return new ImageIcon (loadBufferedImage(aReferenceClass, aName));
 	}
 	
+	public static BufferedImage offset(BufferedImage aImage, int aBorder, int aDX, int aDY)
+	{
+		int theW = aImage.getWidth();
+		int theH = aImage.getHeight();
+		
+		BufferedImage theImage = createCompatibleImage(theW+2*aBorder, theH+2*aBorder);
+		
+		Graphics2D theImgGraphics = theImage.createGraphics();
+		theImgGraphics.drawImage(aImage, aBorder+aDX, aBorder+aDY, null);
+		
+		return theImage;
+		
+	}
+	
 	/**
 	 * Returns an overlay of all given images.
 	 */
@@ -108,10 +119,7 @@ public class ResourceUtils
 			theMaxHeight = Math.max(theMaxHeight, theResource.getImage().getHeight());
 		}
 		
-		BufferedImage theResult = CONFIG.createCompatibleImage(
-				theMaxWidth, 
-				theMaxHeight, 
-				Transparency.TRANSLUCENT);
+		BufferedImage theResult = createCompatibleImage(theMaxWidth, theMaxHeight);
 		
 		Graphics2D theGraphics = theResult.createGraphics();
 		
