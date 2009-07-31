@@ -60,8 +60,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	
 	public void clear()
 	{
-		for (int i = size()-1;i>=0;i--)
-			remove(i);
+		while (! isEmpty()) remove(size()-1);
 	}
 
 	public Iterator<E> reverseIterator()
