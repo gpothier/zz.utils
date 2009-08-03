@@ -84,20 +84,20 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	 * Transforms a point in pixels into a point in the root
 	 * coordinate system.
 	 */
-	protected abstract Point2D pixelToRoot (Point aPoint);
+	protected abstract Point2D.Float pixelToRoot (Point aPoint);
 	
 	/**
 	 * Transforms a point in the root coordinate system into
 	 * a the coordinate system of the specified element.
 	 */
-	protected abstract Point2D rootToLocal (T aElement, Point2D aPoint);
+	protected abstract Point2D.Float rootToLocal (T aElement, Point2D.Float aPoint);
 	
 	/**
 	 * Returns the deepest element at the specified point
 	 * @param aPoint A point in the root coordinate system.
 	 * @param aAction The kind of mouse action for which the element is requested
 	 */
-	protected abstract T getElementAt (Point2D aPoint, MouseAction aAction);
+	protected abstract T getElementAt (Point2D.Float aPoint, MouseAction aAction);
 
 	/**
 	 * Returns the parent element of the specified element.
@@ -118,7 +118,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 		return false;
 	}
 
-	private Point2D pixelToLocal (T aElement, Point aPoint)
+	private Point2D.Float pixelToLocal (T aElement, Point aPoint)
 	{
 		return rootToLocal(aElement, pixelToRoot(aPoint));
 	}
@@ -142,7 +142,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	 */
 	public void mouseMoved (MouseEvent e)
 	{
-		Point2D thePoint = pixelToRoot(e.getPoint());
+		Point2D.Float thePoint = pixelToRoot(e.getPoint());
 		setCurrentElement(getElementAt(thePoint, MouseAction.MOVE));
 		if (itsCurrentElement == null) popElements (e);
 		else 
@@ -234,7 +234,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	{
 		if (itsComponent != null) itsComponent.grabFocus();
 		
-		Point2D thePoint = pixelToRoot(e.getPoint());
+		Point2D.Float thePoint = pixelToRoot(e.getPoint());
 		setCurrentElement(getElementAt(thePoint, MouseAction.PRESS));
 		itsPressedElement = itsCurrentElement;
 
@@ -247,7 +247,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	
 	public void mouseWheelMoved(MouseWheelEvent e)
 	{
-		Point2D thePoint = pixelToRoot(e.getPoint());
+		Point2D.Float thePoint = pixelToRoot(e.getPoint());
 		setCurrentElement(getElementAt(thePoint, MouseAction.WHEEL));
 
 		fireMouseWheelMoved(e, thePoint, itsCurrentElement);
@@ -260,8 +260,8 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 		{
 			if (theMouseAware != null)
 			{
-				Point2D theRootPoint = pixelToRoot(e.getPoint());
-				Point2D theTransformedPoint = rootToLocal(itsPressedElement, theRootPoint);
+				Point2D.Float theRootPoint = pixelToRoot(e.getPoint());
+				Point2D.Float theTransformedPoint = rootToLocal(itsPressedElement, theRootPoint);
 				if (itsDragging)
 				{
 					theMouseAware.commitDrag(theTransformedPoint);
@@ -283,7 +283,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 		{
 			if (itsDragging)
 			{
-				Point2D theTransformedPoint = pixelToLocal(itsPressedElement, e.getPoint());
+				Point2D.Float theTransformedPoint = pixelToLocal(itsPressedElement, e.getPoint());
 				theMouseAware.drag (theTransformedPoint);
 			}
 			else
@@ -295,7 +295,7 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 				if (theDist > 4 || theTime > 300) 
 				{
 					itsDragging = true;
-					Point2D theTransformedPoint = pixelToLocal(itsPressedElement, new Point (itsPressX, itsPressY));
+					Point2D.Float theTransformedPoint = pixelToLocal(itsPressedElement, new Point (itsPressX, itsPressY));
 					theMouseAware.startDrag(e, theTransformedPoint);
 				}
 			}
@@ -331,56 +331,56 @@ implements MouseListener, MouseMotionListener, MouseWheelListener, KeyListener
 	{
 	}
 	
-	private void fireMouseWheelMoved(MouseWheelEvent aEvent, Point2D aRootPoint, T aElement)
+	private void fireMouseWheelMoved(MouseWheelEvent aEvent, Point2D.Float aRootPoint, T aElement)
 	{
 		while (aElement != null)
 		{
 			IMouseAware theMouseAware = getMouseAware(aElement);
 			if (theMouseAware != null) 
 			{
-				Point2D thePoint = rootToLocal(aElement, aRootPoint);
+				Point2D.Float thePoint = rootToLocal(aElement, aRootPoint);
 				if (theMouseAware.mouseWheelMoved(aEvent, thePoint)) break;
 			}
 			aElement = getParent(aElement);
 		}
 	}
 	
-	private void fireMousePressed (MouseEvent aEvent, Point2D aRootPoint, T aElement)
+	private void fireMousePressed (MouseEvent aEvent, Point2D.Float aRootPoint, T aElement)
 	{
 		while (aElement != null)
 		{
 			IMouseAware theMouseAware = getMouseAware(aElement);
 			if (theMouseAware != null) 
 			{
-				Point2D thePoint = rootToLocal(aElement, aRootPoint);
+				Point2D.Float thePoint = rootToLocal(aElement, aRootPoint);
 				if (theMouseAware.mousePressed(aEvent, thePoint)) break;
 			}
 			aElement = getParent(aElement);
 		}
 	}
 	
-	private void fireMouseReleased (MouseEvent aEvent, Point2D aRootPoint, T aElement)
+	private void fireMouseReleased (MouseEvent aEvent, Point2D.Float aRootPoint, T aElement)
 	{
 		while (aElement != null)
 		{
 			IMouseAware theMouseAware = getMouseAware(aElement);
 			if (theMouseAware != null) 
 			{
-				Point2D thePoint = rootToLocal(aElement, aRootPoint);
+				Point2D.Float thePoint = rootToLocal(aElement, aRootPoint);
 				if (theMouseAware.mouseReleased(aEvent, thePoint)) break;
 			}
 			aElement = getParent(aElement);
 		}
 	}
 	
-	private void fireMouseClicked (MouseEvent aEvent, Point2D aRootPoint, T aElement)
+	private void fireMouseClicked (MouseEvent aEvent, Point2D.Float aRootPoint, T aElement)
 	{
 		while (aElement != null)
 		{
 			IMouseAware theMouseAware = getMouseAware(aElement);
 			if (theMouseAware != null) 
 			{
-				Point2D thePoint = rootToLocal(aElement, aRootPoint);
+				Point2D.Float thePoint = rootToLocal(aElement, aRootPoint);
 				if (theMouseAware.mouseClicked(aEvent, thePoint)) break;
 			}
 			aElement = getParent(aElement);

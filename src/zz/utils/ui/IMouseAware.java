@@ -28,7 +28,7 @@ public interface IMouseAware
 	 * @return Whether to consume the event or not; if the event
 	 * is not consumed it will be passed to another mouse aware object.
 	 */
-	public boolean mousePressed (MouseEvent aEvent, Point2D aPoint);
+	public boolean mousePressed (MouseEvent aEvent, Point2D.Float aPoint);
 	
 	/**
 	 * Called when the mouse button is released on this object.
@@ -36,7 +36,7 @@ public interface IMouseAware
 	 * @return Whether to consume the event or not; if the event
 	 * is not consumed it will be passed to another mouse aware object.
 	 */
-	public boolean mouseReleased (MouseEvent aEvent, Point2D aPoint);
+	public boolean mouseReleased (MouseEvent aEvent, Point2D.Float aPoint);
 	
 	/**
 	 * Called when the mouse button is pressed & released on this object,
@@ -45,7 +45,7 @@ public interface IMouseAware
 	 * @return Whether to consume the event or not; if the event
 	 * is not consumed it will be passed to another mouse aware object.
 	 */
-	public boolean mouseClicked (MouseEvent aEvent, Point2D aPoint);
+	public boolean mouseClicked (MouseEvent aEvent, Point2D.Float aPoint);
 	
 	
 	/**
@@ -69,12 +69,12 @@ public interface IMouseAware
 	 * @return Whether to consume the event or not; if the event
 	 * is not consumed it will be passed to another mouse aware object.
 	 */
-	public boolean mouseMoved (MouseEvent aEvent, Point2D aPoint);
+	public boolean mouseMoved (MouseEvent aEvent, Point2D.Float aPoint);
 
 	/**
 	 * Called when the mouse wheel is moved within the bounds of this object.
 	 */
-	public boolean mouseWheelMoved (MouseWheelEvent aEvent, Point2D aPoint);
+	public boolean mouseWheelMoved (MouseWheelEvent aEvent, Point2D.Float aPoint);
 	
 	/**
 	 * Called when a drag gesture begins.
@@ -84,21 +84,21 @@ public interface IMouseAware
 	 * @return Whether to consume the event or not; if the event
 	 * is not consumed it will be passed to another mouse aware object.
 	 */
-	public boolean startDrag (MouseEvent aEvent, Point2D aPoint);
+	public boolean startDrag (MouseEvent aEvent, Point2D.Float aPoint);
 	
 	/**
 	 * Once a drag gesture has started, this method is called whenever
 	 * the mouse moves.
 	 * @param aPoint The mouse coordinate in this object's coordinate system
 	 */
-	public void drag (Point2D aPoint);
+	public void drag (Point2D.Float aPoint);
 
 	/**
 	 * Called when a drag gesture ends.
 	 * Note that this method is called in addition to {@link #mouseReleased(Point2D)}
 	 * @param aPoint The mouse coordinate in this object's coordinate system
 	 */
-	public void commitDrag (Point2D aPoint);
+	public void commitDrag (Point2D.Float aPoint);
 	
 	/**
 	 * Called when the user cancels a drag gesture.
