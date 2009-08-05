@@ -106,7 +106,6 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 		JPanel theButtonsPanel = new JPanel (new FlowLayout (FlowLayout.LEFT));
 		
 		add (new JScrollPane (itsList), BorderLayout.CENTER);
-		add (theButtonsPanel, BorderLayout.NORTH);
 		
 		itsCreateButton = new JButton (itsCreateAction);
 		itsRemoveButton = new JButton (itsRemoveAction);
@@ -121,6 +120,8 @@ public class CRMList extends JPanel implements ActionListener, ListDataListener
 		if (theRemoveLabel != null) theButtonsPanel.add (itsRemoveButton);
 		if (theUpLabel != null) theButtonsPanel.add (itsMoveUpButton);
 		if (theDownLabel != null) theButtonsPanel.add (itsMoveDownButton);
+		
+		if (theButtonsPanel.getComponentCount() > 0) add (theButtonsPanel, BorderLayout.NORTH);
 		
 		getSelectionModel ().addListSelectionListener(new ListSelectionListener ()
 				{

@@ -38,18 +38,23 @@ public class UIUtils
 {
 	public static final Insets NULL_INSETS = new Insets (0, 0, 0, 0);
 
+	public static <T extends Component> T getParent(Component aComponent, Class<T> aClass)
+	{
+		Container theCurrentContainer = aComponent.getParent ();
+		while (theCurrentContainer != null)
+		{
+			if (aClass.isAssignableFrom(theCurrentContainer.getClass())) return (T) theCurrentContainer;
+			theCurrentContainer = theCurrentContainer.getParent ();
+		}
+		return null;
+	}
+	
 	/**
 	 * Returns the frame that contains this component
 	 */
 	public static Frame getFrame (Component aComponent)
 	{
-		Container theCurrentContainer = aComponent.getParent ();
-		while (theCurrentContainer != null)
-		{
-			if (theCurrentContainer instanceof Frame) return (Frame) theCurrentContainer;
-			theCurrentContainer = theCurrentContainer.getParent ();
-		}
-		return null;
+		return getParent(aComponent, Frame.class);
 	}
 
 	/**
@@ -57,13 +62,7 @@ public class UIUtils
 	 */
 	public static JFrame getJFrame (JComponent aComponent)
 	{
-		Container theCurrentContainer = aComponent.getParent ();
-		while (theCurrentContainer != null)
-		{
-			if (theCurrentContainer instanceof JFrame) return (JFrame) theCurrentContainer;
-			theCurrentContainer = theCurrentContainer.getParent ();
-		}
-		return null;
+		return getParent(aComponent, JFrame.class);
 	}
 
 	/**
@@ -71,13 +70,7 @@ public class UIUtils
 	 */
 	public static JViewport getViewport (Component aComponent)
 	{
-		Container theCurrentContainer = aComponent.getParent ();
-		while (theCurrentContainer != null)
-		{
-			if (theCurrentContainer instanceof JViewport) return (JViewport) theCurrentContainer;
-			theCurrentContainer = theCurrentContainer.getParent ();
-		}
-		return null;
+		return getParent(aComponent, JViewport.class);
 	}
 
 

@@ -24,7 +24,6 @@ import zz.utils.IPublicCloneable;
 
 public abstract class AbstractOptionPanel extends JPanel implements IPublicCloneable
 {
-
 	private JButton itsOKButton;
 	private JButton itsCancelButton;
 	private List itsOptionListeners = new ArrayList ();

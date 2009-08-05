@@ -7,6 +7,7 @@
 package zz.utils.ui.crmlist;
 
 import javax.swing.AbstractListModel;
+import javax.swing.event.ListDataListener;
 
 /**
  * Abstract class to help implementing editable list models.
