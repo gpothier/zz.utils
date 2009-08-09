@@ -29,12 +29,6 @@ public class StringPropertyEditor
 			itsTextField.addFocusListener(this);
 		}
 		
-		@Override
-		protected void propertyToUi(String aValue)
-		{
-			itsTextField.setText(aValue);
-		}
-		
 		public void focusGained(FocusEvent aE)
 		{
 		}
@@ -47,6 +41,12 @@ public class StringPropertyEditor
 		public void actionPerformed(ActionEvent aE)
 		{
 			uiToProperty();
+		}
+		
+		@Override
+		protected void propertyToUi(String aValue)
+		{
+			itsTextField.setText(aValue);
 		}
 		
 		@Override

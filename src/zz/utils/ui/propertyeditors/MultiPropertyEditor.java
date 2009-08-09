@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.swing.JPanel;
 
+import zz.utils.Utils;
 import zz.utils.properties.IRWProperty;
 import zz.utils.properties.PropertyUtils;
 import zz.utils.properties.SimpleRWProperty;
@@ -80,11 +81,16 @@ public class MultiPropertyEditor<T> extends JPanel
 
 		// if all properties have the same value, enable the master editor
 		T theValue = null;
+		boolean theFirst = true; // Don't rely on theValue being null because null is a valid property value
 		boolean theSameValue = true;
 		for (IRWProperty<T> theProperty : aProperties)
 		{
-			if (theValue == null) theValue = theProperty.get();
-			else if (! theValue.equals(theProperty.get()))
+			if (theFirst) 
+			{
+				theValue = theProperty.get();
+				theFirst = false;
+			}
+			else if (! Utils.equalOrBothNull(theValue, theProperty.get()))
 			{
 				theSameValue = false;
 				break;
