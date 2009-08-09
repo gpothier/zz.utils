@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JPanel;
 
@@ -19,6 +18,7 @@ import zz.utils.properties.PropertyUtils.Connector;
 import zz.utils.properties.PropertyUtils.SimpleValueConnector;
 import zz.utils.ui.GridStackLayout;
 import zz.utils.ui.propertyeditors.SimplePropertyEditor.EditorNotFoundException;
+import zz.utils.undo2.UndoStack;
 
 /**
  * A property editor that is able to edit a set of properties of the same kind
@@ -60,9 +60,9 @@ public class MultiPropertyEditor<T> extends JPanel
 		}
 	};
 	
-	public MultiPropertyEditor(Field aField, List<IRWProperty<T>> aProperties)
+	public MultiPropertyEditor(Field aField, UndoStack aUndoStack, List<IRWProperty<T>> aProperties)
 	{
-		this(getEditorClass(aField), aProperties);
+		this(getEditorClass(aField), aUndoStack, aProperties);
 		itsField = aField;
 	}
 	
@@ -74,7 +74,10 @@ public class MultiPropertyEditor<T> extends JPanel
 	}
 	
 	
-	private MultiPropertyEditor(Class<? extends SimplePropertyEditor<T>> aEditorClass, List<IRWProperty<T>> aProperties)
+	private MultiPropertyEditor(
+			Class<? extends SimplePropertyEditor<T>> aEditorClass,
+			UndoStack aUndoStack, 
+			List<IRWProperty<T>> aProperties)
 	{
 		setLayout(new GridStackLayout(1));
 		itsProperties = aProperties;
@@ -102,7 +105,7 @@ public class MultiPropertyEditor<T> extends JPanel
 		// add checkbox only if there is more than one property
 		if (itsProperties.size() > 1)
 		{
-			BooleanPropertyEditor.CheckBox enableEditor = new BooleanPropertyEditor.CheckBox(pEnabled);
+			BooleanPropertyEditor.CheckBox enableEditor = new BooleanPropertyEditor.CheckBox(null, pEnabled);
 			add(enableEditor);
 			enableEditor.setOpaque(false);
 		}
@@ -113,7 +116,7 @@ public class MultiPropertyEditor<T> extends JPanel
 			Iterator<IRWProperty<T>> theIterator = aProperties.iterator();
 			
 			itsMasterProperty = theIterator.next();
-			itsMasterEditor = SimplePropertyEditor.createEditor(aEditorClass, itsMasterProperty);
+			itsMasterEditor = SimplePropertyEditor.createEditor(aEditorClass, aUndoStack, itsMasterProperty);
 			add(itsMasterEditor);
 			itsMasterEditor.setOpaque(false);
 			
@@ -167,7 +170,7 @@ public class MultiPropertyEditor<T> extends JPanel
 	 * Creates a {@link MultiPropertyEditor} for each available property in the provided collection
 	 * of objects.
 	 */
-	public static List<MultiPropertyEditor> createEditors(Collection<?> aObjects)
+	public static List<MultiPropertyEditor> createEditors(UndoStack aUndoStack, Collection<?> aObjects)
 	{
 		List<MultiPropertyEditor> theResult = new ArrayList<MultiPropertyEditor>();
 		List<Field> theProperties = new ArrayList<Field>();
@@ -178,7 +181,7 @@ public class MultiPropertyEditor<T> extends JPanel
 		{
 			try
 			{
-				theResult.add(new MultiPropertyEditor(theField, PropertyUtils.getProperties(theField, aObjects)));
+				theResult.add(new MultiPropertyEditor(theField, aUndoStack, PropertyUtils.getProperties(theField, aObjects)));
 			}
 			catch (EditorNotFoundException e)
 			{

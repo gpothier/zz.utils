@@ -7,15 +7,18 @@ import javax.swing.JPanel;
 import zz.utils.properties.IProperty;
 import zz.utils.properties.IPropertyListener;
 import zz.utils.properties.IRWProperty;
+import zz.utils.undo2.UndoStack;
 
 @SuppressWarnings("serial")
 public abstract class SimplePropertyEditor<T> extends JPanel
 implements IPropertyListener<T>
 {
+	private UndoStack itsUndoStack;
 	private IRWProperty<T> itsProperty;
 
-	public SimplePropertyEditor(IRWProperty<T> aProperty)
+	public SimplePropertyEditor(UndoStack aUndoStack, IRWProperty<T> aProperty)
 	{
+		itsUndoStack = aUndoStack;
 		itsProperty = aProperty;
 	}
 	
@@ -39,8 +42,6 @@ implements IPropertyListener<T>
 		return itsProperty;
 	}
 	
-	
-	
 	public void setProperty(IRWProperty<T> aProperty)
 	{
 		uiToProperty();
@@ -56,12 +57,31 @@ implements IPropertyListener<T>
 	protected abstract void propertyToUi(T aValue);
 	protected abstract void uiToProperty();
 	
-	public static <T> SimplePropertyEditor<T> createEditor(Class<? extends SimplePropertyEditor<T>> aEditorClass, IRWProperty<T> aProperty)
+	protected void startOperation()
+	{
+		if (itsUndoStack != null) itsUndoStack.startOperation();
+	}
+	
+	protected void commitOperation()
+	{
+		if (itsUndoStack != null) itsUndoStack.commitOperation();
+	}
+	
+	protected void cancelOperation()
+	{
+		if (itsUndoStack != null) itsUndoStack.cancelOperation();
+	}
+	
+	public static <T> SimplePropertyEditor<T> createEditor(
+			Class<? extends SimplePropertyEditor<T>> aEditorClass,
+			UndoStack aUndoStack, 
+			IRWProperty<T> aProperty)
 	{
 		try
 		{
-			Constructor<? extends SimplePropertyEditor<T>> theConstructor = aEditorClass.getConstructor(IRWProperty.class);
-			return theConstructor.newInstance(aProperty);
+			Constructor<? extends SimplePropertyEditor<T>> theConstructor = 
+				aEditorClass.getConstructor(UndoStack.class, IRWProperty.class);
+			return theConstructor.newInstance(aUndoStack, aProperty);
 		}
 		catch (Exception e)
 		{

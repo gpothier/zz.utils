@@ -6,6 +6,7 @@ import javax.swing.event.ChangeListener;
 
 import zz.utils.properties.IRWProperty;
 import zz.utils.ui.StackLayout;
+import zz.utils.undo2.UndoStack;
 
 public class BooleanPropertyEditor {
 	@SuppressWarnings("serial")
@@ -14,9 +15,9 @@ public class BooleanPropertyEditor {
 	{
 		private JCheckBox itsCheckBox = new JCheckBox();
 		
-		public CheckBox(IRWProperty<Boolean> aProperty)
+		public CheckBox(UndoStack aUndoStack, IRWProperty<Boolean> aProperty)
 		{
-			super(aProperty);
+			super(aUndoStack, aProperty);
 			setLayout(new StackLayout());
 			itsCheckBox.setOpaque(false);
 			add(itsCheckBox);
@@ -36,7 +37,13 @@ public class BooleanPropertyEditor {
 	
 		protected void uiToProperty()
 		{
-			getProperty().set(itsCheckBox.isSelected());
+			boolean theNewValue = itsCheckBox.isSelected();
+			if (theNewValue != getProperty().get())
+			{
+				startOperation();
+				getProperty().set(theNewValue);
+				commitOperation();
+			}
 		}
 	}
 }

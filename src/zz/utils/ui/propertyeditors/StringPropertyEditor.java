@@ -8,9 +8,8 @@ import java.awt.event.FocusListener;
 
 import javax.swing.JTextField;
 
-import zz.utils.properties.IProperty;
-import zz.utils.properties.IPropertyListener;
 import zz.utils.properties.IRWProperty;
+import zz.utils.undo2.UndoStack;
 
 public class StringPropertyEditor
 {
@@ -20,9 +19,9 @@ public class StringPropertyEditor
 	{
 		private final JTextField itsTextField = new JTextField();
 		
-		public TextField(IRWProperty<String> aProperty)
+		public TextField(UndoStack aUndoStack, IRWProperty<String> aProperty)
 		{
-			super(aProperty);
+			super(aUndoStack, aProperty);
 			setLayout(new BorderLayout());
 			add(itsTextField, BorderLayout.CENTER);
 			itsTextField.addActionListener(this);
@@ -52,7 +51,13 @@ public class StringPropertyEditor
 		@Override
 		protected void uiToProperty()
 		{
-			getProperty().set(itsTextField.getText());
+			String theNewValue = itsTextField.getText();
+			if (! theNewValue.equals(getProperty().get()))
+			{
+				startOperation();
+				getProperty().set(theNewValue);
+				commitOperation();
+			}
 		}
 	}
 }

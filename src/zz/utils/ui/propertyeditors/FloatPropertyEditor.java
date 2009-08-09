@@ -11,6 +11,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import zz.utils.properties.IRWProperty;
+import zz.utils.undo2.UndoStack;
 
 public class FloatPropertyEditor {
 	@SuppressWarnings("serial")
@@ -22,13 +23,14 @@ public class FloatPropertyEditor {
 		private static final double LN_K = Math.log(K);
 		
 		private boolean itsChanging = false;
+		private boolean itsOperationStarted = false;
 		
 		private final JSlider itsSlider;
 		private final JLabel itsValueLabel;
 		
-		public LogSlider(IRWProperty<Float> aProperty)
+		public LogSlider(UndoStack aUndoStack, IRWProperty<Float> aProperty)
 		{
-			super(aProperty);
+			super(aUndoStack, aProperty);
 			itsSlider = new JSlider();
 			itsSlider.setOpaque(false);
 			itsValueLabel = new JLabel();
@@ -88,13 +90,30 @@ public class FloatPropertyEditor {
 		
 		public void stateChanged(ChangeEvent aE)
 		{
-			if (! itsChanging) uiToProperty();
+			if (! itsChanging) 
+			{
+				if (! itsOperationStarted)
+				{
+					startOperation();
+					itsOperationStarted = true;
+				}
+				uiToProperty();
+				if (! itsSlider.getValueIsAdjusting())
+				{
+					commitOperation();
+					itsOperationStarted = false;
+				}
+			}
 		}
 		
 		@Override
 		protected void uiToProperty()
 		{
-			getProperty().set(getValue0());
+			float theNewValue = getValue0();
+			if (theNewValue != getProperty().get())
+			{
+				getProperty().set(theNewValue);
+			}
 		}
 	}
 }
