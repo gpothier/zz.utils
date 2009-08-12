@@ -10,6 +10,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import zz.utils.Utils;
 import zz.utils.properties.IRWProperty;
 import zz.utils.undo2.UndoStack;
 
@@ -110,7 +111,7 @@ public class FloatPropertyEditor {
 		protected void uiToProperty()
 		{
 			float theNewValue = getValue0();
-			if (theNewValue != getProperty().get())
+			if (! Utils.equalOrBothNull(theNewValue, getProperty().get()))
 			{
 				getProperty().set(theNewValue);
 			}
