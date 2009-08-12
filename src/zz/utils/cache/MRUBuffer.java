@@ -70,7 +70,7 @@ public abstract class MRUBuffer<K, V>
 		{
 			itsItemsList.addLast(aEntry);
 
-			if (shouldDrop(itsItemsList.size()))
+			while (shouldDrop(itsItemsList.size()))
 			{
 				Entry<V> theFirst = itsItemsList.getFirstEntry();
 				itsItemsList.remove(theFirst);
@@ -151,6 +151,17 @@ public abstract class MRUBuffer<K, V>
 		return theEntry;
 	}
 
+	/**
+	 * Returns the currently cached entries
+	 */
+	public Iterable<Entry<V>> getEntries()
+	{
+		if (itsCache == null) throw new UnsupportedOperationException(
+				"This MRU buffer does not have a map");
+		
+		return itsCache.values();
+	}
+	
 	/**
 	 * Removes the mapping corresponding to the given key from this buffer
 	 */

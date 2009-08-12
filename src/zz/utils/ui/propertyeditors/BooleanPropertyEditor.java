@@ -1,6 +1,7 @@
 package zz.utils.ui.propertyeditors;
 
 import javax.swing.JCheckBox;
+import javax.swing.JToggleButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -38,6 +39,49 @@ public class BooleanPropertyEditor {
 		protected void uiToProperty()
 		{
 			boolean theNewValue = itsCheckBox.isSelected();
+			if (theNewValue != getProperty().get())
+			{
+				startOperation();
+				getProperty().set(theNewValue);
+				commitOperation();
+			}
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class ToggleButton extends SimplePropertyEditor<Boolean>
+	implements ChangeListener
+	{
+		private JToggleButton itsButton = new JToggleButton();
+		
+		public ToggleButton(UndoStack aUndoStack, IRWProperty<Boolean> aProperty)
+		{
+			super(aUndoStack, aProperty);
+			setLayout(new StackLayout());
+			itsButton.setOpaque(false);
+			add(itsButton);
+			itsButton.addChangeListener(this);
+		}
+		
+		public JToggleButton getButton()
+		{
+			return itsButton;
+		}
+		
+		public void stateChanged(ChangeEvent aE)
+		{
+			uiToProperty();
+		}
+		
+		@Override
+		protected void propertyToUi(Boolean aValue)
+		{
+			itsButton.setSelected(aValue);
+		}
+		
+		protected void uiToProperty()
+		{
+			boolean theNewValue = itsButton.isSelected();
 			if (theNewValue != getProperty().get())
 			{
 				startOperation();
