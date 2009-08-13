@@ -33,7 +33,7 @@ public class BooleanPropertyEditor {
 		@Override
 		protected void propertyToUi(Boolean aValue)
 		{
-			itsCheckBox.setSelected(aValue);
+			if (aValue != null) itsCheckBox.setSelected(aValue);
 		}
 	
 		protected void uiToProperty()
