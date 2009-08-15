@@ -69,7 +69,13 @@ public class MultiPropertyEditor<T> extends JPanel
 	private static Class getEditorClass(Field aField)
 	{
 		PropertyEditor theAnnotation = aField.getAnnotation(PropertyEditor.class);
-		if (theAnnotation != null) return theAnnotation.value();
+		if (theAnnotation != null) 
+		{
+			Class< ? extends SimplePropertyEditor< ? >> theClass = theAnnotation.value();
+			
+			if (theClass == PropertyEditor.NoEditor.class) throw new EditorNotFoundException(Void.class);
+			return theClass;
+		}
 		else return SimplePropertyEditor.getDefaultEditorClass(PropertyUtils.getValueClass(aField));
 	}
 	
