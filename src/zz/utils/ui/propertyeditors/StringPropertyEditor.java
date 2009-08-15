@@ -9,7 +9,6 @@ import java.awt.event.FocusListener;
 import javax.swing.JTextField;
 
 import zz.utils.properties.IRWProperty;
-import zz.utils.ui.StackLayout;
 import zz.utils.undo2.UndoStack;
 
 public class StringPropertyEditor
@@ -23,8 +22,8 @@ public class StringPropertyEditor
 		public TextField(UndoStack aUndoStack, IRWProperty<String> aProperty)
 		{
 			super(aUndoStack, aProperty);
-			setLayout(new StackLayout());
-			add(itsTextField);
+			setLayout(new BorderLayout()); // Needed by subclasses
+			add(itsTextField, BorderLayout.CENTER);
 			itsTextField.addActionListener(this);
 			itsTextField.addFocusListener(this);
 		}
