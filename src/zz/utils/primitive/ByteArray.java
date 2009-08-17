@@ -8,25 +8,25 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A primitive int array that grows as needed.
+ * A primitive byte array that grows as needed.
  * @author gpothier
  */
-public class IntArray
+public class ByteArray
 {
-	private int[] itsData;
+	private byte[] itsData;
 	private int itsSize;
 
-	public IntArray()
+	public ByteArray()
 	{
 		this(16);
 	}
 	
-	public IntArray(int aInitialSize)
+	public ByteArray(int aInitialSize)
 	{
-		itsData = new int[aInitialSize];
+		itsData = new byte[aInitialSize];
 	}
 	
-	public int get(int aIndex)
+	public byte get(int aIndex)
 	{
 		return aIndex < itsSize ? itsData[aIndex] : 0;
 	}
@@ -46,14 +46,14 @@ public class IntArray
 		itsSize = aSize;
 	}
 	
-	public void set(int aIndex, int aValue)
+	public void set(int aIndex, byte aValue)
 	{
 		ensureSize(aIndex+1);
 		itsData[aIndex] = aValue;
 		itsSize = Math.max(itsSize, aIndex+1);
 	}
 	
-	public void add(int aValue)
+	public void add(byte aValue)
 	{
 		set(size(), aValue);
 	}
@@ -68,34 +68,34 @@ public class IntArray
 		if (itsData.length >= aSize) return;
 		
 		int theNewSize = Math.max(aSize, itsData.length*2);
-		int[] theNewData = new int[theNewSize];
+		byte[] theNewData = new byte[theNewSize];
 		System.arraycopy(itsData, 0, theNewData, 0, itsData.length);
 		itsData = theNewData;
 	}
 
-	public int[] toArray()
+	public byte[] toArray()
 	{
-		int[] theResult = new int[size()];
+		byte[] theResult = new byte[size()];
 		System.arraycopy(itsData, 0, theResult, 0, size());
 		return theResult;
 	}
 	
 	/**
-	 * Transforms a collection of {@link Integer}s to an array of native ints.
+	 * Transforms a collection of {@link Byte}s to an array of native bytes.
 	 */
-	public static int[] toIntArray(Collection<Integer> aCollection)
+	public static byte[] toByteArray(Collection<Byte> aCollection)
 	{
-		int[] theResult = new int[aCollection.size()];
+		byte[] theResult = new byte[aCollection.size()];
 		int i=0;
-		for(Integer v : aCollection) theResult[i++] = v;
+		for(Byte v : aCollection) theResult[i++] = v;
 		return theResult;
 	}
 	
-	public static List<Integer> toList(int[] aArray)
+	public static List<Byte> toList(byte[] aArray)
 	{
 		if (aArray == null) return null;
-		List<Integer> theList = new ArrayList<Integer>();
-		for(int i : aArray) theList.add(i);
+		List<Byte> theList = new ArrayList<Byte>();
+		for(byte i : aArray) theList.add(i);
 		return theList;
 	}
 }
