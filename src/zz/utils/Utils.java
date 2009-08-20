@@ -1,6 +1,5 @@
 package zz.utils;
 
-import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -41,7 +40,6 @@ import javax.swing.ImageIcon;
 public final class Utils
 {
 
-	public static final AffineTransform IDENTITY = new AffineTransform();
 
 	/**
 	 * Do not use this. <p>
@@ -158,38 +156,6 @@ public final class Utils
 		aBuffer.append (aNumber == 1 ? aSingleString : aPluralString);
 	}
 
-
-	/**
-	 * Returns the smallest rectangle that contains the specified rectangle after it is transformed
-	 * by the specified transform
-	 */
-	public static Rectangle2D transformRect (Rectangle2D aRectangle, AffineTransform aTransform)
-	{
-		if (aTransform == null || aTransform.isIdentity ()) return aRectangle;
-
-		double[] coords = new double[]{aRectangle.getX (), aRectangle.getY (),
-		                               aRectangle.getX () + aRectangle.getWidth (), aRectangle.getY (),
-		                               aRectangle.getX () + aRectangle.getWidth (), aRectangle.getY () + aRectangle.getHeight (),
-		                               aRectangle.getX (), aRectangle.getY () + aRectangle.getHeight ()};
-
-		aTransform.transform (coords, 0, coords, 0, 4);
-
-		double minX = Double.MAX_VALUE;
-		double minY = Double.MAX_VALUE;
-		double maxX = -Double.MAX_VALUE;
-		double maxY = -Double.MAX_VALUE;
-		for (int i = 0; i < 4; i++)
-		{
-			double x = coords[2 * i];
-			double y = coords[2 * i + 1];
-			if (x < minX) minX = x;
-			if (x > maxX) maxX = x;
-			if (y < minY) minY = y;
-			if (y > maxY) maxY = y;
-		}
-
-		return new Rectangle2D.Double (minX, minY, maxX - minX, maxY - minY);
-	}
 
 	/**
 	 *  Returns a non-null string, replacing a null value by an empty string.

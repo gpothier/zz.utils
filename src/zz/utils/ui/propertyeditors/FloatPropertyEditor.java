@@ -14,7 +14,7 @@ import zz.utils.Utils;
 import zz.utils.properties.IRWProperty;
 import zz.utils.undo2.UndoStack;
 
-public class FloatPropertyEditor {
+public abstract class FloatPropertyEditor {
 	@SuppressWarnings("serial")
 	public static class LogSlider extends SimplePropertyEditor<Float>
 	implements ChangeListener, FocusListener

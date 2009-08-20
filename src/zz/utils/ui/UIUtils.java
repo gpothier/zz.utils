@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -37,6 +38,7 @@ import javax.swing.SwingUtilities;
 public class UIUtils
 {
 	public static final Insets NULL_INSETS = new Insets (0, 0, 0, 0);
+	public static final AffineTransform IDENTITY = new AffineTransform();
 
 	public static <T extends Component> T getParent(Component aComponent, Class<T> aClass)
 	{
@@ -319,5 +321,37 @@ public class UIUtils
 		g2.fill(new Rectangle2D.Double(r.getMinX()-(t/2), r.getMaxY()-(t/2), r.getWidth()+t, t));
 		g2.fill(new Rectangle2D.Double(r.getMinX()-(t/2), r.getMinY()+(t/2), t, r.getHeight()-t));
 		g2.fill(new Rectangle2D.Double(r.getMaxX()-(t/2), r.getMinY()+(t/2), t, r.getHeight()-t));
+	}
+	
+	/**
+	 * Returns the smallest rectangle that contains the specified rectangle after it is transformed
+	 * by the specified transform
+	 */
+	public static Rectangle2D transformRect (Rectangle2D aRectangle, AffineTransform aTransform)
+	{
+		if (aTransform == null || aTransform.isIdentity ()) return aRectangle;
+
+		double[] coords = new double[]{aRectangle.getX (), aRectangle.getY (),
+		                               aRectangle.getX () + aRectangle.getWidth (), aRectangle.getY (),
+		                               aRectangle.getX () + aRectangle.getWidth (), aRectangle.getY () + aRectangle.getHeight (),
+		                               aRectangle.getX (), aRectangle.getY () + aRectangle.getHeight ()};
+
+		aTransform.transform (coords, 0, coords, 0, 4);
+
+		double minX = Double.MAX_VALUE;
+		double minY = Double.MAX_VALUE;
+		double maxX = -Double.MAX_VALUE;
+		double maxY = -Double.MAX_VALUE;
+		for (int i = 0; i < 4; i++)
+		{
+			double x = coords[2 * i];
+			double y = coords[2 * i + 1];
+			if (x < minX) minX = x;
+			if (x > maxX) maxX = x;
+			if (y < minY) minY = y;
+			if (y > maxY) maxY = y;
+		}
+
+		return new Rectangle2D.Double (minX, minY, maxX - minX, maxY - minY);
 	}
 }

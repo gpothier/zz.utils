@@ -11,7 +11,7 @@ import javax.swing.JTextField;
 import zz.utils.properties.IRWProperty;
 import zz.utils.undo2.UndoStack;
 
-public class StringPropertyEditor
+public abstract class StringPropertyEditor
 {
 	@SuppressWarnings("serial")
 	public static class TextField extends SimplePropertyEditor<String>

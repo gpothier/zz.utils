@@ -9,7 +9,7 @@ import zz.utils.properties.IRWProperty;
 import zz.utils.ui.StackLayout;
 import zz.utils.undo2.UndoStack;
 
-public class BooleanPropertyEditor {
+public abstract class BooleanPropertyEditor {
 	@SuppressWarnings("serial")
 	public static class CheckBox extends SimplePropertyEditor<Boolean>
 	implements ChangeListener

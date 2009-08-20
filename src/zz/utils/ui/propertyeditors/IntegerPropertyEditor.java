@@ -12,7 +12,7 @@ import zz.utils.properties.IRWProperty;
 import zz.utils.ui.StackLayout;
 import zz.utils.undo2.UndoStack;
 
-public class IntegerPropertyEditor
+public abstract class IntegerPropertyEditor
 {
 	@SuppressWarnings("serial")
 	public static class Spinner extends SimplePropertyEditor<Integer>
