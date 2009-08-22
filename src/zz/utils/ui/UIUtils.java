@@ -331,10 +331,11 @@ public class UIUtils
 	{
 		if (aTransform == null || aTransform.isIdentity ()) return aRectangle;
 
-		double[] coords = new double[]{aRectangle.getX (), aRectangle.getY (),
-		                               aRectangle.getX () + aRectangle.getWidth (), aRectangle.getY (),
-		                               aRectangle.getX () + aRectangle.getWidth (), aRectangle.getY () + aRectangle.getHeight (),
-		                               aRectangle.getX (), aRectangle.getY () + aRectangle.getHeight ()};
+		double[] coords = {
+				aRectangle.getX (), aRectangle.getY (),
+				aRectangle.getX () + aRectangle.getWidth (), aRectangle.getY (),
+				aRectangle.getX () + aRectangle.getWidth (), aRectangle.getY () + aRectangle.getHeight (),
+				aRectangle.getX (), aRectangle.getY () + aRectangle.getHeight ()};
 
 		aTransform.transform (coords, 0, coords, 0, 4);
 
