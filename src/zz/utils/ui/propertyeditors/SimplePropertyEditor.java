@@ -5,6 +5,7 @@ import java.lang.reflect.Constructor;
 
 import javax.swing.JPanel;
 
+import zz.utils.Utils;
 import zz.utils.properties.IProperty;
 import zz.utils.properties.IPropertyListener;
 import zz.utils.properties.IRWProperty;
@@ -27,7 +28,7 @@ implements IPropertyListener<T>
 	public void addNotify()
 	{
 		super.addNotify();
-		propertyToUi(itsProperty.get());
+		propertyToUi();
 		getProperty().addHardListener(this);
 	}
 	
@@ -47,16 +48,32 @@ implements IPropertyListener<T>
 	{
 		uiToProperty();
 		itsProperty = aProperty;
-		propertyToUi(aProperty.get());
+		propertyToUi();
 	}
 
 	public void propertyChanged(IProperty<T> aProperty, T aOldValue, T aNewValue)
 	{
-		propertyToUi(aNewValue);
+		valueToUi(aNewValue);
+	}
+	
+	protected final void uiToProperty()
+	{
+		T v = uiToValue();
+		if (! Utils.equalOrBothNull(v, getProperty().get()))
+		{
+			startOperation();
+			getProperty().set(v);
+			commitOperation();
+		}
+	}
+	
+	protected final void propertyToUi()
+	{
+		valueToUi(getProperty().get());
 	}
 
-	protected abstract void propertyToUi(T aValue);
-	protected abstract void uiToProperty();
+	protected abstract void valueToUi(T aValue);
+	protected abstract T uiToValue();
 	
 	protected void startOperation()
 	{

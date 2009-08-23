@@ -31,20 +31,14 @@ public abstract class BooleanPropertyEditor {
 		}
 		
 		@Override
-		protected void propertyToUi(Boolean aValue)
+		protected void valueToUi(Boolean aValue)
 		{
 			if (aValue != null) itsCheckBox.setSelected(aValue);
 		}
 	
-		protected void uiToProperty()
+		protected Boolean uiToValue()
 		{
-			boolean theNewValue = itsCheckBox.isSelected();
-			if (theNewValue != getProperty().get())
-			{
-				startOperation();
-				getProperty().set(theNewValue);
-				commitOperation();
-			}
+			return itsCheckBox.isSelected();
 		}
 	}
 	
@@ -74,20 +68,14 @@ public abstract class BooleanPropertyEditor {
 		}
 		
 		@Override
-		protected void propertyToUi(Boolean aValue)
+		protected void valueToUi(Boolean aValue)
 		{
 			itsButton.setSelected(aValue);
 		}
 		
-		protected void uiToProperty()
+		protected Boolean uiToValue()
 		{
-			boolean theNewValue = itsButton.isSelected();
-			if (theNewValue != getProperty().get())
-			{
-				startOperation();
-				getProperty().set(theNewValue);
-				commitOperation();
-			}
+			return itsButton.isSelected();
 		}
 	}
 }

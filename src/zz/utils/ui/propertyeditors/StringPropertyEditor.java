@@ -43,21 +43,15 @@ public abstract class StringPropertyEditor
 		}
 		
 		@Override
-		protected void propertyToUi(String aValue)
+		protected void valueToUi(String aValue)
 		{
 			itsTextField.setText(aValue);
 		}
 		
 		@Override
-		protected void uiToProperty()
+		protected String uiToValue()
 		{
-			String theNewValue = itsTextField.getText();
-			if (! theNewValue.equals(getProperty().get()))
-			{
-				startOperation();
-				getProperty().set(theNewValue);
-				commitOperation();
-			}
+			return itsTextField.getText();
 		}
 	}
 }

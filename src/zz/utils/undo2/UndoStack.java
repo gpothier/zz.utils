@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import javax.swing.Action;
 
 import zz.utils.ArrayStack;
+import zz.utils.IProducer;
+import zz.utils.ITask;
 import zz.utils.Stack;
 
 public class UndoStack
@@ -95,6 +97,26 @@ public class UndoStack
 	{
 		if (itsCurrentOperation == null) throw new IllegalStateException("No current operation");
 		itsCurrentOperation.addCommand(aCommand);
+	}
+	
+	/**
+	 * Runs a piece of code without recording operations.
+	 */
+	public static void runWithoutUndo(Runnable aRunnable)
+	{
+		UndoStack theCurrentStack = itsCurrentStack.get();
+		itsCurrentStack.set(null);
+		aRunnable.run();
+		itsCurrentStack.set(theCurrentStack);
+	}
+	
+	public static <T> T runWithoutUndo(IProducer<T> aTask)
+	{
+		UndoStack theCurrentStack = itsCurrentStack.get();
+		itsCurrentStack.set(null);
+		T theResult = aTask.produce();
+		itsCurrentStack.set(theCurrentStack);
+		return theResult;
 	}
 	
 	/**

@@ -10,7 +10,6 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import zz.utils.Utils;
 import zz.utils.properties.IRWProperty;
 import zz.utils.undo2.UndoStack;
 
@@ -56,7 +55,7 @@ public abstract class FloatPropertyEditor {
 		
 		
 		@Override
-		protected void propertyToUi(Float aValue)
+		protected void valueToUi(Float aValue)
 		{
 			float v = aValue != null ? aValue : 1f;
 			double p0 = (Math.log(v)/LN_K) + 0.5;
@@ -98,7 +97,7 @@ public abstract class FloatPropertyEditor {
 					startOperation();
 					itsOperationStarted = true;
 				}
-				uiToProperty();
+				getProperty().set(uiToValue());
 				if (! itsSlider.getValueIsAdjusting())
 				{
 					commitOperation();
@@ -108,13 +107,9 @@ public abstract class FloatPropertyEditor {
 		}
 		
 		@Override
-		protected void uiToProperty()
+		protected Float uiToValue()
 		{
-			float theNewValue = getValue0();
-			if (! Utils.equalOrBothNull(theNewValue, getProperty().get()))
-			{
-				getProperty().set(theNewValue);
-			}
+			return getValue0();
 		}
 	}
 }

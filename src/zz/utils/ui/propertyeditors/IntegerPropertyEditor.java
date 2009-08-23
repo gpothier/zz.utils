@@ -44,21 +44,15 @@ public abstract class IntegerPropertyEditor
 		}
 		
 		@Override
-		protected void propertyToUi(Integer aValue)
+		protected void valueToUi(Integer aValue)
 		{
 			itsSpinner.setValue(aValue != null ? aValue : 0);
 		}
 		
 		@Override
-		protected void uiToProperty()
+		protected Integer uiToValue()
 		{
-			Integer theNewValue = (Integer) itsSpinner.getValue();
-			if (! theNewValue.equals(getProperty().get()))
-			{
-				startOperation();
-				getProperty().set(theNewValue);
-				commitOperation();
-			}
+			return (Integer) itsSpinner.getValue();
 		}
 
 	}

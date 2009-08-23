@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import javax.swing.JComponent;
 
 import zz.utils.notification.IEvent;
+import zz.utils.ui.StackLayout;
 import zz.utils.ui.TransparentPanel;
 
 /**
@@ -24,6 +25,7 @@ import zz.utils.ui.TransparentPanel;
 public class PopupComponent extends TransparentPanel 
 {
 	private StickyPopup itsPopup;
+	private JComponent itsPopupComponent;
 
 	public PopupComponent ()
 	{
@@ -37,8 +39,16 @@ public class PopupComponent extends TransparentPanel
 
 	public PopupComponent (JComponent popup, JComponent content)
 	{
-		itsPopup = new StickyPopup (popup, content);
-		setLayout (new BorderLayout ());
+		itsPopupComponent = popup;
+		itsPopup = new StickyPopup (null, content)
+		{
+			@Override
+			public JComponent getContent()
+			{
+				return getPopupComponent();
+			}
+		};
+		setLayout (new StackLayout ());
 		setContent (content);
 	}
 
@@ -65,6 +75,7 @@ public class PopupComponent extends TransparentPanel
 	public void setPopupComponent (JComponent aPopup)
 	{
 		itsPopup.setContent(aPopup);
+		itsPopupComponent = aPopup;
 	}
 
 	/**
@@ -72,7 +83,7 @@ public class PopupComponent extends TransparentPanel
 	 */
 	public JComponent getPopupComponent ()
 	{
-		return itsPopup.getContent();
+		return itsPopupComponent;
 	}
 
 	public StickyPopup getPopup ()

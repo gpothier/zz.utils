@@ -40,7 +40,11 @@ public class UIUtils
 	public static final Insets NULL_INSETS = new Insets (0, 0, 0, 0);
 	public static final AffineTransform IDENTITY = new AffineTransform();
 
-	public static <T extends Component> T getParent(Component aComponent, Class<T> aClass)
+	/**
+	 * Returns the closest ancestore of the given component that is an instance of 
+	 * the given class.
+	 */
+	public static <T extends Component> T getAncestor(Component aComponent, Class<T> aClass)
 	{
 		Container theCurrentContainer = aComponent.getParent ();
 		while (theCurrentContainer != null)
@@ -56,7 +60,7 @@ public class UIUtils
 	 */
 	public static Frame getFrame (Component aComponent)
 	{
-		return getParent(aComponent, Frame.class);
+		return getAncestor(aComponent, Frame.class);
 	}
 
 	/**
@@ -64,7 +68,7 @@ public class UIUtils
 	 */
 	public static JFrame getJFrame (JComponent aComponent)
 	{
-		return getParent(aComponent, JFrame.class);
+		return getAncestor(aComponent, JFrame.class);
 	}
 
 	/**
@@ -72,7 +76,7 @@ public class UIUtils
 	 */
 	public static JViewport getViewport (Component aComponent)
 	{
-		return getParent(aComponent, JViewport.class);
+		return getAncestor(aComponent, JViewport.class);
 	}
 
 
