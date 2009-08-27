@@ -915,4 +915,9 @@ public final class Utils
 			throw new RuntimeException(e);
 		}
 	}
+	
+	public static boolean empty(String aString)
+	{
+		return aString == null || aString.length() == 0;
+	}
 }
