@@ -916,7 +916,7 @@ public final class Utils
 		}
 	}
 	
-	public static boolean empty(String aString)
+	public static boolean isEmpty(String aString)
 	{
 		return aString == null || aString.length() == 0;
 	}
