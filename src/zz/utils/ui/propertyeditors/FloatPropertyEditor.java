@@ -103,20 +103,24 @@ public abstract class FloatPropertyEditor {
 	@SuppressWarnings("serial")
 	public static class LogSlider extends AbstractSlider
 	{
-		public static final int LOGSLIDER_RANGE = 1000;
-		private static final double K = LOGSLIDER_RANGE*LOGSLIDER_RANGE;
-		private static final double LN_K = Math.log(K);
+		protected static final int R = 1000; 
+		private final int itsRange;
+		private final double itsK;
+		private final double itsLnK;
 		
-		public LogSlider(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		public LogSlider(UndoStack aUndoStack, IRWProperty<Float> aProperty, int aRange)
 		{
 			super(aUndoStack, aProperty);
+			itsRange = aRange;
+			itsK = itsRange*itsRange;
+			itsLnK = Math.log(itsK);
 		}
 		
 		@Override
 		protected Hashtable<Integer, JLabel> createLabels()
 		{
 			Hashtable<Integer, JLabel> theLabels = new Hashtable<Integer, JLabel>();
-			for(int p=getSliderMin();p<getSliderMax();p+=LOGSLIDER_RANGE/5)
+			for(int p=getSliderMin();p<getSliderMax();p+=R/5)
 			{
 				theLabels.put(p, new JLabel(""+sliderToValue(p)));
 			}
@@ -132,14 +136,14 @@ public abstract class FloatPropertyEditor {
 		@Override
 		protected int getSliderMax()
 		{
-			return LOGSLIDER_RANGE;
+			return R;
 		}
 
 		@Override
 		protected Float sliderToValue(int p)
 		{
 			if (p == 0) return 0f;
-			double v = Math.pow(K, (1.0*p/LOGSLIDER_RANGE)-0.5);
+			double v = Math.pow(itsK, (1.0*p/R)-0.5);
 			return (float) v;
 		}
 
@@ -147,29 +151,56 @@ public abstract class FloatPropertyEditor {
 		protected int valueToSlider(Float aValue)
 		{
 			float v = aValue != null ? aValue : 1f;
-			double p0 = (Math.log(v)/LN_K) + 0.5;
-			return (int) (p0*LOGSLIDER_RANGE);
+			double p0 = (Math.log(v)/itsLnK) + 0.5;
+			return (int) (p0*R);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class LogSlider10 extends LogSlider
+	{
+		public LogSlider10(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		{
+			super(aUndoStack, aProperty, 10);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class LogSlider100 extends LogSlider
+	{
+		public LogSlider100(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		{
+			super(aUndoStack, aProperty, 100);
+		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class LogSlider1000 extends LogSlider
+	{
+		public LogSlider1000(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		{
+			super(aUndoStack, aProperty, 1000);
 		}
 	}
 	
 	@SuppressWarnings("serial")
 	public static class NegPosLogSlider extends LogSlider
 	{
-		public NegPosLogSlider(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		public NegPosLogSlider(UndoStack aUndoStack, IRWProperty<Float> aProperty, int aRange)
 		{
-			super(aUndoStack, aProperty);
+			super(aUndoStack, aProperty, aRange);
 		}
 		
 		@Override
 		protected int getSliderMin()
 		{
-			return -LOGSLIDER_RANGE;
+			return -R;
 		}
 		
 		@Override
 		protected int getSliderMax()
 		{
-			return LOGSLIDER_RANGE;
+			return R;
 		}
 		
 		@Override
@@ -185,5 +216,35 @@ public abstract class FloatPropertyEditor {
 			float v = aValue;
 			return v >= 0 ? super.valueToSlider(v) : -super.valueToSlider(-v);
 		}
+	}
+	
+	@SuppressWarnings("serial")
+	public static class NegPosLogSlider10 extends NegPosLogSlider
+	{
+		public NegPosLogSlider10(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		{
+			super(aUndoStack, aProperty, 10);
+		}
+		
+	}
+	
+	@SuppressWarnings("serial")
+	public static class NegPosLogSlider100 extends NegPosLogSlider
+	{
+		public NegPosLogSlider100(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		{
+			super(aUndoStack, aProperty, 100);
+		}
+		
+	}
+	
+	@SuppressWarnings("serial")
+	public static class NegPosLogSlider1000 extends NegPosLogSlider
+	{
+		public NegPosLogSlider1000(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		{
+			super(aUndoStack, aProperty, 1000);
+		}
+		
 	}
 }

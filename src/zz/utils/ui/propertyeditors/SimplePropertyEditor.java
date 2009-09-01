@@ -109,7 +109,7 @@ implements IPropertyListener<T>
 	
 	public static <T> Class<? extends SimplePropertyEditor<T>> getDefaultEditorClass(Class<T> aClass)
 	{
-		if (aClass == Float.class) return (Class) FloatPropertyEditor.LogSlider.class;
+		if (aClass == Float.class) return (Class) FloatPropertyEditor.LogSlider1000.class;
 		else if (aClass == Boolean.class) return (Class) BooleanPropertyEditor.CheckBox.class;
 		else if (aClass == String.class) return (Class) StringPropertyEditor.TextField.class;
 		else if (aClass == Integer.class) return (Class) IntegerPropertyEditor.Spinner.class;
