@@ -50,6 +50,9 @@ public class RingBuffer<T>
 		itsSize++;
 	}
 	
+	/**
+	 * Removes the oldest element from the buffer. Throws an exception if the buffer is empty.
+	 */
 	public T remove()
 	{
 		if (isEmpty()) throw new IllegalStateException("Buffer is empty");
