@@ -3,6 +3,7 @@
  */
 package zz.utils.primitive;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -11,8 +12,9 @@ import java.util.List;
  * A primitive byte array that grows as needed.
  * @author gpothier
  */
-public class ByteArray
+public class ByteArray implements Serializable
 {
+	private static final long serialVersionUID = -1018286467494851056L;
 	private byte[] itsData;
 	private int itsSize;
 
