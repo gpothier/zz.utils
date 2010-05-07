@@ -25,12 +25,12 @@ public class SRPCServer extends Server
 
 	public SRPCServer(int aPort, boolean aDaemon)
 	{
-		super(aPort, aDaemon);
+		super(aPort, true, aDaemon);
 	}
 
 	public SRPCServer(int aPort)
 	{
-		super(aPort);
+		super(aPort, true);
 	}
 
 	public SRPCRegistry getRegistry()

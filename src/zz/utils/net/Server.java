@@ -25,12 +25,12 @@ public abstract class Server extends Thread
 	 * Creates a socket thread that accepts incoming connections
      * @param aStart Whether to start the thread immediately.
 	 */
-	public Server(int aPort)
+	public Server(int aPort, boolean aStart)
 	{
-		this(aPort, false);
+		this(aPort, aStart, false);
 	}
 	
-	public Server(int aPort, boolean aDaemon)
+	public Server(int aPort, boolean aStart, boolean aDaemon)
 	{
 		super("Server-"+aPort);
 		setDaemon(aDaemon);
@@ -39,7 +39,7 @@ public abstract class Server extends Thread
 		{
 			setName(getClass().getSimpleName());
 			itsServerSocket = new ServerSocket(aPort);
-			start();
+			if (aStart) start();
 		}
 		catch (IOException e)
 		{
