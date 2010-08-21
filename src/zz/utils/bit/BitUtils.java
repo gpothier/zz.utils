@@ -5,7 +5,6 @@ package zz.utils.bit;
 
 public class BitUtils
 {
-
 	public static void writeLong(byte[] aDest, long aValue, int aStart, int aBitCount)
 	{
 		writeLong(aDest, 0, aValue, aStart, aBitCount);
