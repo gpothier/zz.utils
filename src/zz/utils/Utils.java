@@ -76,6 +76,7 @@ public final class Utils
 		while ((n = aStream.read (cbuf)) >= 0)
 			baos.write (cbuf, 0, n);
 
+		aStream.close();
 		return baos.toByteArray();
 	}
 	
