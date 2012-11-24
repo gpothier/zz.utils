@@ -3,6 +3,8 @@
  */
 package zz.utils.properties;
 
+import java.util.Set;
+
 
 /**
  * Default implementation of {@link zz.utils.properties.IProperty} for simple values.
@@ -40,6 +42,8 @@ implements IProperty<T>
 	 */
 	protected final T get0()
 	{
+		Set<IProperty> deps = ComputedProperty.TMP_DEPS != null ? ComputedProperty.TMP_DEPS.get() : null;
+		if (deps != null) deps.add(this);
 		return itsValue;
 	}
 
@@ -52,30 +56,44 @@ implements IProperty<T>
 	}
 	
 	/**
+	 * Sets the property's value without firing listeners.
+	 */
+	protected final T set0(T aValue) 
+	{
+		return set0(aValue, true);
+	}
+	
+	/**
 	 * Internal setter for the property.
 	 * It first checks if a veto rejects the new value. If not, it
 	 * sets the current value and fires notifications.
 	 * @param aValue The new value of the property.
 	 */
-	protected final T set0(T aValue)
+	protected final T set0(T aValue, boolean aNotify)
 	{
-		T theOldValue = get0();
-		if (equalValues(theOldValue, aValue)) return aValue;
-		
-		Object theCanChange = canChangeProperty(theOldValue, aValue);
-		if (theCanChange == REJECT) return theOldValue;
-		if (theCanChange != ACCEPT) 
+		if (aNotify) 
 		{
-			aValue = (T) theCanChange;
+			T theOldValue = get0();
 			if (equalValues(theOldValue, aValue)) return aValue;
-		}
-
+			
+			Object theCanChange = canChangeProperty(theOldValue, aValue);
+			if (theCanChange == REJECT) return theOldValue;
+			if (theCanChange != ACCEPT) 
+			{
+				aValue = (T) theCanChange;
+				if (equalValues(theOldValue, aValue)) return aValue;
+			}
+			
 //		if (itsValue != null) ObservationCenter.getInstance().unregisterListener(itsValue, this);
-		itsValue = aValue;
+			itsValue = aValue;
 //		if (itsValue != null) ObservationCenter.getInstance().registerListener(itsValue, this);
-		
-		firePropertyChanged(theOldValue, aValue);
-		
+			
+			firePropertyChanged(theOldValue, aValue);
+		} 
+		else 
+		{
+			itsValue = aValue;
+		}
 		return itsValue;
 	}
 }
