@@ -13,6 +13,7 @@ import javax.swing.SwingUtilities;
  * @param <T>
  */
 public abstract class ComputedProperty<T> extends AbstractProperty<T>
+implements IRWProperty<T>
 {
 	// Volatile is needed for double-checked locking to work 
 	public volatile static ThreadLocal<Set<IProperty>> TMP_DEPS;
@@ -27,8 +28,9 @@ public abstract class ComputedProperty<T> extends AbstractProperty<T>
 		{
 			synchronized(ComputedProperty.this) 
 			{
-				if (! itsDirty) scheduleFire();
+				boolean wasDirty = itsDirty;
 				itsDirty = true;
+				if (! wasDirty) scheduleFire();
 			}
 		}
 	};
@@ -47,7 +49,14 @@ public abstract class ComputedProperty<T> extends AbstractProperty<T>
 		for(IProperty<Object> p : itsDependencies) p.removeListener(itsListener);
 		itsDependencies.clear();
 		TMP_DEPS.set(itsDependencies);
-		itsValue = compute0();
+		try
+		{
+			itsValue = compute0();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 		itsDirty = false;
 		TMP_DEPS.set(null);
 		for(IProperty<Object> p : itsDependencies) p.addListener(itsListener);
@@ -78,5 +87,17 @@ public abstract class ComputedProperty<T> extends AbstractProperty<T>
 	{
 		if (itsDirty) compute();
 		return itsValue;
+	}
+	
+	@Override
+	public T set(T aValue)
+	{
+		throw new RuntimeException("Cannot change value of computed property");
+	}
+
+	@Override
+	public boolean canSet(T aValue)
+	{
+		return false;
 	}
 }

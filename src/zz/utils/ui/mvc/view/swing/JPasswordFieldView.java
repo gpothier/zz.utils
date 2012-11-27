@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -13,7 +14,7 @@ import zz.utils.properties.IProperty;
 import zz.utils.properties.IPropertyListener;
 import zz.utils.ui.mvc.model.PropertyModel;
 
-public class JTextFieldView extends JTextField
+public class JPasswordFieldView extends JPasswordField
 {
 	private PropertyModel<String> model;
 	
@@ -75,12 +76,12 @@ public class JTextFieldView extends JTextField
 		}
 	};
 	
-	public JTextFieldView(PropertyModel<String> model) 
+	public JPasswordFieldView(PropertyModel<String> model)
 	{
 		this(model, false);
 	}
 	
-	public JTextFieldView(PropertyModel<String> model, boolean updateOnTyping) 
+	public JPasswordFieldView(PropertyModel<String> model, boolean updateOnTyping) 
 	{
 		super(model.pValue.get());
 		this.model = model;
