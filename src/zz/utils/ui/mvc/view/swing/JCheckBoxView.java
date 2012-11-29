@@ -40,8 +40,7 @@ public class JCheckBoxView extends JCheckBox
 		@Override
 		public void stateChanged(ChangeEvent aE)
 		{
-			if (model.pValue.get() != isSelected())
-				model.pValue.set(isSelected());
+			updateProperty();
 		}
 	};
 	
@@ -56,4 +55,8 @@ public class JCheckBoxView extends JCheckBox
 		addChangeListener(changeListener);
 	}
 
+	private void updateProperty() {
+		if (model.pValue.get() != isSelected())
+			model.pValue.set(isSelected());
+	}
 }

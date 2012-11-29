@@ -61,8 +61,9 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 		{
 			List<IPropertyListener<? super T>> theListeners = dereferenceListeners(); 
 	
-			for (IPropertyListener<? super T> theListener : theListeners)
+			for (IPropertyListener<? super T> theListener : theListeners) {
 				theListener.propertyChanged((IProperty) this, aOldValue, aNewValue);
+			}
 		}
 		
 //		ObservationCenter.getInstance().requestObservation(getOwner(), this);

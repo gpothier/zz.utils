@@ -21,6 +21,7 @@ implements IRWProperty<T>
 	private Set<IProperty> itsDependencies = new HashSet<IProperty>();
 	
 	private boolean itsDirty = true;
+	private boolean itsFireScheduled = false;
 	private T itsValue;
 	
 	private IPropertyListener itsListener = new IPropertyListener() 
@@ -29,10 +30,13 @@ implements IRWProperty<T>
 		{
 			synchronized(ComputedProperty.this) 
 			{
-				boolean wasDirty = itsDirty;
 				itsDirty = true;
-				if (! wasDirty) scheduleFire();
+				scheduleFire();
 			}
+		}
+		
+		public String toString() {
+			return "Listener for computed property: "+ComputedProperty.this;
 		}
 	};
 	
@@ -66,13 +70,16 @@ implements IRWProperty<T>
 	private void scheduleFire() 
 	{
 		if (SwingUtilities.isEventDispatchThread()) {
+			if (itsFireScheduled) return;
+			itsFireScheduled = true;
+			final T oldValue = itsValue;
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				public void run()
 				{
-					T oldValue = itsValue;
-					compute();
+					if (itsDirty) compute();
 					if (oldValue != itsValue) firePropertyChanged(oldValue, itsValue);
+					itsFireScheduled = false;
 				}
 			});
 		}
@@ -101,6 +108,12 @@ implements IRWProperty<T>
 	public boolean canSet(T aValue)
 	{
 		return false;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return getClass().getName() + "@" + System.identityHashCode(this);
 	}
 	
 	/**

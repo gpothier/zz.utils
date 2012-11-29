@@ -11,6 +11,7 @@ import javax.swing.JPasswordField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import zz.utils.Utils;
 import zz.utils.properties.IProperty;
 import zz.utils.properties.IPropertyListener;
 import zz.utils.ui.mvc.model.PropertyModel;
@@ -45,7 +46,7 @@ public class JPasswordFieldView extends JPasswordField
 		@Override
 		public void focusLost(FocusEvent aE)
 		{
-			model.pValue.set(getText());
+			updateProperty();
 		}
 		
 		@Override
@@ -61,7 +62,7 @@ public class JPasswordFieldView extends JPasswordField
 		@Override
 		public void actionPerformed(ActionEvent aE)
 		{
-			model.pValue.set(getText());
+			updateProperty();
 		}
 	};
 	
@@ -70,19 +71,19 @@ public class JPasswordFieldView extends JPasswordField
 		@Override
 		public void removeUpdate(DocumentEvent aE)
 		{
-			model.pValue.set(getText());
+			updateProperty();
 		}
 		
 		@Override
 		public void insertUpdate(DocumentEvent aE)
 		{
-			model.pValue.set(getText());
+			updateProperty();
 		}
 		
 		@Override
 		public void changedUpdate(DocumentEvent aE)
 		{
-			model.pValue.set(getText());
+			updateProperty();
 		}
 	};
 	
@@ -109,5 +110,11 @@ public class JPasswordFieldView extends JPasswordField
 
 	private void setValid(boolean valid) {
 		setBackground(valid ? Color.WHITE : Color.PINK);
+	}
+
+	private void updateProperty() {
+		String text = getText();
+		if (! Utils.equalOrBothNull(text, model.pValue.get()))
+			model.pValue.set(text);
 	}
 }

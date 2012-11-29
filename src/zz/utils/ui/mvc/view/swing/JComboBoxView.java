@@ -7,8 +7,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 
 import zz.utils.Utils;
 import zz.utils.properties.IProperty;
@@ -20,13 +23,6 @@ import zz.utils.ui.propertyeditors.PropertyComboBoxModel;
 public class JComboBoxView<T> extends JComboBox<T>
 {
 	private ChoicePropertyModel<T> model;
-	
-	private final IPropertyListener<T> valueListener = new IPropertyListener<T>() {
-		@Override
-		public void propertyChanged(IProperty<T> aProperty, T aOldValue, T aNewValue) {
-			if (! Utils.equalOrBothNull(getSelectedItem(), aNewValue)) setSelectedItem(aNewValue);
-		}
-	};
 	
 	private final IPropertyListener<Boolean> enabledListener = new IPropertyListener<Boolean>() {
 		@Override
@@ -42,14 +38,20 @@ public class JComboBoxView<T> extends JComboBox<T>
 		}
 	};
 	
-	private final ActionListener actionListener = new ActionListener()
+	private final FocusListener focusListener = new FocusListener()
 	{
 		@Override
-		public void actionPerformed(ActionEvent aE)
+		public void focusLost(FocusEvent aE)
 		{
-			model.pValue.set((T) getSelectedItem());
+		}
+		
+		@Override
+		public void focusGained(FocusEvent aE)
+		{
+			((JComponent)getParent()).scrollRectToVisible(getBounds());
 		}
 	};
+	
 	
 	public JComboBoxView(ChoicePropertyModel<T> model) 
 	{
@@ -60,9 +62,14 @@ public class JComboBoxView<T> extends JComboBox<T>
 		setSelectedItem(model.pValue.get());
 		model.pEnabled.addListener(enabledListener);
 		model.pValid.addListener(validListener);
-		model.pValue.addListener(valueListener);
+		addFocusListener(focusListener);
 		
-		addActionListener(actionListener);
+		setRenderer(new UniversalRenderer<T>()
+		{
+			protected String getName(T value) {
+				return JComboBoxView.this.format(value);
+			};
+		});
 	}
 	
 	private void setValid(boolean valid) {
@@ -70,7 +77,7 @@ public class JComboBoxView<T> extends JComboBox<T>
 	}
 
 	protected String format(T value) {
-		return ""+value;
+		return value != null ? ""+value : "";
 	}
 	
 	@Override
