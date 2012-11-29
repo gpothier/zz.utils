@@ -4,6 +4,7 @@
 package zz.utils.properties;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +17,17 @@ import zz.utils.ReverseIteratorWrapper;
 public class ArrayListProperty<E> extends AbstractListProperty<E> 
 {
 	private List<E> itsList;
+	
+	public ArrayListProperty() {
+	}
+	
+	public ArrayListProperty(E... values) {
+		set(Arrays.asList(values));
+	}
+	
+	public ArrayListProperty(Collection<E> values) {
+		set(values);
+	}
 	
 	public List<E> get()
 	{
@@ -39,7 +51,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	 * Changes the list that backs the property.
 	 * This should be used with care, as it will not send any notification.
 	 */
-	protected void set (List<E> aList)
+	protected void set (Collection<E> aList)
 	{
 		// The below code is a workaround for a strange jdk compile error.
 		if (aList != null && MyList.class.isAssignableFrom(aList.getClass()))

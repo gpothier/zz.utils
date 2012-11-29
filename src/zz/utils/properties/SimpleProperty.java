@@ -42,8 +42,7 @@ implements IProperty<T>
 	 */
 	protected final T get0()
 	{
-		Set<IProperty> deps = ComputedProperty.TMP_DEPS != null ? ComputedProperty.TMP_DEPS.get() : null;
-		if (deps != null) deps.add(this);
+		addToDeps();
 		return itsValue;
 	}
 

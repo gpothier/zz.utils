@@ -1,10 +1,12 @@
 package zz.utils.ui.mvc.view.swing;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -31,6 +33,13 @@ public class JTextFieldView extends JTextField
 		}
 	};
 	
+	private final IPropertyListener<Boolean> validListener = new IPropertyListener<Boolean>() {
+		@Override
+		public void propertyChanged(IProperty<Boolean> aProperty, Boolean aOldValue, Boolean aNewValue) {
+			setValid(aNewValue);
+		}
+	};
+	
 	private final FocusListener focusListener = new FocusListener()
 	{
 		@Override
@@ -42,6 +51,8 @@ public class JTextFieldView extends JTextField
 		@Override
 		public void focusGained(FocusEvent aE)
 		{
+			((JComponent)getParent()).scrollRectToVisible(getBounds());
+			selectAll();
 		}
 	};
 	
@@ -85,13 +96,18 @@ public class JTextFieldView extends JTextField
 		super(model.pValue.get());
 		this.model = model;
 		setEnabled(model.pEnabled.get());
+		setValid(model.pValid.get());
 		setColumns(20);
 		model.pEnabled.addListener(enabledListener);
+		model.pValid.addListener(validListener);
 		model.pValue.addListener(valueListener);
 		addFocusListener(focusListener);
 		
 		if (updateOnTyping) getDocument().addDocumentListener(documentListener);
 		else addActionListener(actionListener);
 	}
-
+	
+	private void setValid(boolean valid) {
+		setBackground(valid ? Color.WHITE : Color.PINK);
+	}
 }

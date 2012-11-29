@@ -11,7 +11,7 @@ import zz.utils.properties.IListProperty;
  * Wraps an {@link IListProperty} into a Swing {@link ListModel}
  * @author gpothier
  */
-public class PropertyListModel<T> extends AbstractListModel
+public class PropertyListModel<T> extends AbstractListModel<T>
 implements IListListener<T>
 {
 	private final IListProperty<T> itsListProperty;
@@ -32,7 +32,7 @@ implements IListListener<T>
 		fireIntervalRemoved(this, aIndex, aIndex);
 	}
 
-	public Object getElementAt(int aIndex)
+	public T getElementAt(int aIndex)
 	{
 		return itsListProperty.get(aIndex);
 	}

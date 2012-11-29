@@ -5,6 +5,7 @@ package zz.utils.properties;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import zz.utils.PublicCloneable;
 import zz.utils.references.HardRef;
@@ -30,6 +31,15 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	private int itsVetoCount = 0;
 	
 	private List<IRef<IPropertyListener<? super T>>> itsListeners; 
+	
+	/**
+	 * Adds this property to the current ComputedProperty's dependency list, if any.
+	 */
+	protected void addToDeps() 
+	{
+		Set<IProperty> deps = ComputedProperty.TMP_DEPS != null ? ComputedProperty.TMP_DEPS.get() : null;
+		if (deps != null) deps.add(this);
+	}
 	
 	/**
 	 * This method is called whenever the value of this property changes.

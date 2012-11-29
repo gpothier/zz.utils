@@ -1,5 +1,6 @@
 package zz.utils.properties;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -85,6 +86,7 @@ implements IRWProperty<T>
 
 	public T get()
 	{
+		addToDeps();
 		if (itsDirty) compute();
 		return itsValue;
 	}
@@ -99,5 +101,67 @@ implements IRWProperty<T>
 	public boolean canSet(T aValue)
 	{
 		return false;
+	}
+	
+	/**
+	 * Creates a computed property that represents the
+	 * conjunction (boolean AND) of other properties.
+	 */
+	public static IProperty<Boolean> And(final Iterable<IProperty<Boolean>> properties) {
+		return new ComputedProperty<Boolean>() {
+			@Override
+			protected Boolean compute0()
+			{
+				for(IProperty<Boolean> p : properties) if (! p.get()) return false;
+				return true;
+			}
+		};
+	}
+	
+	/**
+	 * Creates a computed property that represents the
+	 * conjunction (boolean AND) of other properties.
+	 */
+	public static IProperty<Boolean> And(IProperty<Boolean>... properties) 
+	{
+		return And(Arrays.asList(properties));
+	}
+	
+	/**
+	 * Creates a computed property that represents the
+	 * disjunction (boolean OR) of other properties.
+	 */
+	public static IProperty<Boolean> Or(final Iterable<IProperty<Boolean>> properties) {
+		return new ComputedProperty<Boolean>() {
+			@Override
+			protected Boolean compute0()
+			{
+				for(IProperty<Boolean> p : properties) if (p.get()) return true;
+				return false;
+			}
+		};
+	}
+	
+	/**
+	 * Creates a computed property that represents the
+	 * disjunction (boolean OR) of other properties.
+	 */
+	public static IProperty<Boolean> Or(IProperty<Boolean>... properties) 
+	{
+		return Or(Arrays.asList(properties));
+	}
+
+	/**
+	 * Creates a computed property that represents the
+	 * negation of other properties.
+	 */
+	public static IProperty<Boolean> Not(final IProperty<Boolean> property) {
+		return new ComputedProperty<Boolean>() {
+			@Override
+			protected Boolean compute0()
+			{
+				return ! property.get();
+			}
+		};
 	}
 }

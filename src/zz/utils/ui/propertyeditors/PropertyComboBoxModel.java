@@ -14,7 +14,7 @@ import zz.utils.properties.IRWProperty;
  * @author gpothier
  */
 public class PropertyComboBoxModel<T> extends PropertyListModel<T>
-implements ComboBoxModel, IPropertyListener<T>
+implements ComboBoxModel<T>, IPropertyListener<T>
 {
 	private IRWProperty<T> itsSelectedItemProperty;
 	private boolean itsAllowNull;
@@ -43,13 +43,13 @@ implements ComboBoxModel, IPropertyListener<T>
 	}
 
 	@Override
-	public Object getElementAt(int aIndex)
+	public T getElementAt(int aIndex)
 	{
 		if (itsAllowNull)
 		{
-			return aIndex == 0 ? null : super.getElementAt(aIndex-1);
+			return aIndex == 0 ? null : (T) super.getElementAt(aIndex-1);
 		}
-		else return super.getElementAt(aIndex);
+		else return (T) super.getElementAt(aIndex);
 	}
 
 

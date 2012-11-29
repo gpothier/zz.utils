@@ -6,13 +6,15 @@ import zz.utils.properties.IRWProperty;
 
 public class PropertyModel<T>
 {
-	private static final IProperty<String> DEFAULT_LABEL = new ConstantProperty<String>(""); 
-	private static final IRWProperty DEFAULT_VALUE = new ConstantProperty(null);
-	private static final IProperty<Boolean> DEFAULT_ENABLED = new ConstantProperty<Boolean>(true);
+	public static final IProperty<String> DEFAULT_LABEL = new ConstantProperty<String>(""); 
+	public static final IRWProperty DEFAULT_VALUE = new ConstantProperty(null);
+	public static final IProperty<Boolean> DEFAULT_ENABLED = new ConstantProperty<Boolean>(true);
+	public static final IProperty<Boolean> DEFAULT_VALID = new ConstantProperty<Boolean>(true);
 	
 	public IProperty<String> pLabel = DEFAULT_LABEL;
 	public IRWProperty<T> pValue = DEFAULT_VALUE;
 	public IProperty<Boolean> pEnabled = DEFAULT_ENABLED;
+	public IProperty<Boolean> pValid = DEFAULT_VALID;
 	
 	public PropertyModel() {
 	}
@@ -30,6 +32,13 @@ public class PropertyModel<T>
 		this.pLabel = new ConstantProperty<String>(label);
 		this.pValue = pValue;
 		this.pEnabled = pEnabled;
+	}
+	
+	public PropertyModel(String label, IRWProperty<T> pValue, IProperty<Boolean> pEnabled, IProperty<Boolean> pValid) {
+		this.pLabel = new ConstantProperty<String>(label);
+		this.pValue = pValue;
+		this.pEnabled = pEnabled;
+		this.pValid = pValid;
 	}
 	
 	public PropertyModel(IProperty<String> pLabel, IRWProperty<T> pValue, IProperty<Boolean> pEnabled) {

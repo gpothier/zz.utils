@@ -1,12 +1,13 @@
 package zz.utils.ui.mvc.view.swing;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.JComponent;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -32,6 +33,13 @@ public class JPasswordFieldView extends JPasswordField
 		}
 	};
 	
+	private final IPropertyListener<Boolean> validListener = new IPropertyListener<Boolean>() {
+		@Override
+		public void propertyChanged(IProperty<Boolean> aProperty, Boolean aOldValue, Boolean aNewValue) {
+			setValid(aNewValue);
+		}
+	};
+	
 	private final FocusListener focusListener = new FocusListener()
 	{
 		@Override
@@ -43,6 +51,8 @@ public class JPasswordFieldView extends JPasswordField
 		@Override
 		public void focusGained(FocusEvent aE)
 		{
+			((JComponent)getParent()).scrollRectToVisible(getBounds());
+			selectAll();
 		}
 	};
 	
@@ -86,8 +96,10 @@ public class JPasswordFieldView extends JPasswordField
 		super(model.pValue.get());
 		this.model = model;
 		setEnabled(model.pEnabled.get());
+		setValid(model.pValid.get());
 		setColumns(20);
 		model.pEnabled.addListener(enabledListener);
+		model.pValid.addListener(validListener);
 		model.pValue.addListener(valueListener);
 		addFocusListener(focusListener);
 		
@@ -95,4 +107,7 @@ public class JPasswordFieldView extends JPasswordField
 		else addActionListener(actionListener);
 	}
 
+	private void setValid(boolean valid) {
+		setBackground(valid ? Color.WHITE : Color.PINK);
+	}
 }
