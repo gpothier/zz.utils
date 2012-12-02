@@ -37,7 +37,7 @@ public abstract class AbstractProperty<T> extends PublicCloneable implements IPr
 	 */
 	protected void addToDeps() 
 	{
-		Set<IProperty> deps = ComputedProperty.TMP_DEPS != null ? ComputedProperty.TMP_DEPS.get() : null;
+		Set<IProperty> deps = ComputedProperty.peekDeps();
 		if (deps != null) deps.add(this);
 	}
 	

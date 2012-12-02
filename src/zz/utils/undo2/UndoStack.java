@@ -8,6 +8,8 @@ import zz.utils.ArrayStack;
 import zz.utils.IProducer;
 import zz.utils.ITask;
 import zz.utils.Stack;
+import zz.utils.notification.IEvent;
+import zz.utils.notification.SimpleEvent;
 
 public class UndoStack
 {
@@ -19,6 +21,8 @@ public class UndoStack
 	
 	protected Action itsUndoAction;
 	protected Action itsRedoAction;
+	
+	public final IEvent<Void> eActionPerformed = new SimpleEvent<Void>(); 
 
 	public static UndoStack getCurrent()
 	{
@@ -97,6 +101,7 @@ public class UndoStack
 	{
 		if (itsCurrentOperation == null) throw new IllegalStateException("No current operation");
 		itsCurrentOperation.addCommand(aCommand);
+		((SimpleEvent<Void>) eActionPerformed).fire(null);
 	}
 	
 	/**

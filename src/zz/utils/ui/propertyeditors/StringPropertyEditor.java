@@ -53,5 +53,10 @@ public abstract class StringPropertyEditor
 		{
 			return itsTextField.getText();
 		}
+		
+		public JTextField getTextField()
+		{
+			return itsTextField;
+		}
 	}
 }

@@ -29,7 +29,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 		set(values);
 	}
 	
-	public List<E> get()
+	protected List<E> get0()
 	{
 		if (itsList == null)
 		{
@@ -77,6 +77,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 
 	public Iterator<E> reverseIterator()
 	{
+		addToDeps();
 		return new ReverseIteratorWrapper (get());
 	}
 	

@@ -32,14 +32,21 @@ implements IListProperty<E>
 	 */
 	private List<IRef<Object>> itsListListeners;
 
+	public final List<E> get()
+	{
+		throw new UnsupportedOperationException();
+	}
+	
+	protected abstract List<E> get0(); 
+	
 	public boolean add(E aElement)
 	{
-		return get().add (aElement);
+		return get0().add (aElement);
 	}
 
 	public void add(int aIndex, E aElement)
 	{
-		get().add (aIndex, aElement);
+		get0().add (aIndex, aElement);
 	}
 
 	public boolean addAll(Iterable<? extends E> aCollection)
@@ -61,17 +68,17 @@ implements IListProperty<E>
 	
 	public E set(int aIndex, E aElement)
 	{
-		return get().set(aIndex, aElement);
+		return get0().set(aIndex, aElement);
 	}
 	
 	public boolean remove(Object aElement)
 	{
-		return get().remove (aElement);
+		return get0().remove (aElement);
 	}
 
 	public E remove(int aIndex)
 	{
-		return get().remove(aIndex);
+		return get0().remove(aIndex);
 	}
 
 	public boolean removeAll(Collection< ? > aC)
@@ -90,7 +97,7 @@ implements IListProperty<E>
 	{
 		boolean theResult = false;
 
-		for (Iterator<E> theIterator = get().iterator(); theIterator.hasNext();)
+		for (Iterator<E> theIterator = get0().iterator(); theIterator.hasNext();)
 		{
 			E theElement = theIterator.next();
 			if (aC.contains(theElement))
@@ -105,48 +112,57 @@ implements IListProperty<E>
 
 	public int size()
 	{
-		List<E> theList = get();
+		addToDeps();
+		List<E> theList = get0();
 		return theList != null ? theList.size() : 0;
 	}
 
 	public E get(int aIndex)
 	{
-		return get().get (aIndex);
+		addToDeps();
+		return get0().get (aIndex);
 	}
 
 	public int indexOf(Object aElement)
 	{
-		return get().indexOf(aElement);
+		addToDeps();
+		return get0().indexOf(aElement);
 	}
 	
 	public boolean contains(Object aElement)
 	{
-		return get().contains(aElement);
+		addToDeps();
+		return get0().contains(aElement);
 	}
 
 	public boolean containsAll(Collection< ? > aC)
 	{
-		return get().containsAll(aC);
+		addToDeps();
+		return get0().containsAll(aC);
 	}
 
 	public boolean isEmpty()
 	{
-		return get().isEmpty();
+		addToDeps();
+		return get0().isEmpty();
 	}
 
 	public Iterator<E> iterator()
 	{
-		return get().iterator();
+		addToDeps();
+		return get0().iterator();
 	}
 
 	public Object[] toArray()
 	{
-		return get().toArray();
+		addToDeps();
+		return get0().toArray();
 	}
 
 	public <T> T[] toArray(T[] a)
 	{
-		return get().toArray(a);
+		addToDeps();
+		return get0().toArray(a);
 	}
 
 	
