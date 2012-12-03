@@ -7,10 +7,13 @@ import java.util.Hashtable;
 
 import javax.swing.JLabel;
 import javax.swing.JSlider;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import zz.utils.properties.IRWProperty;
+import zz.utils.ui.StackLayout;
 import zz.utils.undo2.UndoStack;
 
 public abstract class FloatPropertyEditor {
@@ -247,4 +250,48 @@ public abstract class FloatPropertyEditor {
 		}
 		
 	}
+	
+	@SuppressWarnings("serial")
+	public static class Spinner extends SimplePropertyEditor<Float>
+	implements ChangeListener, FocusListener
+	{
+		private final JSpinner itsSpinner = new JSpinner(new SpinnerNumberModel(Float.valueOf(0), null, null, Float.valueOf(1)));
+		
+		public Spinner(UndoStack aUndoStack, IRWProperty<Float> aProperty)
+		{
+			super(aUndoStack, aProperty);
+			setLayout(new StackLayout());
+			add(itsSpinner);
+			itsSpinner.addChangeListener(this);
+			itsSpinner.addFocusListener(this);
+		}
+		
+		public void focusGained(FocusEvent aE)
+		{
+		}
+
+		public void focusLost(FocusEvent aE)
+		{
+			uiToProperty();
+		}
+
+		public void stateChanged(ChangeEvent aE)
+		{
+			uiToProperty();
+		}
+		
+		@Override
+		protected void valueToUi(Float aValue)
+		{
+			itsSpinner.setValue(aValue != null ? aValue : 0);
+		}
+		
+		@Override
+		protected Float uiToValue()
+		{
+			return (Float) itsSpinner.getValue();
+		}
+
+	}
+	
 }
