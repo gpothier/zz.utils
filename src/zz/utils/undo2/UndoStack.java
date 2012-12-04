@@ -18,6 +18,7 @@ public class UndoStack
 	private Stack<Operation> itsUndoStack = new ArrayStack<Operation>();
 	private Stack<Operation> itsRedoStack = new ArrayStack<Operation>();
 	private Operation itsCurrentOperation;
+	private boolean itsReplaying = false;
 	
 	protected Action itsUndoAction;
 	protected Action itsRedoAction;
@@ -31,6 +32,7 @@ public class UndoStack
 	
 	public void startOperation()
 	{
+		if (itsReplaying) return;
 		if (itsCurrentOperation != null) throw new IllegalStateException();
 		itsCurrentStack.set(this);
 		itsCurrentOperation = new Operation();
@@ -38,6 +40,7 @@ public class UndoStack
 	
 	public void commitOperation()
 	{
+		if (itsReplaying) return;
 		if (itsCurrentOperation == null) throw new IllegalStateException();
 		itsCurrentStack.set(null);
 		itsUndoStack.push(itsCurrentOperation);
@@ -48,6 +51,7 @@ public class UndoStack
 	
 	public void cancelOperation()
 	{
+		if (itsReplaying) return;
 		if (itsCurrentOperation == null) throw new IllegalStateException();
 		itsCurrentStack.set(null);
 		itsCurrentOperation.undo();
@@ -70,10 +74,19 @@ public class UndoStack
 		if (getCurrent() != null) throw new IllegalStateException("Cannot undo or redo while an operation is in progress");
 		if (itsUndoStack.isEmpty()) return;
 
-		Operation theOperation = itsUndoStack.pop();
-		theOperation.undo();
-		itsRedoStack.push(theOperation);
-		updateUndoActions();
+		itsReplaying = true;
+		try
+		{
+			Operation theOperation = itsUndoStack.pop();
+			theOperation.undo();
+			itsRedoStack.push(theOperation);
+			updateUndoActions();
+			((SimpleEvent<Void>) eActionPerformed).fire(null);
+		}
+		finally
+		{
+			itsReplaying = false;
+		}
 	}
 
 	/**
@@ -85,10 +98,19 @@ public class UndoStack
 		if (getCurrent() != null) throw new IllegalStateException("Cannot undo or redo while an operation is in progress");
 		if (itsRedoStack.isEmpty()) return;
 
-		Operation theOperation = itsRedoStack.pop();
-		theOperation.perform();
-		itsUndoStack.push(theOperation);
-		updateUndoActions();
+		itsReplaying = true;
+		try
+		{
+			Operation theOperation = itsRedoStack.pop();
+			theOperation.perform();
+			itsUndoStack.push(theOperation);
+			updateUndoActions();
+			((SimpleEvent<Void>) eActionPerformed).fire(null);
+		}
+		finally
+		{
+			itsReplaying = false;
+		}
 	}
 
 	protected void updateUndoActions ()
@@ -99,6 +121,7 @@ public class UndoStack
 	
 	public void addCommand(Command aCommand)
 	{
+		if (itsReplaying) return;
 		if (itsCurrentOperation == null) throw new IllegalStateException("No current operation");
 		itsCurrentOperation.addCommand(aCommand);
 		((SimpleEvent<Void>) eActionPerformed).fire(null);

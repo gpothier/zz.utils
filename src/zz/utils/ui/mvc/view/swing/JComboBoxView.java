@@ -60,8 +60,6 @@ public class JComboBoxView<T> extends JComboBox<T>
 		setEnabled(model.pEnabled.get());
 		setValid(model.pValid.get());
 		setSelectedItem(model.pValue.get());
-		model.pEnabled.addListener(enabledListener);
-		model.pValid.addListener(validListener);
 		addFocusListener(focusListener);
 		
 		setRenderer(new UniversalRenderer<T>()
@@ -71,6 +69,23 @@ public class JComboBoxView<T> extends JComboBox<T>
 			};
 		});
 	}
+	
+	@Override
+	public void addNotify()
+	{
+		super.addNotify();
+		model.pEnabled.addHardListener(enabledListener);
+		model.pValid.addHardListener(validListener);
+	}
+	
+	@Override
+	public void removeNotify()
+	{
+		super.removeNotify();
+		model.pEnabled.removeListener(enabledListener);
+		model.pValid.removeListener(validListener);
+	}
+
 	
 	private void setValid(boolean valid) {
 		repaint();

@@ -49,12 +49,28 @@ public class JCheckBoxView extends JCheckBox
 		this.model = model;
 		setEnabled(model.pEnabled.get());
 		setSelected(model.pValue.get());
-		model.pEnabled.addListener(enabledListener);
-		model.pLabel.addListener(labelListener);
-		model.pValue.addListener(valueListener);
 		addChangeListener(changeListener);
 	}
 
+	@Override
+	public void addNotify()
+	{
+		super.addNotify();
+		model.pEnabled.addHardListener(enabledListener);
+		model.pLabel.addHardListener(labelListener);
+		model.pValue.addHardListener(valueListener);
+	}
+	
+	@Override
+	public void removeNotify()
+	{
+		super.removeNotify();
+		model.pEnabled.removeListener(enabledListener);
+		model.pLabel.removeListener(labelListener);
+		model.pValue.removeListener(valueListener);
+	}
+
+	
 	private void updateProperty() {
 		if (model.pValue.get() != isSelected())
 			model.pValue.set(isSelected());

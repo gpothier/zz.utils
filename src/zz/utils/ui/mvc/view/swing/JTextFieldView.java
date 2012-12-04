@@ -99,14 +99,30 @@ public class JTextFieldView extends JTextField
 		setEnabled(model.pEnabled.get());
 		setValid(model.pValid.get());
 		setColumns(20);
-		model.pEnabled.addListener(enabledListener);
-		model.pValid.addListener(validListener);
-		model.pValue.addListener(valueListener);
 		addFocusListener(focusListener);
 		
 		if (updateOnTyping) getDocument().addDocumentListener(documentListener);
 		else addActionListener(actionListener);
 	}
+	
+	@Override
+	public void addNotify()
+	{
+		super.addNotify();
+		model.pEnabled.addHardListener(enabledListener);
+		model.pValid.addHardListener(validListener);
+		model.pValue.addHardListener(valueListener);
+	}
+	
+	@Override
+	public void removeNotify()
+	{
+		super.removeNotify();
+		model.pEnabled.removeListener(enabledListener);
+		model.pValid.removeListener(validListener);
+		model.pValue.removeListener(valueListener);
+	}
+
 	
 	private void setValid(boolean valid) {
 		setBackground(valid ? Color.WHITE : Color.PINK);

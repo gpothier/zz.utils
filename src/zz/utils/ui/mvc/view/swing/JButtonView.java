@@ -38,9 +38,25 @@ public class JButtonView extends JButton
 		super(model.pLabel.get());
 		this.model = model;
 		setEnabled(model.pEnabled.get());
-		model.pEnabled.addListener(enabledListener);
-		model.pLabel.addListener(labelListener);
 		addActionListener(actionListener);
 	}
+	
+	@Override
+	public void addNotify()
+	{
+		super.addNotify();
+		model.pEnabled.addHardListener(enabledListener);
+		model.pLabel.addHardListener(labelListener);
+	}
+	
+	@Override
+	public void removeNotify()
+	{
+		super.removeNotify();
+		model.pEnabled.removeListener(enabledListener);
+		model.pLabel.removeListener(labelListener);
+	}
+
+
 
 }

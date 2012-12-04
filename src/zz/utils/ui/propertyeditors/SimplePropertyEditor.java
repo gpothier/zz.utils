@@ -53,7 +53,8 @@ implements IPropertyListener<T>
 
 	public void propertyChanged(IProperty<T> aProperty, T aOldValue, T aNewValue)
 	{
-		valueToUi(aNewValue);
+		T v = uiToValue();
+		if (! Utils.equalOrBothNull(v, aNewValue)) valueToUi(aNewValue);
 	}
 	
 	protected final void uiToProperty()

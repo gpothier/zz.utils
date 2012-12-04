@@ -22,6 +22,20 @@ public class JLabelView extends JLabel
 	{
 		super(model.pValue.get());
 		this.model = model;
-		model.pValue.addListener(valueListener);
 	}
+	
+	@Override
+	public void addNotify()
+	{
+		super.addNotify();
+		model.pValue.addHardListener(valueListener);
+	}
+	
+	@Override
+	public void removeNotify()
+	{
+		super.removeNotify();
+		model.pValue.removeListener(valueListener);
+	}
+
 }
