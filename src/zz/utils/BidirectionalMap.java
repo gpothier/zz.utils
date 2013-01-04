@@ -1,7 +1,7 @@
 /**
  * Created by IntelliJ IDEA.
  * User: Guillaume
- * Date: 25 févr. 2003
+ * Date: 25 feb. 2003
  * Time: 13:42:02
  */
 package zz.utils;
