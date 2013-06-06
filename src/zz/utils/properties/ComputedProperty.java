@@ -93,6 +93,10 @@ implements IRWProperty<T>
 		}
 	}
 	
+	protected void fireChanges(T oldValue, T newValue) {
+		if (oldValue != newValue) firePropertyChanged(oldValue, newValue);
+	}
+	
 	private void scheduleFire() 
 	{
 		if (SwingUtilities.isEventDispatchThread()) {
@@ -104,7 +108,7 @@ implements IRWProperty<T>
 				public void run()
 				{
 					if (itsDirty) compute();
-					if (oldValue != itsValue) firePropertyChanged(oldValue, itsValue);
+					fireChanges(oldValue, itsValue);
 					itsFireScheduled = false;
 				}
 			});
@@ -113,7 +117,7 @@ implements IRWProperty<T>
 		{
 			T oldValue = itsValue;
 			compute();
-			if (oldValue != itsValue) firePropertyChanged(oldValue, itsValue);
+			fireChanges(oldValue, itsValue);
 		}
 	}
 

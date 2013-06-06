@@ -78,7 +78,7 @@ public class ArrayListProperty<E> extends AbstractListProperty<E>
 	public Iterator<E> reverseIterator()
 	{
 		addToDeps();
-		return new ReverseIteratorWrapper (get());
+		return new ReverseIteratorWrapper<E>(get());
 	}
 	
 	
