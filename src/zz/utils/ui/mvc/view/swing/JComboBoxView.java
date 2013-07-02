@@ -52,10 +52,14 @@ public class JComboBoxView<T> extends JComboBox<T>
 		}
 	};
 	
+	public JComboBoxView(ChoicePropertyModel<T> model) {
+		this(model, true);
+	}
+
 	
-	public JComboBoxView(ChoicePropertyModel<T> model) 
+	public JComboBoxView(ChoicePropertyModel<T> model, boolean aAllowNull) 
 	{
-		setModel(new PropertyComboBoxModel<T>(model.pChoices, model.pValue, true));
+		setModel(new PropertyComboBoxModel<T>(model.pChoices, model.pValue, aAllowNull));
 		this.model = model;
 		setEnabled(model.pEnabled.get());
 		setValid(model.pValid.get());

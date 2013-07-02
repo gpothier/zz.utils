@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -85,4 +86,75 @@ public abstract class StringPropertyEditor
 			uiToProperty();
 		}
 	}
+	
+	@SuppressWarnings("serial")
+	public static class TextArea extends SimplePropertyEditor<String>
+	implements ActionListener, FocusListener, DocumentListener
+	{
+		private final JTextArea itsTextArea = new JTextArea();
+		
+		public TextArea(UndoStack aUndoStack, IRWProperty<String> aProperty)
+		{
+			this(aUndoStack, aProperty, false);
+		}
+		
+		public TextArea(UndoStack aUndoStack, IRWProperty<String> aProperty, boolean aImmediate)
+		{
+			super(aUndoStack, aProperty);
+			setLayout(new BorderLayout()); // Needed by subclasses
+			add(itsTextArea, BorderLayout.CENTER);
+			itsTextArea.addFocusListener(this);
+			if (aImmediate) itsTextArea.getDocument().addDocumentListener(this);
+		}
+		
+		public void focusGained(FocusEvent aE)
+		{
+		}
+	
+		public void focusLost(FocusEvent aE)
+		{
+			uiToProperty();
+		}
+	
+		public void actionPerformed(ActionEvent aE)
+		{
+			uiToProperty();
+		}
+		
+		@Override
+		protected void valueToUi(String aValue)
+		{
+			itsTextArea.setText(aValue);
+		}
+		
+		@Override
+		protected String uiToValue()
+		{
+			return itsTextArea.getText();
+		}
+		
+		public JTextArea getTextArea()
+		{
+			return itsTextArea;
+		}
+
+		@Override
+		public void insertUpdate(DocumentEvent aE)
+		{
+			uiToProperty();
+		}
+
+		@Override
+		public void removeUpdate(DocumentEvent aE)
+		{
+			uiToProperty();
+		}
+
+		@Override
+		public void changedUpdate(DocumentEvent aE)
+		{
+			uiToProperty();
+		}
+	}
+	
 }
